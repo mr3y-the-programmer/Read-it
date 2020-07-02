@@ -1,0 +1,17 @@
+/*
+ *  Copyright (C) MR3Y - All Rights Reserved
+ *   Unauthorized copying of this file, via any medium is strictly prohibited
+ *   Proprietary and confidential
+ *   Written by MR3Y <abdonasr379@gmail.com>, 2020.
+ */
+
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
