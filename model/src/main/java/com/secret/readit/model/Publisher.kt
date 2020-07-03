@@ -12,9 +12,9 @@ typealias publisherId = String
 data class Publisher(val id: publisherId,
                      val name: String,
                      val emailAddress: String,
-                     val profileImg: Int? = null,
-                     val thumbnail: Int? = null,
+                     val profileImg: Byte? = null,
+                     val thumbnail: Byte? = null,
                      val memberSince: Long,
-                     val publishedArticlesIds: List<Int> = emptyList(),
-                     val followedCategoriesIds: List<Int> = emptyList(),
+                     val publishedArticlesIds: List<articleId> = emptyList(),
+                     val followedCategoriesIds: List<String> = emptyList(),
                      val numOfFollowers: Int = 0)
