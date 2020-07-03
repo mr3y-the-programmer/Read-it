@@ -18,7 +18,7 @@ class MainModule {
 
     @Provides
     @Singleton
-    fun provideFirestore(): FirebaseFirestore{
+    fun provideFirestore(): FirebaseFirestore {
         val firestore = FirebaseFirestore.getInstance()
 
         firestore.firestoreSettings = FirebaseFirestoreSettings.Builder()
@@ -26,5 +26,4 @@ class MainModule {
             .build()
         return firestore
     }
-
 }

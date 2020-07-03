@@ -10,6 +10,9 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+apply plugin: "org.jmailen.kotlinter"
+apply plugin: "org.jlleitschuh.gradle.ktlint"
+
 android {
     compileSdkVersion rootProject.compile_sdk_version
     buildToolsVersion "29.0.3"
