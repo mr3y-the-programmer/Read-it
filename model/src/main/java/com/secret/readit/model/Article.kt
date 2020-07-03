@@ -19,4 +19,4 @@ data class Article(val id: articleId,
                    val numOfAppreciate: Int = 0,
                    val numOfProtest: Int = 0,
                    val isBookmarked: Boolean = false,
-                   val category: Category)
+                   val category: List<Category>)
