@@ -12,7 +12,7 @@ data class Content(val images: List<Byte>,
 
 
 data class Element(val text: String,
-                   val markups: List<Markup>,
+                   val markup: Markup,
                    val elements: List<Element>)
 
 
@@ -24,5 +24,6 @@ data class Markup(val type: MarkupType,
 enum class MarkupType{
     CODE,
     QUOTE,
-    BulletPoints
+    BulletPoints,
+    TEXT
 }
