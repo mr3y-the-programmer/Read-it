@@ -25,13 +25,13 @@ import kotlin.coroutines.resumeWithException
  * Our ArticlesDataSource has one responsibility, interact directly with firebase to get/set data
  */
 class DefaultArticlesDataSource @Inject constructor(private val firestore: FirebaseFirestore,
-                                                    @IoDispatcher private val ioDispatcher: CoroutineDispatcher) : ArticlesDataSource {
+                                                    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+                                                    private val normalizeHelper: NormalizeHelper = NormalizeHelper()) : ArticlesDataSource {
 
     override suspend fun getArticles(): Result<List<Article>> {
         return fetchArticles()
     }
 
-    //TODO: Inject NormalizeHelper()
     override suspend fun getArticle(id: articleId): Result<Article> {
         return fetchArticle(id)
     }
@@ -54,7 +54,7 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
                     if (continuation.isActive) {
                         Timber.d("fetched articles Successfully: ${articlesSnapshot.documents}")
 
-                        val articles = NormalizeHelper().getNormalizedArticles(articlesSnapshot)
+                        val articles = normalizeHelper.getNormalizedArticles(articlesSnapshot)
 
                         continuation.resume(Result.Success(articles))
                     } else {
@@ -76,7 +76,7 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
                     if (continuation.isActive) {
                         Timber.d("fetched article Successfully: ${documentSnapshot.data}")
 
-                        val article = NormalizeHelper().getNormalizedArticle(documentSnapshot)
+                        val article = normalizeHelper.getNormalizedArticle(documentSnapshot)
 
                         if (article == null){
                             Timber.d("There's No Article with this id")
