@@ -8,6 +8,7 @@
 package com.secret.readit.core.data.articles
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.secret.readit.core.di.IoDispatcher
 import com.secret.readit.core.result.Result
 import com.secret.readit.model.Article
@@ -38,7 +39,7 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
     }
 
     override suspend fun bookmark(id: articleId, bookmark: Boolean): Result<Boolean> {
-        TODO("Not yet implemented")
+        return updateExistingArticle(id, bookmark)
     }
 
     override suspend fun addArticle(article: Article): Result<Boolean> {
@@ -110,8 +111,6 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
         return withContext(ioDispatcher) {
             suspendCancellableCoroutine<Result<Boolean>> { continuation ->
 
-                // TODO:try configure the number of limit with Remote config
-                // or try some pagination to avoid wasting resources
                 firestore.collection("articles")
                     .add(article)
                     .addOnSuccessListener { reference ->
@@ -124,6 +123,33 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
                         }
                     }.addOnFailureListener {
                         Timber.d("Failed to add article, cause: ${it.cause}")
+                        continuation.resumeWithException(it)
+                    }
+            }
+        }
+    }
+
+    private suspend fun updateExistingArticle(id: articleId, bookmark: Boolean): Result<Boolean> {
+        // firebase doesn't support coroutines yet, so we use suspendCancellableCoroutine
+        return withContext(ioDispatcher) {
+            suspendCancellableCoroutine<Result<Boolean>> { continuation ->
+
+                val dataMap = mapOf(
+                    "isBookmarked" to bookmark
+                )
+
+                firestore.collection("articles").document(id)
+                    .set(dataMap, SetOptions.merge())
+                    .addOnSuccessListener {
+                        if (continuation.isActive) {
+                            Timber.d("article bookmarked Successfully")
+
+                            continuation.resume(Result.Success(true))
+                        } else {
+                            Timber.d("Exception, continuation is no longer active")
+                        }
+                    }.addOnFailureListener {
+                        Timber.d("Failed to bookmark article")
                         continuation.resumeWithException(it)
                     }
             }
