@@ -31,16 +31,18 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
         return fetchArticles()
     }
 
+    //TODO: separate common parts in fetchArticle/s in other fun
+    //TODO: Inject NormalizeHelper()
     override suspend fun getArticle(id: articleId): Result<Article> {
         return fetchArticle(id)
     }
 
-    override suspend fun bookmark(id: articleId, bookmark: Boolean): Boolean {
+    override suspend fun bookmark(id: articleId, bookmark: Boolean): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun addArticle(article: Article) {
-        TODO("Not yet implemented")
+    override suspend fun addArticle(article: Article): Result<Boolean> {
+        return addNewArticle(article)
     }
 
     private suspend fun fetchArticles(): Result<List<Article>> {
@@ -96,7 +98,32 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
                             Timber.d("Exception, continuation is no longer active")
                         }
                     }.addOnFailureListener {
-                        Timber.d("Exception in fetching articles, Cause: ${it.message}")
+                        Timber.d("Exception in fetching article, Cause: ${it.message}")
+                        continuation.resumeWithException(it)
+                    }
+            }
+        }
+    }
+
+    private suspend fun addNewArticle(article: Article): Result<Boolean> {
+        // firebase doesn't support coroutines yet, so we use suspendCancellableCoroutine
+        return withContext(ioDispatcher) {
+            suspendCancellableCoroutine<Result<Boolean>> { continuation ->
+
+                // TODO:try configure the number of limit with Remote config
+                // or try some pagination to avoid wasting resources
+                firestore.collection("articles")
+                    .add(article)
+                    .addOnSuccessListener { reference ->
+                        if (continuation.isActive) {
+                            Timber.d("added article Successfully, article id: ${reference.id}")
+
+                            continuation.resume(Result.Success(true))
+                        } else {
+                            Timber.d("Exception, continuation is no longer active")
+                        }
+                    }.addOnFailureListener {
+                        Timber.d("Failed to add article, cause: ${it.cause}")
                         continuation.resumeWithException(it)
                     }
             }
