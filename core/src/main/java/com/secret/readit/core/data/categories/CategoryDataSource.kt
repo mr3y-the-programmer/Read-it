@@ -19,10 +19,10 @@ interface CategoryDataSource {
     /**
      * get All categories stored in firestore
      */
-    fun getCategories(): Result<List<Category>>
+    suspend fun getCategories(): Result<List<Category>>
 
     /**
      * get categories of specified [articleId]
      */
-    fun getArticleCategories(id: articleId): Result<List<Category>>
+    suspend fun getArticleCategories(id: articleId): Result<List<Category>>
 }
