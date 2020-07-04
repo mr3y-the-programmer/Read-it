@@ -7,6 +7,7 @@
 
 package com.secret.readit.core.data.articles
 
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import com.secret.readit.model.Article
 
@@ -18,6 +19,13 @@ class NormalizeHelper {
     fun getNormalizedArticles(snapshot: QuerySnapshot): List<Article> {
         val allArticles = snapshot.toObjects(Article::class.java)
         return filterNullArticles(allArticles)
+    }
+
+    /**
+     * Same but for Single [Article]
+     */
+    fun getNormalizedArticle(snapshot: DocumentSnapshot): Article? {
+        return snapshot.toObject(Article::class.java)
     }
 
     /**

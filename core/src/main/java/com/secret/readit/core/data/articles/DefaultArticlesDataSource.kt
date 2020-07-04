@@ -32,7 +32,7 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
     }
 
     override suspend fun getArticle(id: articleId): Result<Article> {
-        TODO("Not yet implemented")
+        return fetchArticle(id)
     }
 
     override suspend fun bookmark(id: articleId, bookmark: Boolean): Boolean {
@@ -59,6 +59,39 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
                             val articles = NormalizeHelper().getNormalizedArticles(articlesSnapshot)
 
                             continuation.resume(Result.Success(articles))
+                        } else {
+                            Timber.d("Exception, continuation is no longer active")
+                        }
+                    }.addOnFailureListener {
+                        Timber.d("Exception in fetching articles, Cause: ${it.message}")
+                        continuation.resumeWithException(it)
+                    }
+            }
+        }
+    }
+
+    private suspend fun fetchArticle(id: articleId): Result<Article> {
+        // firebase doesn't support coroutines yet, so we use suspendCancellableCoroutine
+        return withContext(ioDispatcher) {
+            suspendCancellableCoroutine<Result<Article>> { continuation ->
+
+                // TODO:try configure the number of limit with Remote config
+                // or try some pagination to avoid wasting resources
+                firestore.collection("articles")
+                    .document(id)
+                    .get()
+                    .addOnSuccessListener { documentSnapshot ->
+                        if (continuation.isActive) {
+                            Timber.d("fetched article Successfully: ${documentSnapshot.data}")
+
+                            val article = NormalizeHelper().getNormalizedArticle(documentSnapshot)
+
+                            if (article == null){
+                                Timber.d("There's No Article with this id")
+                                return@addOnSuccessListener continuation.resumeWithException(NullPointerException())
+                            }
+
+                            continuation.resume(Result.Success(article))
                         } else {
                             Timber.d("Exception, continuation is no longer active")
                         }
