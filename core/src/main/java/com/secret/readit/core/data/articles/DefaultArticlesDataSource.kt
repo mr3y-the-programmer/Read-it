@@ -9,13 +9,12 @@ package com.secret.readit.core.data.articles
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.secret.readit.core.data.articles.utils.wrapInCoroutineCancellable
 import com.secret.readit.core.di.IoDispatcher
 import com.secret.readit.core.result.Result
 import com.secret.readit.model.Article
 import com.secret.readit.model.articleId
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -32,7 +31,6 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
         return fetchArticles()
     }
 
-    //TODO: separate common parts in fetchArticle/s in other fun
     //TODO: Inject NormalizeHelper()
     override suspend fun getArticle(id: articleId): Result<Article> {
         return fetchArticle(id)
@@ -47,112 +45,95 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
     }
 
     private suspend fun fetchArticles(): Result<List<Article>> {
-        // firebase doesn't support coroutines yet, so we use suspendCancellableCoroutine
-        return withContext(ioDispatcher) {
-            suspendCancellableCoroutine<Result<List<Article>>> { continuation ->
+        return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
+            // TODO:try configure the number of limit with Remote config
+            // or try some pagination to avoid wasting resources
+            firestore.collection("articles")
+                .get()
+                .addOnSuccessListener { articlesSnapshot ->
+                    if (continuation.isActive) {
+                        Timber.d("fetched articles Successfully: ${articlesSnapshot.documents}")
 
-                // TODO:try configure the number of limit with Remote config
-                // or try some pagination to avoid wasting resources
-                firestore.collection("articles")
-                    .get()
-                    .addOnSuccessListener { articlesSnapshot ->
-                        if (continuation.isActive) {
-                            Timber.d("fetched articles Successfully: ${articlesSnapshot.documents}")
+                        val articles = NormalizeHelper().getNormalizedArticles(articlesSnapshot)
 
-                            val articles = NormalizeHelper().getNormalizedArticles(articlesSnapshot)
-
-                            continuation.resume(Result.Success(articles))
-                        } else {
-                            Timber.d("Exception, continuation is no longer active")
-                        }
-                    }.addOnFailureListener {
-                        Timber.d("Exception in fetching articles, Cause: ${it.message}")
-                        continuation.resumeWithException(it)
+                        continuation.resume(Result.Success(articles))
+                    } else {
+                        Timber.d("Exception, continuation is no longer active")
                     }
-            }
+                }.addOnFailureListener {
+                    Timber.d("Exception in fetching articles, Cause: ${it.message}")
+                    continuation.resumeWithException(it)
+                }
         }
     }
 
     private suspend fun fetchArticle(id: articleId): Result<Article> {
-        // firebase doesn't support coroutines yet, so we use suspendCancellableCoroutine
-        return withContext(ioDispatcher) {
-            suspendCancellableCoroutine<Result<Article>> { continuation ->
+        return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
+            firestore.collection("articles")
+                .document(id)
+                .get()
+                .addOnSuccessListener { documentSnapshot ->
+                    if (continuation.isActive) {
+                        Timber.d("fetched article Successfully: ${documentSnapshot.data}")
 
-                // TODO:try configure the number of limit with Remote config
-                // or try some pagination to avoid wasting resources
-                firestore.collection("articles")
-                    .document(id)
-                    .get()
-                    .addOnSuccessListener { documentSnapshot ->
-                        if (continuation.isActive) {
-                            Timber.d("fetched article Successfully: ${documentSnapshot.data}")
+                        val article = NormalizeHelper().getNormalizedArticle(documentSnapshot)
 
-                            val article = NormalizeHelper().getNormalizedArticle(documentSnapshot)
-
-                            if (article == null){
-                                Timber.d("There's No Article with this id")
-                                return@addOnSuccessListener continuation.resumeWithException(NullPointerException())
-                            }
-
-                            continuation.resume(Result.Success(article))
-                        } else {
-                            Timber.d("Exception, continuation is no longer active")
+                        if (article == null){
+                            Timber.d("There's No Article with this id")
+                            return@addOnSuccessListener continuation.resumeWithException(NullPointerException())
                         }
-                    }.addOnFailureListener {
-                        Timber.d("Exception in fetching article, Cause: ${it.message}")
-                        continuation.resumeWithException(it)
+
+                        continuation.resume(Result.Success(article))
+                    } else {
+                        Timber.d("Exception, continuation is no longer active")
                     }
-            }
+                }.addOnFailureListener {
+                    Timber.d("Exception in fetching article, Cause: ${it.message}")
+                    continuation.resumeWithException(it)
+                }
         }
     }
 
     private suspend fun addNewArticle(article: Article): Result<Boolean> {
-        // firebase doesn't support coroutines yet, so we use suspendCancellableCoroutine
-        return withContext(ioDispatcher) {
-            suspendCancellableCoroutine<Result<Boolean>> { continuation ->
+        return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
+            firestore.collection("articles")
+                .add(article)
+                .addOnSuccessListener { reference ->
+                    if (continuation.isActive) {
+                        Timber.d("added article Successfully, article id: ${reference.id}")
 
-                firestore.collection("articles")
-                    .add(article)
-                    .addOnSuccessListener { reference ->
-                        if (continuation.isActive) {
-                            Timber.d("added article Successfully, article id: ${reference.id}")
-
-                            continuation.resume(Result.Success(true))
-                        } else {
-                            Timber.d("Exception, continuation is no longer active")
-                        }
-                    }.addOnFailureListener {
-                        Timber.d("Failed to add article, cause: ${it.cause}")
-                        continuation.resumeWithException(it)
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        Timber.d("Exception, continuation is no longer active")
                     }
-            }
+                }.addOnFailureListener {
+                    Timber.d("Failed to add article, cause: ${it.cause}")
+                    continuation.resumeWithException(it)
+                }
         }
     }
 
     private suspend fun updateExistingArticle(id: articleId, bookmark: Boolean): Result<Boolean> {
-        // firebase doesn't support coroutines yet, so we use suspendCancellableCoroutine
-        return withContext(ioDispatcher) {
-            suspendCancellableCoroutine<Result<Boolean>> { continuation ->
+        return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
 
-                val dataMap = mapOf(
-                    "isBookmarked" to bookmark
-                )
+            val dataMap = mapOf(
+                "isBookmarked" to bookmark
+            )
 
-                firestore.collection("articles").document(id)
-                    .set(dataMap, SetOptions.merge())
-                    .addOnSuccessListener {
-                        if (continuation.isActive) {
-                            Timber.d("article bookmarked Successfully")
+            firestore.collection("articles").document(id)
+                .set(dataMap, SetOptions.merge())
+                .addOnSuccessListener {
+                    if (continuation.isActive) {
+                        Timber.d("article bookmarked Successfully")
 
-                            continuation.resume(Result.Success(true))
-                        } else {
-                            Timber.d("Exception, continuation is no longer active")
-                        }
-                    }.addOnFailureListener {
-                        Timber.d("Failed to bookmark article")
-                        continuation.resumeWithException(it)
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        Timber.d("Exception, continuation is no longer active")
                     }
-            }
+                }.addOnFailureListener {
+                    Timber.d("Failed to bookmark article")
+                    continuation.resumeWithException(it)
+                }
         }
     }
 }
