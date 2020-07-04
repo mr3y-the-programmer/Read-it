@@ -9,7 +9,7 @@ package com.secret.readit.core.data.articles
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import com.secret.readit.core.data.articles.utils.wrapInCoroutineCancellable
+import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
 import com.secret.readit.core.di.IoDispatcher
 import com.secret.readit.core.result.Result
 import com.secret.readit.model.Article
@@ -45,7 +45,9 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
     }
 
     private suspend fun fetchArticles(): Result<List<Article>> {
-        return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
+        return wrapInCoroutineCancellable(
+            ioDispatcher
+        ) { continuation ->
             // TODO:try configure the number of limit with Remote config
             // or try some pagination to avoid wasting resources
             firestore.collection("articles")
@@ -68,7 +70,9 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
     }
 
     private suspend fun fetchArticle(id: articleId): Result<Article> {
-        return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
+        return wrapInCoroutineCancellable(
+            ioDispatcher
+        ) { continuation ->
             firestore.collection("articles")
                 .document(id)
                 .get()
@@ -78,9 +82,11 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
 
                         val article = normalizeHelper.getNormalizedArticle(documentSnapshot)
 
-                        if (article == null){
+                        if (article == null) {
                             Timber.d("There's No Article with this id")
-                            return@addOnSuccessListener continuation.resumeWithException(NullPointerException())
+                            return@addOnSuccessListener continuation.resumeWithException(
+                                NullPointerException()
+                            )
                         }
 
                         continuation.resume(Result.Success(article))
@@ -95,7 +101,9 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
     }
 
     private suspend fun addNewArticle(article: Article): Result<Boolean> {
-        return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
+        return wrapInCoroutineCancellable(
+            ioDispatcher
+        ) { continuation ->
             firestore.collection("articles")
                 .add(article)
                 .addOnSuccessListener { reference ->
@@ -114,7 +122,9 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
     }
 
     private suspend fun updateExistingArticle(id: articleId, bookmark: Boolean): Result<Boolean> {
-        return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
+        return wrapInCoroutineCancellable(
+            ioDispatcher
+        ) { continuation ->
 
             val dataMap = mapOf(
                 "isBookmarked" to bookmark
