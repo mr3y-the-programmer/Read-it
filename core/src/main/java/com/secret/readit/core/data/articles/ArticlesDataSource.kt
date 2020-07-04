@@ -32,10 +32,10 @@ interface ArticlesDataSource {
      *
      * @return true on Success, otherwise returns false
      */
-    suspend fun bookmark(id: articleId, bookmark: Boolean = true): Boolean
+    suspend fun bookmark(id: articleId, bookmark: Boolean = true): Result<Boolean>
 
     /**
      * add the [article] to firestore
      */
-    suspend fun addArticle(article: Article)
+    suspend fun addArticle(article: Article): Result<Boolean>
 }
