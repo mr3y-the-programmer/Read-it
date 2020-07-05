@@ -7,8 +7,8 @@
 
 package com.secret.readit.core.data.publisher
 
-import android.net.Uri
 import com.secret.readit.core.result.Result
+import com.secret.readit.model.Publisher
 import com.secret.readit.model.articleId
 import com.secret.readit.model.publisherId
 
@@ -18,40 +18,9 @@ import com.secret.readit.model.publisherId
 interface PublisherInfoDataSource {
 
     /**
-     * get the name which will be displayed to other users
+     * get All Publisher Info as a bundle cause we can't retrieve partial document in firestore
      */
-    suspend fun getDisplayName(id: publisherId): Result<String>
-
-    //TODO: update return type
-    /**
-     * get Uri of img stored in firestore
-     */
-    suspend fun getProfileImgUri(id: publisherId): Result<Uri>
-
-    /**
-     * get registered user email address
-     */
-    suspend fun getEmailAddress(id: publisherId): Result<String>
-
-    /**
-     * the first time he signed, joined app
-     */
-    suspend fun getCreatedSince(id: publisherId): Result<Long>
-
-    /**
-     * ids of articles he published
-     */
-    suspend fun getArticlesPublishedIds(id: publisherId): Result<List<articleId>>
-
-    /**
-     * ids of categories he followed
-     */
-    suspend fun getFollowedCategoriesIds(id: publisherId): Result<List<String>>
-
-    /**
-     * number of followers
-     */
-    suspend fun getFollowersNumber(id: publisherId): Result<Int>
+    suspend fun getPublisher(id: publisherId): Result<Publisher>
 
     /**
      * update publisher/user name
