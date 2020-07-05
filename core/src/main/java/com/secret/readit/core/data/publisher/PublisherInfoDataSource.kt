@@ -45,11 +45,25 @@ interface PublisherInfoDataSource {
     suspend fun addNewArticleId(articleID: articleId, publisherID: publisherId): Result<Boolean>
 
     /**
+     * remove existing article id from publisher profile
+     *
+     * @return true on success, otherwise false
+     */
+    suspend fun removeExistingArticleId(articleID: articleId, publisherID: publisherId): Result<Boolean>
+
+    /**
      * when following new category, add its id to publisher profile
      *
      * @return true on success, otherwise false
      */
     suspend fun addNewCategoryId(categoryID: String, publisherID: publisherId): Result<Boolean>
+
+    /**
+     * unfollowing category, remove its id from publisher profile
+     *
+     * @return true on success, otherwise false
+     */
+    suspend fun unFollowExistingCategoryId(categoryID: String, publisherID: publisherId): Result<Boolean>
 
     /**
      * Increment number of followers, and add new follower to existing followers to be able to see his articles
