@@ -88,89 +88,45 @@ class DefaultPublisherInfoDataSource @Inject constructor(private val firestore: 
     }
 
     override suspend fun addNewArticleId(articleID: articleId, publisherID: publisherId): Result<Boolean> {
+        return updateArray("publishedArticlesIds", articleID, publisherID)
+    }
+
+    override suspend fun removeExistingArticleId(articleID: articleId, publisherID: publisherId): Result<Boolean> {
+        return updateArray("publishedArticlesIds", articleID, publisherID, false)
+    }
+
+    override suspend fun addNewCategoryId(categoryID: String, publisherID: publisherId): Result<Boolean> {
+        return updateArray("followedCategoriesIds", categoryID, publisherID)
+    }
+
+    override suspend fun unFollowExistingCategoryId(categoryID: String, publisherID: publisherId): Result<Boolean> {
+        return updateArray("followedCategoriesIds", categoryID, publisherID, false)
+    }
+
+    /** Delegate updating arrays code to this private fun to achieve:
+     *  1- Encapsulation,
+     *  2- cut down the boilerplate
+     */
+    private suspend fun updateArray(arrayField: String, ItemId: String, publisherID: publisherId, add: Boolean = true): Result<Boolean>{
         return wrapInCoroutineCancellable(ioDispatcher){ continuation ->
+
+            val operation = if (add) FieldValue.arrayUnion(ItemId) else FieldValue.arrayRemove(ItemId)
 
             //add the id of published article to array
             firestore.collection("publishers")
                 .document(publisherID)
-                .update("publishedArticlesIds", FieldValue.arrayUnion(articleID))
+                .update(arrayField, operation)
                 .addOnSuccessListener {
                     if (continuation.isActive){
-                        Timber.d("Added new Article id")
                         continuation.resume(Result.Success(true))
                     }else {
                         Timber.d("continuation is no longer active")
                     }
                 }.addOnFailureListener {
-                    Timber.d("Failed to add new article id, cause: ${it.cause}")
                     continuation.resumeWithException(it)
                 }
         }
     }
-
-    override suspend fun removeExistingArticleId(articleID: articleId, publisherID: publisherId): Result<Boolean> {
-        return wrapInCoroutineCancellable(ioDispatcher){ continuation ->
-
-            //remove the id of published article from array
-            firestore.collection("publishers")
-                .document(publisherID)
-                .update("publishedArticlesIds", FieldValue.arrayRemove(articleID))
-                .addOnSuccessListener {
-                    if (continuation.isActive){
-                        Timber.d("Done Removing Article with id: $articleID")
-                        continuation.resume(Result.Success(true))
-                    }else {
-                        Timber.d("continuation is no longer active")
-                    }
-                }.addOnFailureListener {
-                    Timber.d("Failed to remove article with id: $articleID, cause: ${it.cause}")
-                    continuation.resumeWithException(it)
-                }
-        }
-    }
-
-    override suspend fun addNewCategoryId(categoryID: String, publisherID: publisherId): Result<Boolean> {
-        return wrapInCoroutineCancellable(ioDispatcher){ continuation ->
-
-            //add the id of Category to array
-            firestore.collection("publishers")
-                .document(publisherID)
-                .update("followedCategoriesIds", FieldValue.arrayUnion(categoryID))
-                .addOnSuccessListener {
-                    if (continuation.isActive){
-                        Timber.d("Added new Category id")
-                        continuation.resume(Result.Success(true))
-                    }else {
-                        Timber.d("continuation is no longer active")
-                    }
-                }.addOnFailureListener {
-                    Timber.d("Failed to add new Category id, cause: ${it.cause}")
-                    continuation.resumeWithException(it)
-                }
-        }
-    }
-
-    override suspend fun unFollowExistingCategoryId(categoryID: String, publisherID: publisherId): Result<Boolean> {
-        return wrapInCoroutineCancellable(ioDispatcher){ continuation ->
-
-            //Remove the Category id from profile
-            firestore.collection("publishers")
-                .document(publisherID)
-                .update("followedCategoriesIds", FieldValue.arrayRemove(categoryID))
-                .addOnSuccessListener {
-                    if (continuation.isActive){
-                        Timber.d("Done Removing category with id: $categoryID")
-                        continuation.resume(Result.Success(true))
-                    }else {
-                        Timber.d("continuation is no longer active")
-                    }
-                }.addOnFailureListener {
-                    Timber.d("Failed to Remove Category id: $categoryID, cause: ${it.cause}")
-                    continuation.resumeWithException(it)
-                }
-        }
-    }
-
     override suspend fun follow(followedPublisherID: publisherId, publisherID: publisherId): Result<Boolean> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
 
