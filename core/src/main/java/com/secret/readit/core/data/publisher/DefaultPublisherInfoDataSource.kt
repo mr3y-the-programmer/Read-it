@@ -28,11 +28,9 @@ import kotlin.coroutines.resumeWithException
 class DefaultPublisherInfoDataSource @Inject constructor(private val firestore: FirebaseFirestore,
                                                          @IoDispatcher private val ioDispatcher: CoroutineDispatcher): PublisherInfoDataSource {
 
-    //TODO: move constants to companion object
-    //TODO: delegate all set logic fun to unified private fun
     override suspend fun getPublisher(id: publisherId): Result<Publisher> {
         return wrapInCoroutineCancellable(ioDispatcher){ continuation ->
-            firestore.collection("publishers")
+            firestore.collection(PUBLISHERS_COLLECTION)
                 .document(id)
                 .get()
                 .addOnSuccessListener { publisherDoc ->
@@ -66,7 +64,7 @@ class DefaultPublisherInfoDataSource @Inject constructor(private val firestore: 
                 "name" to newName
             )
 
-            firestore.collection("publishers")
+            firestore.collection(PUBLISHERS_COLLECTION)
                 .document(id)
                 .set(data, SetOptions.merge())
                 .addOnSuccessListener {
@@ -88,19 +86,19 @@ class DefaultPublisherInfoDataSource @Inject constructor(private val firestore: 
     }
 
     override suspend fun addNewArticleId(articleID: articleId, publisherID: publisherId): Result<Boolean> {
-        return updateArray("publishedArticlesIds", articleID, publisherID)
+        return updateArray(PUBLISHED_ARTICLES_FIELD, articleID, publisherID)
     }
 
     override suspend fun removeExistingArticleId(articleID: articleId, publisherID: publisherId): Result<Boolean> {
-        return updateArray("publishedArticlesIds", articleID, publisherID, false)
+        return updateArray(PUBLISHED_ARTICLES_FIELD, articleID, publisherID, false)
     }
 
     override suspend fun addNewCategoryId(categoryID: String, publisherID: publisherId): Result<Boolean> {
-        return updateArray("followedCategoriesIds", categoryID, publisherID)
+        return updateArray(FOLLOWED_CATEGORIES_FIELD, categoryID, publisherID)
     }
 
     override suspend fun unFollowExistingCategoryId(categoryID: String, publisherID: publisherId): Result<Boolean> {
-        return updateArray("followedCategoriesIds", categoryID, publisherID, false)
+        return updateArray(FOLLOWED_CATEGORIES_FIELD, categoryID, publisherID, false)
     }
 
     /** Delegate updating arrays code to this private fun to achieve:
@@ -113,7 +111,7 @@ class DefaultPublisherInfoDataSource @Inject constructor(private val firestore: 
             val operation = if (add) FieldValue.arrayUnion(ItemId) else FieldValue.arrayRemove(ItemId)
 
             //add the id of published article to array
-            firestore.collection("publishers")
+            firestore.collection(PUBLISHERS_COLLECTION)
                 .document(publisherID)
                 .update(arrayField, operation)
                 .addOnSuccessListener {
@@ -127,19 +125,20 @@ class DefaultPublisherInfoDataSource @Inject constructor(private val firestore: 
                 }
         }
     }
+
     override suspend fun follow(followedPublisherID: publisherId, publisherID: publisherId): Result<Boolean> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
 
-            val pubDoc = firestore.collection("publishers").document(publisherID)
-            val followedPubDoc = firestore.collection("publishers").document(followedPublisherID)
+            val pubDoc = firestore.collection(PUBLISHERS_COLLECTION).document(publisherID)
+            val followedPubDoc = firestore.collection(PUBLISHERS_COLLECTION).document(followedPublisherID)
 
             //We used batchedWrites rather than transactions, cause we don't need any read operations
             firestore.runBatch { batch ->
                 //Do two things atomically, first add the id of followed publisher to array
-                batch.update(pubDoc, "followedPublishersIds", FieldValue.arrayUnion(followedPublisherID))
+                batch.update(pubDoc, FOLLOWED_PUBLISHERS_FIELD, FieldValue.arrayUnion(followedPublisherID))
 
                 //Second, increment num of followers to publisher who is followed
-                batch.update(followedPubDoc, "numOfFollowers", FieldValue.increment(1))
+                batch.update(followedPubDoc, FOLLOWERS_NUMBER_FIELD, FieldValue.increment(1))
             }.addOnSuccessListener {
                 if (continuation.isActive) {
                     Timber.d("Done following publisher with id: $followedPublisherID")
@@ -157,16 +156,16 @@ class DefaultPublisherInfoDataSource @Inject constructor(private val firestore: 
     override suspend fun unFollow(unFollowedPublisherID: publisherId, publisherID: publisherId): Result<Boolean> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
 
-            val pubDoc = firestore.collection("publishers").document(publisherID)
-            val unFollowedPubDoc = firestore.collection("publishers").document(unFollowedPublisherID)
+            val pubDoc = firestore.collection(PUBLISHERS_COLLECTION).document(publisherID)
+            val unFollowedPubDoc = firestore.collection(PUBLISHERS_COLLECTION).document(unFollowedPublisherID)
 
             firestore.runTransaction { transaction ->
                 //All read operations must happen before writing
-                val numOfFollowersValue = transaction.get(unFollowedPubDoc).get("numOfFollowers")
+                val numOfFollowersValue = transaction.get(unFollowedPubDoc).get(FOLLOWERS_NUMBER_FIELD)
                 val newFollowersValue = (numOfFollowersValue as? Int)?.minus(1)
                 //start writing
-                transaction.update(pubDoc, "followedPublishersIds", FieldValue.arrayRemove(unFollowedPublisherID))
-                transaction.update(unFollowedPubDoc, "numOfFollowers", newFollowersValue)
+                transaction.update(pubDoc, FOLLOWED_PUBLISHERS_FIELD, FieldValue.arrayRemove(unFollowedPublisherID))
+                transaction.update(unFollowedPubDoc, FOLLOWERS_NUMBER_FIELD, newFollowersValue)
             }.addOnSuccessListener {
                 if (continuation.isActive) {
                     Timber.d("Done unFollowing publisher with id: $unFollowedPublisherID")
@@ -181,13 +180,11 @@ class DefaultPublisherInfoDataSource @Inject constructor(private val firestore: 
         }
     }
 
-/*private suspend fun updatePubData(newName: String?, newImage: Byte?,
-                                      articleID: articleId?, categoryID: String?, id: publisherId){
-        val updatedData = mapOf(
-            "name" to newName,
-            "profileImg" to newImage,
-            ""
-        )
-
-    }*/
+    companion object {
+        const val PUBLISHERS_COLLECTION = "publishers"
+        const val PUBLISHED_ARTICLES_FIELD = "publishedArticlesIds"
+        const val FOLLOWED_CATEGORIES_FIELD = "followedCategoriesIds"
+        const val FOLLOWED_PUBLISHERS_FIELD = "followedPublishersIds"
+        const val FOLLOWERS_NUMBER_FIELD = "numOfFollowers"
+    }
 }
