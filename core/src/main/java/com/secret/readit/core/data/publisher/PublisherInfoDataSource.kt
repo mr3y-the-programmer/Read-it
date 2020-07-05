@@ -18,52 +18,47 @@ import com.secret.readit.model.publisherId
 interface PublisherInfoDataSource {
 
     /**
-     * get UniqueId of registered user
-     */
-    suspend fun getId(): Result<String>
-
-    /**
      * get the name which will be displayed to other users
      */
-    suspend fun getDisplayName(): Result<String>
+    suspend fun getDisplayName(id: publisherId): Result<String>
 
     //TODO: update return type
     /**
      * get Uri of img stored in firestore
      */
-    suspend fun getProfileImgUri(): Result<Uri>
+    suspend fun getProfileImgUri(id: publisherId): Result<Uri>
 
     /**
      * get registered user email address
      */
-    suspend fun getEmailAddress(): Result<String>
+    suspend fun getEmailAddress(id: publisherId): Result<String>
 
     /**
      * the first time he signed, joined app
      */
-    suspend fun getCreatedSince(): Result<Long>
+    suspend fun getCreatedSince(id: publisherId): Result<Long>
 
     /**
      * ids of articles he published
      */
-    suspend fun getArticlesPublishedIds(): Result<List<articleId>>
+    suspend fun getArticlesPublishedIds(id: publisherId): Result<List<articleId>>
 
     /**
      * ids of categories he followed
      */
-    suspend fun getFollowedCategoriesIds(): Result<List<String>>
+    suspend fun getFollowedCategoriesIds(id: publisherId): Result<List<String>>
 
     /**
      * number of followers
      */
-    suspend fun getFollowersNumber(): Result<Int>
+    suspend fun getFollowersNumber(id: publisherId): Result<Int>
 
     /**
      * update publisher/user name
      *
      * @return true on success, otherwise false
      */
-    suspend fun setDisplayName(newName: String): Result<Boolean>
+    suspend fun setDisplayName(newName: String, id: publisherId): Result<Boolean>
 
     //TODO: update param type
     /**
@@ -71,33 +66,33 @@ interface PublisherInfoDataSource {
      *
      * @return true on success, otherwise false
      */
-    suspend fun setProfileImg(newImage: Byte?): Result<Boolean>
+    suspend fun setProfileImg(newImage: Byte?, id: publisherId): Result<Boolean>
 
     /**
      * when publishing new article, add its id to publisher profile
      *
      * @return true on success, otherwise false
      */
-    suspend fun addNewArticleId(id: articleId): Result<Boolean>
+    suspend fun addNewArticleId(articleID: articleId, publisherID: publisherId): Result<Boolean>
 
     /**
      * when following new category, add its id to publisher profile
      *
      * @return true on success, otherwise false
      */
-    suspend fun addNewCategoryId(id: String): Result<Boolean>
+    suspend fun addNewCategoryId(categoryID: String, publisherID: publisherId): Result<Boolean>
 
     /**
      * Increment number of followers, and add new follower to existing followers to be able to see his articles
      *
      * @return true on success, otherwise false
      */
-    suspend fun follow(id: publisherId): Result<Boolean>
+    suspend fun follow(followedPublisherID: publisherId, publisherID: publisherId): Result<Boolean>
 
     /**
      * decrement number of followers, and remove follower from existing followers
      *
      * @return true on success, otherwise false
      */
-    suspend fun unFollow(id: publisherId): Result<Boolean>
+    suspend fun unFollow(unFollowedPublisherID: publisherId, publisherID: publisherId): Result<Boolean>
 }
