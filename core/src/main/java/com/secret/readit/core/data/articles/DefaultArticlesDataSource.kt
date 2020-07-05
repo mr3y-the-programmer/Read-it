@@ -50,7 +50,7 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
         ) { continuation ->
             // TODO:try configure the number of limit with Remote config
             // or try some pagination to avoid wasting resources
-            firestore.collection("articles")
+            firestore.collection(ARTICLES_COLLECTION)
                 .get()
                 .addOnSuccessListener { articlesSnapshot ->
                     if (continuation.isActive) {
@@ -73,7 +73,7 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
         return wrapInCoroutineCancellable(
             ioDispatcher
         ) { continuation ->
-            firestore.collection("articles")
+            firestore.collection(ARTICLES_COLLECTION)
                 .document(id)
                 .get()
                 .addOnSuccessListener { documentSnapshot ->
@@ -104,7 +104,7 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
         return wrapInCoroutineCancellable(
             ioDispatcher
         ) { continuation ->
-            firestore.collection("articles")
+            firestore.collection(ARTICLES_COLLECTION)
                 .add(article)
                 .addOnSuccessListener { reference ->
                     if (continuation.isActive) {
@@ -127,10 +127,10 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
         ) { continuation ->
 
             val dataMap = mapOf(
-                "isBookmarked" to bookmark
+                IS_BOOKMARKED_FIELD to bookmark
             )
 
-            firestore.collection("articles").document(id)
+            firestore.collection(ARTICLES_COLLECTION).document(id)
                 .set(dataMap, SetOptions.merge())
                 .addOnSuccessListener {
                     if (continuation.isActive) {
@@ -145,5 +145,10 @@ class DefaultArticlesDataSource @Inject constructor(private val firestore: Fireb
                     continuation.resumeWithException(it)
                 }
         }
+    }
+
+    companion object {
+        const val ARTICLES_COLLECTION = "articles"
+        const val IS_BOOKMARKED_FIELD = "isBookmarked"
     }
 }

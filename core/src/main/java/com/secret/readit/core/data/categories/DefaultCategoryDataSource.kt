@@ -32,7 +32,7 @@ class DefaultCategoryDataSource @Inject constructor(private val firestore: Fireb
         return wrapInCoroutineCancellable(
             ioDispatcher
         ) { continuation ->
-            firestore.collection("categories")
+            firestore.collection(CATEGORIES_COLLECTION)
                 .get()
                 .addOnSuccessListener { categoriesSnapshot ->
                     if (continuation.isActive) {
@@ -60,8 +60,8 @@ class DefaultCategoryDataSource @Inject constructor(private val firestore: Fireb
         return wrapInCoroutineCancellable(
             ioDispatcher
         ) { continuation ->
-            firestore.collection("categories")
-                .whereArrayContains("articleIds", id)
+            firestore.collection(CATEGORIES_COLLECTION)
+                .whereArrayContains(ARTICLE_IDS_FIELD, id)
                 .get()
                 .addOnSuccessListener { categoriesSnapshot ->
                     if (continuation.isActive) {
@@ -76,5 +76,10 @@ class DefaultCategoryDataSource @Inject constructor(private val firestore: Fireb
                     continuation.resumeWithException(it)
                 }
         }
+    }
+
+    companion object {
+        const val CATEGORIES_COLLECTION = "categories"
+        const val ARTICLE_IDS_FIELD = "articleIds"
     }
 }
