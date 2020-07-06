@@ -25,26 +25,28 @@ import kotlin.coroutines.resumeWithException
 /**
  * Our publisherInfoDataSource has one responsibility, interact directly with firestore to get/set data
  */
-class DefaultPublisherInfoDataSource @Inject constructor(private val firestore: FirebaseFirestore,
-                                                         @IoDispatcher private val ioDispatcher: CoroutineDispatcher): PublisherInfoDataSource {
+class DefaultPublisherInfoDataSource @Inject constructor(
+    private val firestore: FirebaseFirestore,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+) : PublisherInfoDataSource {
 
     override suspend fun getPublisher(id: publisherId): Result<Publisher> {
-        return wrapInCoroutineCancellable(ioDispatcher){ continuation ->
+        return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
             firestore.collection(PUBLISHERS_COLLECTION)
                 .document(id)
                 .get()
                 .addOnSuccessListener { publisherDoc ->
-                    if (continuation.isActive){
+                    if (continuation.isActive) {
                         Timber.d("Returned publisher Info successfully, doc: ${publisherDoc.data}")
                         val publisher = publisherDoc.toObject(Publisher::class.java)
 
-                        if (publisher == null){
+                        if (publisher == null) {
                             Timber.d("Couldn't convert firestore model to publisher model, or publisher isn't exist")
                             return@addOnSuccessListener continuation.resumeWithException(NullPointerException())
                         }
 
                         continuation.resume(Result.Success(publisher))
-                    }else {
+                    } else {
                         Timber.d("continuation is no longer active")
                     }
                 }.addOnFailureListener {
@@ -54,11 +56,11 @@ class DefaultPublisherInfoDataSource @Inject constructor(private val firestore: 
         }
     }
 
-    //End of getting data
-    //Beginning of setting/updating data
+    // End of getting data
+    // Beginning of setting/updating data
 
     override suspend fun setDisplayName(newName: String, id: publisherId): Result<Boolean> {
-        return wrapInCoroutineCancellable(ioDispatcher){ continuation ->
+        return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
 
             val data = mapOf(
                 "name" to newName
@@ -68,10 +70,10 @@ class DefaultPublisherInfoDataSource @Inject constructor(private val firestore: 
                 .document(id)
                 .set(data, SetOptions.merge())
                 .addOnSuccessListener {
-                    if (continuation.isActive){
+                    if (continuation.isActive) {
                         Timber.d("Updating publisher name success")
                         continuation.resume(Result.Success(true))
-                    }else {
+                    } else {
                         Timber.d("continuation is no longer active")
                     }
                 }.addOnFailureListener {
@@ -105,19 +107,19 @@ class DefaultPublisherInfoDataSource @Inject constructor(private val firestore: 
      *  1- Encapsulation,
      *  2- cut down the boilerplate
      */
-    private suspend fun updateArray(arrayField: String, ItemId: String, publisherID: publisherId, add: Boolean = true): Result<Boolean>{
-        return wrapInCoroutineCancellable(ioDispatcher){ continuation ->
+    private suspend fun updateArray(arrayField: String, ItemId: String, publisherID: publisherId, add: Boolean = true): Result<Boolean> {
+        return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
 
             val operation = if (add) FieldValue.arrayUnion(ItemId) else FieldValue.arrayRemove(ItemId)
 
-            //add the id of published article to array
+            // add the id of published article to array
             firestore.collection(PUBLISHERS_COLLECTION)
                 .document(publisherID)
                 .update(arrayField, operation)
                 .addOnSuccessListener {
-                    if (continuation.isActive){
+                    if (continuation.isActive) {
                         continuation.resume(Result.Success(true))
-                    }else {
+                    } else {
                         Timber.d("continuation is no longer active")
                     }
                 }.addOnFailureListener {
@@ -132,12 +134,12 @@ class DefaultPublisherInfoDataSource @Inject constructor(private val firestore: 
             val pubDoc = firestore.collection(PUBLISHERS_COLLECTION).document(publisherID)
             val followedPubDoc = firestore.collection(PUBLISHERS_COLLECTION).document(followedPublisherID)
 
-            //We used batchedWrites rather than transactions, cause we don't need any read operations
+            // We used batchedWrites rather than transactions, cause we don't need any read operations
             firestore.runBatch { batch ->
-                //Do two things atomically, first add the id of followed publisher to array
+                // Do two things atomically, first add the id of followed publisher to array
                 batch.update(pubDoc, FOLLOWED_PUBLISHERS_FIELD, FieldValue.arrayUnion(followedPublisherID))
 
-                //Second, increment num of followers to publisher who is followed
+                // Second, increment num of followers to publisher who is followed
                 batch.update(followedPubDoc, FOLLOWERS_NUMBER_FIELD, FieldValue.increment(1))
             }.addOnSuccessListener {
                 if (continuation.isActive) {
@@ -160,10 +162,10 @@ class DefaultPublisherInfoDataSource @Inject constructor(private val firestore: 
             val unFollowedPubDoc = firestore.collection(PUBLISHERS_COLLECTION).document(unFollowedPublisherID)
 
             firestore.runTransaction { transaction ->
-                //All read operations must happen before writing
+                // All read operations must happen before writing
                 val numOfFollowersValue = transaction.get(unFollowedPubDoc).get(FOLLOWERS_NUMBER_FIELD)
                 val newFollowersValue = (numOfFollowersValue as? Int)?.minus(1)
-                //start writing
+                // start writing
                 transaction.update(pubDoc, FOLLOWED_PUBLISHERS_FIELD, FieldValue.arrayRemove(unFollowedPublisherID))
                 transaction.update(unFollowedPubDoc, FOLLOWERS_NUMBER_FIELD, newFollowersValue)
             }.addOnSuccessListener {

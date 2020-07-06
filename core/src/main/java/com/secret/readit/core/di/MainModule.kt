@@ -26,4 +26,6 @@ class MainModule {
             .build()
         return firestore
     }
+//    TODO: make all dataSources @Singleton
+    // TODO: make all dataSources internal
 }

@@ -29,7 +29,7 @@ interface PublisherInfoDataSource {
      */
     suspend fun setDisplayName(newName: String, id: publisherId): Result<Boolean>
 
-    //TODO: update param type
+    // TODO: update param type
     /**
      * Update profileImg, nullability here means to use a placeholder or img used in sign-in identity provider
      *

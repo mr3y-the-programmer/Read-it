@@ -7,16 +7,18 @@
 
 package com.secret.readit.core.data.utils
 
+import com.secret.readit.core.result.Result
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import com.secret.readit.core.result.Result
 
 // firebase doesn't support coroutines yet, so we use suspendCancellableCoroutine
-suspend fun <T> wrapInCoroutineCancellable(dispatcher: CoroutineDispatcher,
-                                           block: (continuation: CancellableContinuation<Result<T>>) -> Unit): Result<T>{
-    return withContext(dispatcher){
+suspend fun <T> wrapInCoroutineCancellable(
+    dispatcher: CoroutineDispatcher,
+    block: (continuation: CancellableContinuation<Result<T>>) -> Unit
+): Result<T> {
+    return withContext(dispatcher) {
         suspendCancellableCoroutine<Result<T>> {
             block(it)
         }

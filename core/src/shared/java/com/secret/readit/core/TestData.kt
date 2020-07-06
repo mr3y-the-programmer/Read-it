@@ -1,4 +1,11 @@
-import com.secret.readit.model.*
+import com.secret.readit.model.Article
+import com.secret.readit.model.Category
+import com.secret.readit.model.Comment
+import com.secret.readit.model.Content
+import com.secret.readit.model.Element
+import com.secret.readit.model.Markup
+import com.secret.readit.model.MarkupType
+import com.secret.readit.model.Publisher
 
 object TestData {
     val bytes1 = listOf(1.toByte(), 0.toByte(), 3.toByte(), 6.toByte(), 9.toByte(), 8.toByte(), 15.toByte(), 30.toByte())

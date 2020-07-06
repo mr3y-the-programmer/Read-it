@@ -22,8 +22,10 @@ import kotlin.coroutines.resumeWithException
 /**
  * Our CategoryDataSource has one responsibility, interact directly with firestore to get data
  */
-class DefaultCategoryDataSource @Inject constructor(private val firestore: FirebaseFirestore,
-                                                    @IoDispatcher private val ioDispatcher: CoroutineDispatcher) : CategoryDataSource {
+class DefaultCategoryDataSource @Inject constructor(
+    private val firestore: FirebaseFirestore,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+) : CategoryDataSource {
 
     /**
      * For now, all returned categories guaranteed to be non-null since it only configured/added through server not from the client
