@@ -23,25 +23,25 @@ interface AuthDataSource {
      * get unique user id, This is Unique within entire firebase project.
      * Don't use it to identify user, instead see [FirebaseUser.getToken()]
      */
-    fun getUid(): String
+    fun getUid(): String?
 
     /**
      * get the name which will be displayed to other users
      */
-    fun getDisplayName(): String
+    fun getDisplayName(): String?
 
     /**
      * get Uri of account img
      */
-    fun getProfileImgUri(): Uri
+    fun getProfileImgUri(): Uri?
 
     /**
      * get registered user email address
      */
-    fun getEmailAddress(): String
+    fun getEmailAddress(): String?
 
     /**
      * the first time he signed, joined app
      */
-    fun getCreatedSince(): Long
+    fun getCreatedSince(): Long?
 }
