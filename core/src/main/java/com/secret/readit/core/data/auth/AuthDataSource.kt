@@ -15,6 +15,11 @@ import android.net.Uri
 interface AuthDataSource {
 
     /**
+     * User is signed-in if FirebaseUser isn't null
+     */
+    fun isUserSignedIn(): Boolean
+
+    /**
      * get unique user id, This is Unique within entire firebase project.
      * Don't use it to identify user, instead see [FirebaseUser.getToken()]
      */
