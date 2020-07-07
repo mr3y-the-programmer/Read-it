@@ -25,6 +25,7 @@ buildscript {
         junit_version = "4.12"
         nhaarman_version = "2.2.0"
         coroutines_test_version = "1.3.7"
+        truth_version = "1.0.1"
 
         //androidTest
         espresso_core_version = "3.2.0"

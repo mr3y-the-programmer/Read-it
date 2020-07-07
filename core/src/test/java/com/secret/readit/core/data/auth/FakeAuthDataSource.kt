@@ -11,7 +11,7 @@ import android.net.Uri
 
 class FakeAuthDataSource : AuthDataSource {
     override fun isUserSignedIn(): Boolean {
-        return true
+        return false
     }
 
     override fun getUid(): String? {
