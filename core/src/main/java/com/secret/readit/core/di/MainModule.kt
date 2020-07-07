@@ -44,7 +44,7 @@ class MainModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseAuth(): FirebaseAuth{
+    fun provideFirebaseAuth(): FirebaseAuth {
         return FirebaseAuth.getInstance()
     }
 //    TODO: make all dataSources @Singleton

@@ -19,3 +19,6 @@ data class Publisher(val id: publisherId,
                      val followedCategoriesIds: List<String> = emptyList(),
                      val followedPublishersIds: List<publisherId> = emptyList(),
                      val numOfFollowers: Int = 0)
+
+//TODO: Update return type of profileImg,
+//TODO: move thumbnail to be extension fun/property

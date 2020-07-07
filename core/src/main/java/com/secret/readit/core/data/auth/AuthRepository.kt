@@ -27,9 +27,11 @@ import kotlin.coroutines.resumeWithException
  * store data from [DefaultAuthDataSource] in firestore's publishers collection, so we can get data from single source of truth
  */
 @Singleton
-class AuthRepository @Inject constructor(private val dataSource: AuthDataSource,
-                                         private val firestore: FirebaseFirestore,
-                                         @IoDispatcher private val ioDispatcher: CoroutineDispatcher) {
+class AuthRepository @Inject constructor(
+    private val dataSource: AuthDataSource,
+    private val firestore: FirebaseFirestore,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+) {
     /**
      * This fun gets called only the first time user registeres, joins the app
      *
@@ -37,12 +39,12 @@ class AuthRepository @Inject constructor(private val dataSource: AuthDataSource,
      *
      * @return true on success, otherwise false
      */
-    suspend fun createDocForUserInfo(): Result<Boolean>{
-        if (!dataSource.isUserSignedIn()){
+    suspend fun createDocForUserInfo(): Result<Boolean> {
+        if (!dataSource.isUserSignedIn()) {
             Timber.e("Cannot store user data because he hasn't signed-in")
             return Result.Error(FirebaseNoSignedInUserException("USER MUST BE SIGNED IN FIRST"))
         }
-        //uid guaranteed to be non-null as long as the user is signed-in(FirebaseUser != null)
+        // uid guaranteed to be non-null as long as the user is signed-in(FirebaseUser != null)
         val uid = dataSource.getUid()!!
 
         val data = mapOf(
@@ -61,7 +63,7 @@ class AuthRepository @Inject constructor(private val dataSource: AuthDataSource,
                 .document(uid)
                 .set(data)
                 .addOnSuccessListener {
-                    if (continuation.isActive){
+                    if (continuation.isActive) {
                         Timber.d("Created doc for User with id: $uid Successfully")
                         continuation.resume(Result.Success(true))
                     } else {
