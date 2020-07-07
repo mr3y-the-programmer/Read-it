@@ -32,21 +32,59 @@ class AuthRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) {
+
     /**
-     * This fun gets called only the first time user registeres, joins the app
-     *
-     * next time he login, his data will be already exist in firestore
-     *
-     * @return true on success, otherwise false
+     * This fun gets called when user registeres/login, joins the app
+     * check first if there's a doc for user(i.e User joined before).
+     * Otherwise this is the first time User Joins So create a doc for him
+     * @return true on (success && this is the first time), otherwise false
      */
-    suspend fun createDocForUserInfo(): Result<Boolean> {
+    suspend fun createDocIfPossible(): Result<Boolean>{
         if (!dataSource.isUserSignedIn()) {
             Timber.e("Cannot store user data because he hasn't signed-in")
             return Result.Error(FirebaseNoSignedInUserException("USER MUST BE SIGNED IN FIRST"))
         }
         // uid guaranteed to be non-null as long as the user is signed-in(FirebaseUser != null)
-        val uid = dataSource.getUid()!!
+        val uid = getId()!!
 
+        if (!(check(uid) as Result.Success).data){
+            return createDoc(uid)
+        }
+        return Result.Success(false)
+    }
+
+    /**
+     * check if user doc exist on firetore or not
+     * if doc exist @return true, doesn't exist @return false
+     */
+    private suspend fun check(id: publisherId): Result<Boolean> {
+        return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
+            firestore.collection(PUBLISHERS_COLLECTION)
+                .document(id)
+                .get()
+                .addOnSuccessListener {
+                    if (continuation.isActive){
+                        if (it.exists()) {
+                            Timber.d("User already signed before!!, No need to create a doc for him")
+                            return@addOnSuccessListener continuation.resume(Result.Success(true))
+                        }
+                        return@addOnSuccessListener continuation.resume(Result.Success(false))
+                    } else {
+                       Timber.d("Continuation is no longer active")
+                    }
+                }.addOnFailureListener {
+                    Timber.d("Failed to get doc with this id: $id")
+                    continuation.resumeWithException(it)
+                }
+        }
+    }
+
+    /**
+     * Create new doc with: @param id
+     *
+     * @return true on Success, otherwise false
+     */
+    private suspend fun createDoc(id: publisherId): Result<Boolean>{
         val data = mapOf(
             NAME_FIELD to dataSource.getDisplayName(),
             EMAIL_ADDRESS_FIELD to dataSource.getEmailAddress(),
@@ -60,20 +98,28 @@ class AuthRepository @Inject constructor(
 
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
             firestore.collection(PUBLISHERS_COLLECTION)
-                .document(uid)
+                .document(id)
                 .set(data)
                 .addOnSuccessListener {
                     if (continuation.isActive) {
-                        Timber.d("Created doc for User with id: $uid Successfully")
+                        Timber.d("Created doc for User with id: $id Successfully")
                         continuation.resume(Result.Success(true))
                     } else {
                         Timber.d("continuation is no longer active")
                     }
                 }.addOnFailureListener {
-                    Timber.d("Failed to create doc for user with id: $uid")
+                    Timber.d("Failed to create doc for user with id: $id")
                     continuation.resumeWithException(it)
                 }
         }
+    }
+
+    /**
+     * Also, When we need to get id of signed user We get this through this fun in repository,
+     * not from dataSource directly
+     */
+    fun getId(): String?{
+        return dataSource.getUid()
     }
 
     companion object {
