@@ -7,8 +7,12 @@
 
 package com.secret.readit.core.di
 
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.secret.readit.core.data.auth.AuthDataSource
+import com.secret.readit.core.data.auth.DefaultAuthDataSource
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -25,6 +29,23 @@ class MainModule {
             .setPersistenceEnabled(true)
             .build()
         return firestore
+    }
+
+    @Provides
+    fun provideAuthDataSource(): AuthDataSource {
+        return DefaultAuthDataSource(provideFirebaseUser())
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseUser(): FirebaseUser? {
+        return provideFirebaseAuth().currentUser
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth{
+        return FirebaseAuth.getInstance()
     }
 //    TODO: make all dataSources @Singleton
     // TODO: make all dataSources internal
