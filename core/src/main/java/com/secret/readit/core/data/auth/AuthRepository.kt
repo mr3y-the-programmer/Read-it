@@ -88,7 +88,7 @@ class AuthRepository @Inject constructor(
         val data = mapOf(
             NAME_FIELD to dataSource.getDisplayName(),
             EMAIL_ADDRESS_FIELD to dataSource.getEmailAddress(),
-            PROFILE_IMG_FIELD to dataSource.getProfileImgUri(),
+            PROFILE_IMG_FIELD to dataSource.getProfileImgUri()?.toString(), //Firestore doesn't support Uri as data type
             MEMBER_SINCE_FIELD to dataSource.getCreatedSince(),
             PUBLISHED_ARTICLES_FIELD to emptyList<articleId>(),
             FOLLOWED_CATEGORIES_FIELD to emptyList<String>(),
