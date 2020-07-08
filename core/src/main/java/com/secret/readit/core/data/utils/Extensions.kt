@@ -26,6 +26,6 @@ suspend fun <T> wrapInCoroutineCancellable(
     }
 }
 
-//Refactored thumbnail to be an extension property, it help our model code to be more clean
+// Refactored thumbnail to be an extension property, it help our model code to be more clean
 val Publisher.thumbnail
-    get() = profileImgUri //TODO: this is fake implementation, real one comes later when needed
+    get() = profileImgUri // TODO: this is fake implementation, real one comes later when needed
