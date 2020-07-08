@@ -29,14 +29,6 @@ interface PublisherInfoDataSource {
      */
     suspend fun setDisplayName(newName: String, id: publisherId): Result<Boolean>
 
-    // TODO: update param type
-    /**
-     * Update profileImg, nullability here means to use a placeholder or img used in sign-in identity provider
-     *
-     * @return true on success, otherwise false
-     */
-    suspend fun setProfileImg(newImage: Byte?, id: publisherId): Result<Boolean>
-
     /**
      * when publishing new article, add its id to publisher profile
      *

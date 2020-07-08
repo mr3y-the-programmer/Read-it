@@ -83,10 +83,6 @@ class DefaultPublisherInfoDataSource @Inject constructor(
         }
     }
 
-    override suspend fun setProfileImg(newImage: Byte?, id: publisherId): Result<Boolean> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun addNewArticleId(articleID: articleId, publisherID: publisherId): Result<Boolean> {
         return updateArray(PUBLISHED_ARTICLES_FIELD, articleID, publisherID)
     }
