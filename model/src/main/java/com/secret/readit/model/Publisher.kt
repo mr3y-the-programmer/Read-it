@@ -12,13 +12,9 @@ typealias publisherId = String
 data class Publisher(val id: publisherId,
                      val name: String,
                      val emailAddress: String,
-                     val profileImg: Byte? = null,
-                     val thumbnail: Byte? = null,
+                     val profileImgUri: String? = null,
                      val memberSince: Long,
                      val publishedArticlesIds: List<articleId> = emptyList(),
                      val followedCategoriesIds: List<String> = emptyList(),
                      val followedPublishersIds: List<publisherId> = emptyList(),
                      val numOfFollowers: Int = 0)
-
-//TODO: Update return type of profileImg,
-//TODO: move thumbnail to be extension fun/property

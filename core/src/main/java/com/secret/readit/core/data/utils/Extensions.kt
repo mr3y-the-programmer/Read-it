@@ -8,6 +8,7 @@
 package com.secret.readit.core.data.utils
 
 import com.secret.readit.core.result.Result
+import com.secret.readit.model.Publisher
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -24,3 +25,7 @@ suspend fun <T> wrapInCoroutineCancellable(
         }
     }
 }
+
+//Refactored thumbnail to be an extension property, it help our model code to be more clean
+val Publisher.thumbnail
+    get() = profileImgUri //TODO: this is fake implementation, real one comes later when needed
