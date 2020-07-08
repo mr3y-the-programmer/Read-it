@@ -39,7 +39,7 @@ class AuthRepository @Inject constructor(
      * Otherwise this is the first time User Joins So create a doc for him
      * @return true on (success && this is the first time), otherwise false
      */
-    suspend fun createDocIfPossible(): Result<Boolean>{
+    suspend fun createDocIfPossible(): Result<Boolean> {
         if (!dataSource.isUserSignedIn()) {
             Timber.e("Cannot store user data because he hasn't signed-in")
             return Result.Error(FirebaseNoSignedInUserException("USER MUST BE SIGNED IN FIRST"))
@@ -47,7 +47,7 @@ class AuthRepository @Inject constructor(
         // uid guaranteed to be non-null as long as the user is signed-in(FirebaseUser != null)
         val uid = getId()!!
 
-        if (!(check(uid) as Result.Success).data){
+        if (!(check(uid) as Result.Success).data) {
             return createDoc(uid)
         }
         return Result.Success(false)
@@ -63,14 +63,14 @@ class AuthRepository @Inject constructor(
                 .document(id)
                 .get()
                 .addOnSuccessListener {
-                    if (continuation.isActive){
+                    if (continuation.isActive) {
                         if (it.exists()) {
                             Timber.d("User already signed before!!, No need to create a doc for him")
                             return@addOnSuccessListener continuation.resume(Result.Success(true))
                         }
                         return@addOnSuccessListener continuation.resume(Result.Success(false))
                     } else {
-                       Timber.d("Continuation is no longer active")
+                        Timber.d("Continuation is no longer active")
                     }
                 }.addOnFailureListener {
                     Timber.d("Failed to get doc with this id: $id")
@@ -84,11 +84,11 @@ class AuthRepository @Inject constructor(
      *
      * @return true on Success, otherwise false
      */
-    private suspend fun createDoc(id: publisherId): Result<Boolean>{
+    private suspend fun createDoc(id: publisherId): Result<Boolean> {
         val data = mapOf(
             NAME_FIELD to dataSource.getDisplayName(),
             EMAIL_ADDRESS_FIELD to dataSource.getEmailAddress(),
-            PROFILE_IMG_FIELD to dataSource.getProfileImgUri()?.toString(), //Firestore doesn't support Uri as data type
+            PROFILE_IMG_FIELD to dataSource.getProfileImgUri()?.toString(), // Firestore doesn't support Uri as data type
             MEMBER_SINCE_FIELD to dataSource.getCreatedSince(),
             PUBLISHED_ARTICLES_FIELD to emptyList<articleId>(),
             FOLLOWED_CATEGORIES_FIELD to emptyList<String>(),
@@ -118,7 +118,7 @@ class AuthRepository @Inject constructor(
      * Also, When we need to get id of signed user We get this through this fun in repository,
      * not from dataSource directly
      */
-    fun getId(): String?{
+    fun getId(): String? {
         return dataSource.getUid()
     }
 

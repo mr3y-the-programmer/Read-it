@@ -7,7 +7,6 @@
 
 package com.secret.readit.core.di
 
-import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -48,8 +47,8 @@ class MainModule {
     fun provideFirebaseAuth(): FirebaseAuth {
         return FirebaseAuth.getInstance()
     }
-    //TODO: In (app) module provideContext() in di module there, it is needed to satisfy AuthRepository
-    //TODO: make drafts database
+    // TODO: In (app) module provideContext() in di module there, it is needed to satisfy AuthRepository
+    // TODO: make drafts database
 //    TODO: make all dataSources @Singleton
     // TODO: make all dataSources internal
 }

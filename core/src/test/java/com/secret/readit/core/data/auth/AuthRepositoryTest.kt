@@ -7,17 +7,16 @@
 
 package com.secret.readit.core.data.auth
 
+import com.google.common.truth.Truth.assertThat
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.MainCoroutineRule
+import com.secret.readit.core.result.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import com.google.common.truth.Truth.*
-import com.secret.readit.core.result.Result
-
 
 @ExperimentalCoroutinesApi
 class AuthRepositoryTest {
@@ -25,15 +24,15 @@ class AuthRepositoryTest {
     @get:Rule
     val mainCoroutineRule = MainCoroutineRule()
 
-    //Object under test
+    // Object under test
     private lateinit var authRepository: AuthRepository
 
     private lateinit var mockedFirestore: FirebaseFirestore
 
     @Before
-    fun setUp(){
+    fun setUp() {
         mockedFirestore = mock<FirebaseFirestore> {
-            //no-op
+            // no-op
         }
 
         authRepository = AuthRepository(FakeAuthDataSource(), mockedFirestore, mainCoroutineRule.testDispatcher)
@@ -41,11 +40,10 @@ class AuthRepositoryTest {
 
     @Test
     fun nullUser_ReturnsError() = mainCoroutineRule.runBlockingTest {
-        //When we need to create a doc
+        // When we need to create a doc
         val result = authRepository.createDocIfPossible()
 
-        //assert it throws an Error
+        // assert it throws an Error
         assertThat(result).isInstanceOf(Result.Error::class.java)
     }
 }
-
