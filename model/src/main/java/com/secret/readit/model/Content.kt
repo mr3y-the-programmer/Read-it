@@ -7,13 +7,33 @@
 
 package com.secret.readit.model
 
-data class Content(val images: List<Byte>,
-                   val elements: List<Element>)
+/**
+ * Wrapper around all elements whether they are (image,text...etc)
+ */
+data class Content(val elements: List<Element>)
 
 
-data class Element(val text: String,
-                   val markup: Markup,
-                   val elements: List<Element>)
+/**
+ * Separate image Element constructor from text Element constructor to enforce callers choose one of them,
+ * This solution is Easy/scalable so we can add more types if we need in the future.
+ *
+ * But has one caveat, that need just a little caution from callers:
+ * -main(private) constructor can be accessed through copy() fun.
+ * It is not a big problem In our case since most of copy() Usage will be in tests
+ */
+@Suppress("DataClassPrivateConstructor")
+data class Element private constructor(
+    val text: String? = null,
+    val markup: Markup? = null,
+    val elements: List<Element>? = null,
+    val imageUri: String? = null) {
+
+    //One that should be called when inserting text
+    constructor(text: String, markup: Markup, elements: List<Element>): this(text, markup, elements, null)
+
+    //One that should be called when inserting image
+    constructor(imageUri: String): this(null, null, null, imageUri)
+}
 
 
 data class Markup(val type: MarkupType,

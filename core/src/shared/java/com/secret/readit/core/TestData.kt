@@ -8,21 +8,20 @@ import com.secret.readit.model.MarkupType
 import com.secret.readit.model.Publisher
 
 object TestData {
-    val bytes1 = listOf(1.toByte(), 0.toByte(), 3.toByte(), 6.toByte(), 9.toByte(), 8.toByte(), 15.toByte(), 30.toByte())
-
     val markupQuote = Markup(MarkupType.QUOTE, 0, 16)
     val markupText = markupQuote.copy(MarkupType.TEXT)
     val markupCode = markupQuote.copy(MarkupType.CODE)
     val markupBulletPoint = markupQuote.copy(MarkupType.BulletPoints)
 
-    val element1 = Element("> This is a Quote", markupQuote, emptyList())
-    val element2 = element1.copy("`This is Code block`", markupCode, emptyList())
-    val element3 = element1.copy("* This Bullet Point around `code block`", markupBulletPoint, listOf(element2))
-    val element4 = element1.copy("This is plain text", markupText, emptyList())
+    val textElement1 = Element("> This is a Quote", markupQuote, emptyList())
+    val element2 = textElement1.copy("`This is Code block`", markupCode, emptyList())
+    val element3 = textElement1.copy("* This Bullet Point around `code block`", markupBulletPoint, listOf(element2))
+    val element4 = textElement1.copy("This is plain text", markupText, emptyList())
+    val imageElement1 = Element("Not real image Uri")
 
-    val elements1 = listOf(element1, element2, element3, element4)
+    val elements1 = listOf(textElement1, element2, element3, element4, imageElement1)
 
-    val content1 = Content(bytes1, elements1)
+    val content1 = Content(elements1)
 
     val publisher1 = Publisher("1pub", "fake1", "fake1@gamil.com", memberSince = 1280282737737)
     val publisher2 = publisher1.copy(id = "2pub", name = "fake2", emailAddress = "fake2@gmail.com")
