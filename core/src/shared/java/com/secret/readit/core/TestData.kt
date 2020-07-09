@@ -13,13 +13,19 @@ object TestData {
     val markupCode = markupQuote.copy(MarkupType.CODE)
     val markupBulletPoint = markupQuote.copy(MarkupType.BulletPoints)
 
-    val textElement1 = Element("> This is a Quote", markupQuote, emptyList())
-    val element2 = textElement1.copy("`This is Code block`", markupCode, emptyList())
-    val element3 = textElement1.copy("* This Bullet Point around `code block`", markupBulletPoint, listOf(element2))
-    val element4 = textElement1.copy("This is plain text", markupText, emptyList())
-    val imageElement1 = Element("Not real image Uri")
+    val oneLineQuoteElement = Element("> This is a Quote  >", markupQuote, emptyList())
+    val multipleLineQuoteElement = oneLineQuoteElement.copy(text = ">      This is twwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwooooooooooooooooooooooo" +
+            " Liiinnnnneeeeeeeeeeeeeee Quoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooote>")
 
-    val elements1 = listOf(textElement1, element2, element3, element4, imageElement1)
+    val codeBlockElement = Element(text = "` THis is code in Kotllllllllllllllllllin And These are some codes on Javaaaaaaaaaaaaaaaa`", markup = markupCode, elements = emptyList())
+
+    val bulletPointElement = Element("~ This is One Bullet Point              ~", markupBulletPoint, emptyList())
+    val multipleBulletPointElement = bulletPointElement.copy(text = "~                               THis is Multiple                  Bullet                   Point        ~")
+
+    val plaintTextElement = Element(text = "This is just a simple text, No more than it", markup = markupText, elements = emptyList())
+
+    val elements1 = listOf(oneLineQuoteElement, codeBlockElement, bulletPointElement, plaintTextElement)
+
 
     val content1 = Content(elements1)
 
