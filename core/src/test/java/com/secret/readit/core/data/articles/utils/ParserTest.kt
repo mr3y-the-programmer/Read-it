@@ -22,7 +22,6 @@ class ParserTest {
         val element = Parser.parse(quote)
 
         //Assert it matches our expectations
-        assertThat(element.elements).isEmpty()
         assertThat(element.text).isEqualTo(" This is a Quote  ")
         assertThat(element.markup?.type).isEqualTo(MarkupType.QUOTE)
         assertThat(element.markup?.start).isEqualTo(0)
@@ -38,7 +37,6 @@ class ParserTest {
         val element = Parser.parse(quote)
 
         //Assert it matches our expectations
-        assertThat(element.elements).isEmpty()
         assertThat(element.text).isEqualTo("      This is twwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwooooooooooooooooooooooo" +
                 " Liiinnnnneeeeeeeeeeeeeee Quoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooote")
         assertThat(element.markup?.type).isEqualTo(MarkupType.QUOTE)
@@ -55,7 +53,6 @@ class ParserTest {
         val element = Parser.parse(bulletPoint)
 
         //Assert it matches our expectations
-        assertThat(element.elements).isEmpty()
         assertThat(element.text).isEqualTo(" This is One Bullet Point              ")
         assertThat(element.markup?.type).isEqualTo(MarkupType.BulletPoints)
         assertThat(element.markup?.start).isEqualTo(0)
@@ -71,7 +68,6 @@ class ParserTest {
         val element = Parser.parse(bulletPoint)
 
         //Assert it matches our expectations
-        assertThat(element.elements).isEmpty()
         assertThat(element.text).isEqualTo("                               THis is Multiple                  Bullet" +
                 "                   Point        ")
         assertThat(element.markup?.type).isEqualTo(MarkupType.BulletPoints)
@@ -88,7 +84,6 @@ class ParserTest {
         val element = Parser.parse(codeBlock)
 
         //Assert it matches our expectations
-        assertThat(element.elements).isEmpty()
         assertThat(element.text).isEqualTo(" THis is code in Kotllllllllllllllllllin And These are some codes on Javaaaaaaaaaaaaaaaa")
         assertThat(element.markup?.type).isEqualTo(MarkupType.CODE)
         assertThat(element.markup?.start).isEqualTo(0)
@@ -104,7 +99,6 @@ class ParserTest {
         val element = Parser.parse(plainText)
 
         //Assert it matches our expectations
-        assertThat(element.elements).isEmpty()
         assertThat(element.text).isEqualTo("This is just a simple text, No more than it")
         assertThat(element.markup?.type).isEqualTo(MarkupType.TEXT)
         assertThat(element.markup?.start).isEqualTo(0)

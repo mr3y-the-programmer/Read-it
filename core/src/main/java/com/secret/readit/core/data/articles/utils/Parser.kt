@@ -42,6 +42,6 @@ object Parser {
             parsedString = string.substring(1, string.length - 1)
             markup = markup.copy(start = startOfMatch, end = endOfMatch)
         }
-        return Element(text = parsedString, markup = markup, elements = emptyList())
+        return Element(text = parsedString, markup = markup)
     }
 }

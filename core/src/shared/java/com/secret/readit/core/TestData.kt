@@ -13,16 +13,16 @@ object TestData {
     val markupCode = markupQuote.copy(MarkupType.CODE)
     val markupBulletPoint = markupQuote.copy(MarkupType.BulletPoints)
 
-    val oneLineQuoteElement = Element("> This is a Quote  >", markupQuote, emptyList())
+    val oneLineQuoteElement = Element("> This is a Quote  >", markupQuote)
     val multipleLineQuoteElement = oneLineQuoteElement.copy(text = ">      This is twwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwooooooooooooooooooooooo" +
             " Liiinnnnneeeeeeeeeeeeeee Quoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooote>")
 
-    val codeBlockElement = Element(text = "` THis is code in Kotllllllllllllllllllin And These are some codes on Javaaaaaaaaaaaaaaaa`", markup = markupCode, elements = emptyList())
+    val codeBlockElement = Element(text = "` THis is code in Kotllllllllllllllllllin And These are some codes on Javaaaaaaaaaaaaaaaa`", markup = markupCode)
 
-    val bulletPointElement = Element("~ This is One Bullet Point              ~", markupBulletPoint, emptyList())
+    val bulletPointElement = Element("~ This is One Bullet Point              ~", markupBulletPoint)
     val multipleBulletPointElement = bulletPointElement.copy(text = "~                               THis is Multiple                  Bullet                   Point        ~")
 
-    val plaintTextElement = Element(text = "This is just a simple text, No more than it", markup = markupText, elements = emptyList())
+    val plaintTextElement = Element(text = "This is just a simple text, No more than it", markup = markupText)
 
     val elements1 = listOf(oneLineQuoteElement, codeBlockElement, bulletPointElement, plaintTextElement)
 

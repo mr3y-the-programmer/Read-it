@@ -20,19 +20,20 @@ data class Content(val elements: List<Element>)
  * But has one caveat, that need just a little caution from callers:
  * -main(private) constructor can be accessed through copy() fun.
  * It is not a big problem In our case since most of copy() Usage will be in tests
+ *
+ * Another solution we can do here Using: sealed classes
  */
 @Suppress("DataClassPrivateConstructor")
 data class Element private constructor(
     val text: String? = null,
     val markup: Markup? = null,
-    val elements: List<Element>? = null,
     val imageUri: String? = null) {
 
     //One that should be called when inserting text
-    constructor(text: String, markup: Markup, elements: List<Element>): this(text, markup, elements, null)
+    constructor(text: String, markup: Markup): this(text, markup, null)
 
     //One that should be called when inserting image
-    constructor(imageUri: String): this(null, null, null, imageUri)
+    constructor(imageUri: String): this(null, null, imageUri)
 }
 
 
