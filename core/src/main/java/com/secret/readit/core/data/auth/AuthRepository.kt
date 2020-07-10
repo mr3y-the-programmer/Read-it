@@ -12,6 +12,7 @@ import com.google.firebase.internal.api.FirebaseNoSignedInUserException
 import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
 import com.secret.readit.core.di.IoDispatcher
 import com.secret.readit.core.result.Result
+import com.secret.readit.core.result.succeeded
 import com.secret.readit.model.articleId
 import com.secret.readit.model.publisherId
 import kotlinx.coroutines.CoroutineDispatcher
@@ -47,8 +48,10 @@ class AuthRepository @Inject constructor(
         // uid guaranteed to be non-null as long as the user is signed-in(FirebaseUser != null)
         val uid = getId()!!
 
-        if (!(check(uid) as Result.Success).data) {
-            return createDoc(uid)
+        val check = check(uid)
+        if (check.succeeded) {
+            val exist = (check as Result.Success).data
+            if (!exist) return createDoc(uid)
         }
         return Result.Success(false)
     }

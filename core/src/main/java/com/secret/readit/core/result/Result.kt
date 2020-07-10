@@ -19,6 +19,5 @@ sealed class Result<out R> {
  *
  * Test which revealed the bug: [ArticlesRepositoryTest#dataSourceFails_ReturnEmptyArticles()]
  */
-//TODO: update AuthRepository to use it
 val <T> Result<T>.succeeded
      get() = (this is Result.Success<T>) && this.data != null
