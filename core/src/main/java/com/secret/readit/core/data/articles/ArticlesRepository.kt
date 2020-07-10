@@ -65,15 +65,16 @@ class ArticlesRepository @Inject constructor(
         return successful
     }
 
-    private fun deFormatElements(elements: List<Element>): List<Element>{
+     private fun deFormatElements(elements: List<Element>): List<Element>{
         val deFormattedElements = mutableListOf<Element>()
-        val deFormattedStrings = mutableListOf<String>()
         for (element in elements){
+            var deFormattedElement = element
+            var deFormattedString = ""
             if (element.imageUri == null) { //reverse only text
-                val deFormattedString = parser.reverseParse(element)
-                deFormattedStrings += deFormattedString
+                deFormattedString = parser.reverseParse(element)
             }
-            deFormattedElements += element
+            deFormattedElement = deFormattedElement.copy(text = deFormattedString)
+            deFormattedElements += deFormattedElement
         }
         return deFormattedElements
     }
