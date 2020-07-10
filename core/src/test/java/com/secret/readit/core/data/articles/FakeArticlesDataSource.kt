@@ -27,6 +27,9 @@ open class FakeArticlesDataSource : ArticlesDataSource {
     }
 
     override suspend fun addArticle(article: Article): Result<Boolean> {
-        TODO("Not yet implemented")
+        if (article == TestData.article2){
+            return Result.Success(true)
+        }
+        return Result.Success(false)
     }
 }

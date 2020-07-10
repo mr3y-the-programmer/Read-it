@@ -30,6 +30,11 @@ object TestData {
 
     val content1 = Content(elements1)
 
+    val bulletPointElementWithoutMarkup = bulletPointElement.copy(text = bulletPointElement.text?.removeSurrounding("~"))
+    val codeBlockElementWithoutMarkup = codeBlockElement.copy(text = codeBlockElement.text?.removeSurrounding("`"))
+
+    val content2 = Content(listOf(plaintTextElement, bulletPointElementWithoutMarkup, plaintTextElement, codeBlockElementWithoutMarkup))
+
     val publisher1 = Publisher("1pub", "fake1", "fake1@gamil.com", memberSince = 1280282737737)
     val publisher2 = publisher1.copy(id = "2pub", name = "fake2", emailAddress = "fake2@gmail.com")
 
@@ -42,9 +47,16 @@ object TestData {
     val category1 = Category("categ1", "Programming", 0xFF00F3)
     val category2 = Category("categ2", "Software Engineering", 0x00FFD4)
 
+    val category3 = Category("categ3", "Design", 0xF0D255)
+
     val article1 = Article(
         "123", "article1", content1, publisher1, 2,
         1214343259253, comments1, category = listOf(category1, category2)
+    )
+
+    val article2 = Article(
+        "456", "article2", content2, publisher2, 1,
+        1529889479892, listOf(comment1), category = listOf(category3)
     )
 
     val emptyPublisher = Publisher("", "", "", memberSince = -1)

@@ -94,4 +94,37 @@ class ArticlesRepositoryTest {
         // Assert list is empty
         assertThat(result).isEqualTo(TestData.emptyArticle)
     }
+
+    @Test
+    fun addArticle2_ReturnTrue() = mainCoroutineRule.runBlockingTest {
+        //When trying to add An article(article2)
+        val result = articlesRepo.addArticle(TestData.article2)
+
+        //Assert it returns true
+        assertThat(result).isTrue()
+    }
+
+    @Test
+    fun addNonValidArticle_ReturnFalse() = mainCoroutineRule.runBlockingTest {
+        //When trying to add An invalid article(emptyArticle)
+        val result = articlesRepo.addArticle(TestData.emptyArticle)
+
+        //Assert it returns false
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun dataSourceFails_ReturnFalse() = mainCoroutineRule.runBlockingTest {
+        //GIVEN a dataSource that fails to add new data
+        val mockedDataSource = mock<FakeArticlesDataSource> {
+            on(it.addArticle(TestData.article2)).doReturn(Result.Error(Exception()))
+        }
+        articlesRepo = ArticlesRepository(mockedDataSource, Parser)
+
+        //When trying to add an article
+        val result = articlesRepo.addArticle(TestData.article2)
+
+        //Assert it returns false
+        assertThat(result).isFalse()
+    }
 }

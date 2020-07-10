@@ -50,6 +50,34 @@ class ArticlesRepository @Inject constructor(
     }
 
     /**
+     * Publish this article, add it to firestore
+     *
+     * @return true on success, false on data source failure like: No Internet connection
+     */
+    suspend fun addArticle(article: Article): Boolean{
+        var successful = false
+        val deFormattedElements = deFormatElements(article.content.elements)
+
+        val result = articlesDataSource.addArticle(article.copy(content = Content(deFormattedElements)))
+        if(result.succeeded){
+            successful = (result as Result.Success).data
+        }
+        return successful
+    }
+
+    private fun deFormatElements(elements: List<Element>): List<Element>{
+        val deFormattedElements = mutableListOf<Element>()
+        val deFormattedStrings = mutableListOf<String>()
+        for (element in elements){
+            if (element.imageUri == null) { //reverse only text
+                val deFormattedString = parser.reverseParse(element)
+                deFormattedStrings += deFormattedString
+            }
+            deFormattedElements += element
+        }
+        return deFormattedElements
+    }
+    /**
      * format articles in expected format for consumers
      */
     @Suppress("UNCHECKED_CAST")
