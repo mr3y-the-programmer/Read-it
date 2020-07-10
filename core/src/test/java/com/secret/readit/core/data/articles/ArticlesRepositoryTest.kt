@@ -69,14 +69,14 @@ class ArticlesRepositoryTest {
 
     @Test
     fun dataSourceSuccess_ReturnFormattedArticle() = mainCoroutineRule.runBlockingTest {
-        //When getting a result of article
+        // When getting a result of article
         val result = articlesRepo.getArticle(TestData.article1.id)
 
-        //Assert it matches our expectations
+        // Assert it matches our expectations
         assertThat(result.category).isEqualTo(TestData.article1.category)
         assertThat(result.publisher).isEqualTo(TestData.article1.publisher)
         assertThat(result.comments).isEqualTo(TestData.article1.comments)
-        //And so on .....
+        // And so on .....
     }
 
     @Test

@@ -27,52 +27,50 @@ class ArticlesRepository @Inject constructor(
     /**
      * For now it is not clear how we will paginate the data, So These APIs are going to be modified
      * when designing/building the domain layer
+     *
+     * @return valid articles or empty list if data source failed
      */
     suspend fun getNewArticles(limit: Int = 0): List<Article> {
-        var formattedArticles = mutableListOf<Article>()
         val articlesResult = articlesDataSource.getArticles()
-
-        if (articlesResult.succeeded) {
-            val articles = (articlesResult as Result.Success).data
-            formattedArticles = formatArticles(articles)
-        }
-        return formattedArticles
+        return formatArticles(articlesResult)
     }
 
-    suspend fun getArticle(id: articleId): Article{
-        var formattedArticle = getEmptyArticle()
+    /**
+     * get Article with this specified id
+     *
+     * @return valid article or empty article if data source failed
+     */
+    suspend fun getArticle(id: articleId): Article {
         val articleResult = articlesDataSource.getArticle(id)
-
-        if (articleResult.succeeded){
-            val article = (articleResult as Result.Success).data
-            formattedArticle = formatArticle(article)
+        val formattedArticle = formatArticles(articleResult, true)
+        if (formattedArticle.isNullOrEmpty()) {
+            return getEmptyArticle()
         }
-        return formattedArticle
+        return formattedArticle[0]
     }
 
     /**
      * format articles in expected format for consumers
      */
-    private fun formatArticles(articles: List<Article>): MutableList<Article> {
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> formatArticles(result: Result<T>, singleItem: Boolean = false): MutableList<Article> {
         val formattedArticles = mutableListOf<Article>()
-        for (article in articles) {
-            var parsedArticle = article
-            val formattedElements = formatContent(article.content)
-            parsedArticle = parsedArticle.copy(content = Content(formattedElements))
-            formattedArticles += parsedArticle
+        if (result.succeeded) {
+            val data = (result as Result.Success).data
+            val dataList = mutableListOf<Article>()
+            if (singleItem) {
+                dataList.add(data as Article)
+            } else {
+                dataList.addAll(data as List<Article>)
+            }
+            for (article in dataList) {
+                var parsedArticle = article
+                val formattedElements = formatContent(article.content)
+                parsedArticle = parsedArticle.copy(content = Content(formattedElements))
+                formattedArticles += parsedArticle
+            }
         }
         return formattedArticles
-    }
-
-    /**
-     * format articles in expected format for consumers
-     */
-    private fun formatArticle(article: Article): Article {
-        var parsedArticle = article
-        val formattedElements = formatContent(article.content)
-        parsedArticle = parsedArticle.copy(content = Content(formattedElements))
-
-        return parsedArticle
     }
 
     private fun formatContent(content: Content): MutableList<Element> {
@@ -87,7 +85,7 @@ class ArticlesRepository @Inject constructor(
         return formattedElements
     }
 
-    private fun getEmptyArticle(): Article{
+    private fun getEmptyArticle(): Article {
         val publisher = Publisher("", "", "", memberSince = -1)
         return Article("", "", Content(emptyList()), publisher, 0, 0, emptyList(), category = emptyList())
     }
