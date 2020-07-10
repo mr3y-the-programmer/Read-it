@@ -19,7 +19,7 @@ open class FakeArticlesDataSource : ArticlesDataSource {
     }
 
     override suspend fun getArticle(id: articleId): Result<Article> {
-        TODO("Not yet implemented")
+        return Result.Success(TestData.article1)
     }
 
     override suspend fun bookmark(id: articleId, bookmark: Boolean): Result<Boolean> {

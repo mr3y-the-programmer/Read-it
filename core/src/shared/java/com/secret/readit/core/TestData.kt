@@ -47,5 +47,10 @@ object TestData {
         1214343259253, comments1, category = listOf(category1, category2)
     )
 
+    val emptyPublisher = Publisher("", "", "", memberSince = -1)
+    val emptyArticle = Article(
+        "", "", Content(emptyList()), emptyPublisher, 0, 0, emptyList(), category = emptyList()
+    )
+
     val articles1 = listOf(article1)
 }

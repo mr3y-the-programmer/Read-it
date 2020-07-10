@@ -10,9 +10,7 @@ package com.secret.readit.core.data.articles
 import com.secret.readit.core.data.articles.utils.Parser
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
-import com.secret.readit.model.Article
-import com.secret.readit.model.Content
-import com.secret.readit.model.Element
+import com.secret.readit.model.*
 import javax.inject.Inject
 
 /**
@@ -41,6 +39,17 @@ class ArticlesRepository @Inject constructor(
         return formattedArticles
     }
 
+    suspend fun getArticle(id: articleId): Article{
+        var formattedArticle = getEmptyArticle()
+        val articleResult = articlesDataSource.getArticle(id)
+
+        if (articleResult.succeeded){
+            val article = (articleResult as Result.Success).data
+            formattedArticle = formatArticle(article)
+        }
+        return formattedArticle
+    }
+
     /**
      * format articles in expected format for consumers
      */
@@ -55,6 +64,17 @@ class ArticlesRepository @Inject constructor(
         return formattedArticles
     }
 
+    /**
+     * format articles in expected format for consumers
+     */
+    private fun formatArticle(article: Article): Article {
+        var parsedArticle = article
+        val formattedElements = formatContent(article.content)
+        parsedArticle = parsedArticle.copy(content = Content(formattedElements))
+
+        return parsedArticle
+    }
+
     private fun formatContent(content: Content): MutableList<Element> {
         val formattedElements = mutableListOf<Element>()
         for (element in content.elements) {
@@ -67,11 +87,8 @@ class ArticlesRepository @Inject constructor(
         return formattedElements
     }
 
-    /*suspend fun getArticle(id: articleId): Article{
-        val articleResult = articlesDataSource.getArticle(id)
-
-        if (articleResult as Result.Success){
-
-        }
-    }*/
+    private fun getEmptyArticle(): Article{
+        val publisher = Publisher("", "", "", memberSince = -1)
+        return Article("", "", Content(emptyList()), publisher, 0, 0, emptyList(), category = emptyList())
+    }
 }
