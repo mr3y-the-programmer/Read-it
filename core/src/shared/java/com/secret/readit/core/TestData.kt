@@ -45,4 +45,6 @@ object TestData {
         "123", "article1", content1, publisher1, 2,
         1214343259253, comments1, category = listOf(category1, category2)
     )
+
+    val articles1 = listOf(article1)
 }
