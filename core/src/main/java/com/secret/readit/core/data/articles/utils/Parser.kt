@@ -19,12 +19,12 @@ import java.util.regex.Pattern
  */
 object Parser {
 
-    fun parse(string: String): Element{
+    fun parse(string: String): Element {
         val completePattern = Pattern.compile(THE_COMPLETE_REGEX)
         val matcher = completePattern.matcher(string)
 
-        var markup = Markup(MarkupType.TEXT, 0, string.length) //Default
-        var parsedString = string //Default
+        var markup = Markup(MarkupType.TEXT, 0, string.length) // Default
+        var parsedString = string // Default
 
         if (matcher.find()) {
             val startOfMatch = matcher.start()

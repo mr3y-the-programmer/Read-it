@@ -7,16 +7,12 @@
 
 package com.secret.readit.core.data.articles
 
-import android.content.res.Resources
 import com.secret.readit.core.data.articles.utils.Parser
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.model.Article
 import com.secret.readit.model.Content
 import com.secret.readit.model.Element
-import java.time.Duration
-import java.time.Instant
-import java.time.ZonedDateTime
 import javax.inject.Inject
 
 /**
@@ -24,19 +20,21 @@ import javax.inject.Inject
  *
  * Rule: -forward actions to dataSource when needed(i.e: loading new data) And to normalize data in expected format for consumers
  */
-//TODO: update repository to use Flows on results
-class ArticlesRepository @Inject constructor(private val articlesDataSource: ArticlesDataSource,
-                                             private val parser: Parser) {
+// TODO: update repository to use Flows on results
+class ArticlesRepository @Inject constructor(
+    private val articlesDataSource: ArticlesDataSource,
+    private val parser: Parser
+) {
 
     /**
      * For now it is not clear how we will paginate the data, So These APIs are going to be modified
      * when designing/building the domain layer
      */
-    suspend fun getNewArticles(limit: Int = 0): List<Article>{
+    suspend fun getNewArticles(limit: Int = 0): List<Article> {
         var formattedArticles = mutableListOf<Article>()
         val articlesResult = articlesDataSource.getArticles()
 
-        if (articlesResult.succeeded){
+        if (articlesResult.succeeded) {
             val articles = (articlesResult as Result.Success).data
             formattedArticles = formatArticles(articles)
         }
@@ -61,7 +59,7 @@ class ArticlesRepository @Inject constructor(private val articlesDataSource: Art
         val formattedElements = mutableListOf<Element>()
         for (element in content.elements) {
             var parsedElement = element
-            if (element.imageUri == null) { //parse text only
+            if (element.imageUri == null) { // parse text only
                 parsedElement = parser.parse(element.text!!)
             }
             formattedElements += parsedElement

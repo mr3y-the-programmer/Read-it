@@ -20,4 +20,4 @@ sealed class Result<out R> {
  * Test which revealed the bug: [ArticlesRepositoryTest#dataSourceFails_ReturnEmptyArticles()]
  */
 val <T> Result<T>.succeeded
-     get() = (this is Result.Success<T>) && this.data != null
+    get() = (this is Result.Success<T>) && this.data != null
