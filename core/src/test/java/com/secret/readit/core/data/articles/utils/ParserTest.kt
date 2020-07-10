@@ -108,4 +108,55 @@ class ParserTest {
         assertThat(element.markup?.start).isEqualTo(0)
         assertThat(element.markup?.end).isEqualTo(TestData.plaintTextElement.text!!.length)
     }
+
+    //End of testing parse()
+    //Beginning of testing reverseParse()
+
+    @Test
+    fun quoteMarkup_ReturnQuotesWithoutMarkup() {
+        // GIVEN a parsed multiple line element
+        val element = Parser.parse(TestData.multipleLineQuoteElement.text!!)
+
+        //When trying to reverse parsing it
+        val string = Parser.reverseParse(element)
+
+        //Assert it matches our expectations
+        assertThat(string).isEqualTo(TestData.multipleLineQuoteElement.text!!)
+    }
+
+    @Test
+    fun codeMarkup_ReturnCodeWithoutMarkup() {
+        // GIVEN a parsed code element
+        val element = Parser.parse(TestData.codeBlockElement.text!!)
+
+        //When trying to reverse parsing it
+        val string = Parser.reverseParse(element)
+
+        //Assert it matches our expectations
+        assertThat(string).isEqualTo(TestData.codeBlockElement.text!!)
+    }
+
+    @Test
+    fun bulletPointsMarkup_ReturnTextWithoutMarkup() {
+        // GIVEN a parsed bullet point element
+        val element = Parser.parse(TestData.multipleBulletPointElement.text!!)
+
+        //When trying to reverse parsing it
+        val string = Parser.reverseParse(element)
+
+        //Assert it matches our expectations
+        assertThat(string).isEqualTo(TestData.multipleBulletPointElement.text!!)
+    }
+
+    @Test
+    fun plainText_ReturnTheSame() {
+        // GIVEN a parsed multiple line text
+        val element = Parser.parse(TestData.plaintTextElement.text!!)
+
+        //When trying to reverse parsing it
+        val string = Parser.reverseParse(element)
+
+        //Assert it matches our expectations
+        assertThat(string).isEqualTo(TestData.plaintTextElement.text!!)
+    }
 }
