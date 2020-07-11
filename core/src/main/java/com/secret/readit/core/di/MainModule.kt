@@ -61,18 +61,7 @@ class MainModule {
     ): ArticlesDataSource {
         return DefaultArticlesDataSource(firestore, ioDispatcher, NormalizeHelper())
     }
-
-    @Provides
-    fun provideParserObject(): Parser {
-        return Parser
-    }
-
-    @Provides
-    fun provideCustomIDHandler(): CustomIDHandler{
-        return CustomIDHandler()
-    }
     // TODO: make drafts database
 //    TODO: make all Repositories @Singleton
     // TODO: make all dataSources internal
-    //TODO(optionally): Replace @Provides with @Binds in project's own dependencies
 }

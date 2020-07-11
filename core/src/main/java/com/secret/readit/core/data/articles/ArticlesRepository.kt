@@ -23,8 +23,8 @@ import javax.inject.Inject
 // TODO: update repository to use Flows on results
 class ArticlesRepository @Inject constructor(
     private val articlesDataSource: ArticlesDataSource,
-    private val parser: Parser,
-    private val idHandler: CustomIDHandler
+    private val parser: Parser = Parser,
+    private val idHandler: CustomIDHandler = CustomIDHandler()
 ) {
 
     /**
