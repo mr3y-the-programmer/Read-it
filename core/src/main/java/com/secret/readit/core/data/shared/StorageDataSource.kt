@@ -22,12 +22,12 @@ interface StorageDataSource {
      *
      * @return the download Uri
      */
-    fun uploadBitmap(id: articleId, inputStream: InputStream): Result<Uri>
+    suspend fun uploadBitmap(id: articleId, inputStream: InputStream): Result<Uri>
 
     /**
      * Download bitmap that this uri represent
      *
      * @return bitmap's input stream
      */
-    fun downloadBitmap(id: articleId, uri: Uri): Result<InputStream>
+    suspend fun downloadBitmap(id: articleId, uri: Uri): Result<InputStream>
 }
