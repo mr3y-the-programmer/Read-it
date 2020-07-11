@@ -59,7 +59,7 @@ class ArticlesRepository @Inject constructor(
         val deFormattedElements = deFormatElements(article.content.elements)
 
         val result = articlesDataSource.addArticle(article.copy(content = Content(deFormattedElements)))
-        if(result.succeeded){
+        if(result != null && result.succeeded){
             successful = (result as Result.Success).data
         }
         return successful
