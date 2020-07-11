@@ -132,7 +132,7 @@ class ArticlesRepositoryTest {
     @Test
     fun bookmark_ReturnTrue() = mainCoroutineRule.runBlockingTest {
         //When trying to bookmark any article
-        val result = articlesRepo.toggleBookmark(TestData.article2.id, true)
+        val result = articlesRepo.toggleBookmark(TestData.article2, true)
 
         //Assert it Returns True
         assertThat(result).isTrue()
@@ -147,7 +147,16 @@ class ArticlesRepositoryTest {
         articlesRepo = articlesRepo.copy(mockedDataSource)
 
         //When trying to bookmark any article
-        val result = articlesRepo.toggleBookmark(TestData.article2.id, true)
+        val result = articlesRepo.toggleBookmark(TestData.article2, true)
+
+        //Assert it Returns False
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun bookmarkInvalid_ReturnFalse() = mainCoroutineRule.runBlockingTest {
+        //When trying to bookmark Invalid article
+        val result = articlesRepo.toggleBookmark(TestData.emptyArticle, true)
 
         //Assert it Returns False
         assertThat(result).isFalse()

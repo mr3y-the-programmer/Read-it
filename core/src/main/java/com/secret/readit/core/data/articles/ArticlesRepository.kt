@@ -77,10 +77,17 @@ class ArticlesRepository @Inject constructor(
     /**
      * update bookmark state on firestore
      *
-     * @return true on success, false on data source failure like: No Internet connection
+     * @return true on success, false on data source failure like: No Internet connection or invalid article
      */
-    suspend fun toggleBookmark(id: articleId, bookmark: Boolean): Boolean{
+    suspend fun toggleBookmark(article: Article, bookmark: Boolean): Boolean{
         var successful = false
+        var id = ""
+        try {
+            id = idHandler.getID(article)
+        } catch (ex: IllegalArgumentException) {
+            return false
+        }
+
         val result = articlesDataSource.bookmark(id, bookmark)
         if (result.succeeded){
             successful = (result as Result.Success).data
