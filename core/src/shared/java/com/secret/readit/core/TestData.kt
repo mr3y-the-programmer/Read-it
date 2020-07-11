@@ -50,12 +50,12 @@ object TestData {
     val category3 = Category("categ3", "Design", 0xF0D255)
 
     val article1 = Article(
-        "123", "article1", content1, publisher1, 2,
+        "43259253-1pub-arti", "article1", content1, publisher1, 2,
         1214343259253, comments1, category = listOf(category1, category2)
     )
 
     val article2 = Article(
-        "456", "article2", content2, publisher2, 1,
+        "89479892-2pub-arti", "article2", content2, publisher2, 1,
         1529889479892, listOf(comment1), category = listOf(category3)
     )
 
