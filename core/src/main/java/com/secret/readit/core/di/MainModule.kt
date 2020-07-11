@@ -21,7 +21,6 @@ import com.secret.readit.core.data.articles.NormalizeHelper
 import com.secret.readit.core.data.auth.AuthDataSource
 import com.secret.readit.core.data.auth.DefaultAuthDataSource
 import com.secret.readit.core.data.shared.Converter
-import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher

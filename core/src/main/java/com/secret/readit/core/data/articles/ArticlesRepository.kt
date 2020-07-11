@@ -11,7 +11,11 @@ import com.secret.readit.core.data.articles.utils.CustomIDHandler
 import com.secret.readit.core.data.articles.utils.Parser
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
-import com.secret.readit.model.*
+import com.secret.readit.model.Article
+import com.secret.readit.model.Content
+import com.secret.readit.model.Element
+import com.secret.readit.model.Publisher
+import com.secret.readit.model.articleId
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
@@ -57,7 +61,7 @@ class ArticlesRepository @Inject constructor(
      *
      * @return true on success, false on data source failure like: No Internet connection or adding invalid article
      */
-    suspend fun addArticle(article: Article): Boolean{
+    suspend fun addArticle(article: Article): Boolean {
         var successful = false
         val deFormattedElements = deFormatElements(article.content.elements)
         var id = ""
@@ -68,7 +72,7 @@ class ArticlesRepository @Inject constructor(
         }
 
         val result = articlesDataSource.addArticle(article.copy(id = id, content = Content(deFormattedElements)))
-        if(result != null && result.succeeded){
+        if (result != null && result.succeeded) {
             successful = (result as Result.Success).data
         }
         return successful
@@ -79,7 +83,7 @@ class ArticlesRepository @Inject constructor(
      *
      * @return true on success, false on data source failure like: No Internet connection or invalid article
      */
-    suspend fun toggleBookmark(article: Article, bookmark: Boolean): Boolean{
+    suspend fun toggleBookmark(article: Article, bookmark: Boolean): Boolean {
         var successful = false
         var id = ""
         try {
@@ -89,7 +93,7 @@ class ArticlesRepository @Inject constructor(
         }
 
         val result = articlesDataSource.bookmark(id, bookmark)
-        if (result.succeeded){
+        if (result.succeeded) {
             successful = (result as Result.Success).data
         }
         return successful
@@ -136,12 +140,12 @@ class ArticlesRepository @Inject constructor(
         return Article("", "", Content(emptyList()), publisher, 0, 0, emptyList(), category = emptyList())
     }
 
-    private fun deFormatElements(elements: List<Element>): List<Element>{
+    private fun deFormatElements(elements: List<Element>): List<Element> {
         val deFormattedElements = mutableListOf<Element>()
-        for (element in elements){
+        for (element in elements) {
             var deFormattedElement = element
             var deFormattedString = ""
-            if (element.imageUri == null) { //reverse only text
+            if (element.imageUri == null) { // reverse only text
                 deFormattedString = parser.reverseParse(element)
             }
             deFormattedElement = deFormattedElement.copy(text = deFormattedString)

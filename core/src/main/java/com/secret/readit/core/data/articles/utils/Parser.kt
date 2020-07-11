@@ -49,11 +49,11 @@ object Parser {
      * reverse markups into regular string in order to be stored in firestore
      */
     fun reverseParse(element: Element): String {
-        return when(element.markup?.type?.ordinal){
-             0 -> "`${element.text}`"  //Code block
-             1 -> ">${element.text}>" //Quote
-             2 -> "~${element.text}~" //bullet points
-             else -> element.text!!  //plain text
+        return when (element.markup?.type?.ordinal) {
+            0 -> "`${element.text}`" // Code block
+            1 -> ">${element.text}>" // Quote
+            2 -> "~${element.text}~" // bullet points
+            else -> element.text!! // plain text
         }
     }
 }

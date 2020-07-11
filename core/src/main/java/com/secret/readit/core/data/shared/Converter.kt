@@ -10,7 +10,12 @@ package com.secret.readit.core.data.shared
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.secret.readit.core.di.DefaultDispatcher
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
@@ -27,7 +32,7 @@ class Converter @Inject constructor(@DefaultDispatcher private val defaultDispat
     /**
      * Provide FileInputStream From the given path
      */
-    fun pathToInputStream(path: String): InputStream{
+    fun pathToInputStream(path: String): InputStream {
         val file = File(path)
         return FileInputStream(file)
     }
@@ -37,11 +42,11 @@ class Converter @Inject constructor(@DefaultDispatcher private val defaultDispat
      *
      * @return decoded Bitmap or null if decoding failed
      */
-    fun inputStreamToBitmap(inStream: InputStream): Bitmap?{
+    fun inputStreamToBitmap(inStream: InputStream): Bitmap? {
         var bitmap: Bitmap? = null
         try {
             coroutineScope.launch {
-                if (isActive){
+                if (isActive) {
                     bitmap = BitmapFactory.decodeStream(inStream)
                 }
             }

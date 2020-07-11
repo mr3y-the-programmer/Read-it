@@ -7,15 +7,14 @@
 
 package com.secret.readit.core.data.articles.utils
 
-import com.google.common.truth.Truth.*
-import org.junit.Assert.*
+import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import java.lang.IllegalArgumentException
 
 class CustomIDHandlerTest {
 
-    //Object under test
+    // Object under test
     private lateinit var customIDHandler: CustomIDHandler
 
     @Before
@@ -25,31 +24,31 @@ class CustomIDHandlerTest {
 
     @Test
     fun inputArticle2_ReturnValidId() {
-        //When entering valid article
+        // When entering valid article
         val result = customIDHandler.getID(TestData.article2)
 
         val expected = "89479892-2pub-arti"
 
-        //assert it matches our expectations
+        // assert it matches our expectations
         assertThat(result).isEqualTo(expected)
     }
 
     @Test
     fun inputArticle1_ReturnValidId() {
-        //When entering valid article
+        // When entering valid article
         val result = customIDHandler.getID(TestData.article1)
 
         val expected = "43259253-1pub-arti"
 
-        //assert it matches our expectations
+        // assert it matches our expectations
         assertThat(result).isEqualTo(expected)
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun inputInvalidArticle_ThrowsException() {
-        //When entering Invalid article
+        // When entering Invalid article
         val result = customIDHandler.getID(TestData.emptyArticle)
 
-        //assert it throws an exception
+        // assert it throws an exception
     }
 }

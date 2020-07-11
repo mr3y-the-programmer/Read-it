@@ -23,16 +23,18 @@ import kotlin.coroutines.resumeWithException
 /**
  * Our DefaultStorageDataSource has one responsibility, interact directly with storage to upload/download images
  */
-class DefaultStorageDataSource @Inject constructor(private val storage: FirebaseStorage,
-                                                   @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-                                                   private val converter: Lazy<Converter>): StorageDataSource {
+class DefaultStorageDataSource @Inject constructor(
+    private val storage: FirebaseStorage,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    private val converter: Lazy<Converter>
+) : StorageDataSource {
 
     /**
      * upload img with this path and return a uri that can be used to download it later
      */
     override suspend fun uploadBitmap(id: articleId, imgPath: String): Result<Uri> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
-            val root = storage.reference    //root reference
+            val root = storage.reference // root reference
             val ref = root.child(ARTICLES_DIR).child(id)
 
             val pathInStream = converter.value.pathToInputStream(imgPath)
@@ -63,7 +65,7 @@ class DefaultStorageDataSource @Inject constructor(private val storage: Firebase
      */
     override suspend fun downloadBitmap(uri: Uri): Result<Bitmap> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
-                storage.getReferenceFromUrl(uri.toString())
+            storage.getReferenceFromUrl(uri.toString())
                 .stream
                 .addOnSuccessListener {
                     if (continuation.isActive) {
@@ -71,7 +73,7 @@ class DefaultStorageDataSource @Inject constructor(private val storage: Firebase
                         val stream = it.stream
                         val bitmap = converter.value.inputStreamToBitmap(stream) ?: return@addOnSuccessListener continuation.resumeWithException(NullPointerException())
 
-                        //Don't forget to close the stream
+                        // Don't forget to close the stream
                         stream.close()
                         continuation.resume(Result.Success(bitmap))
                     } else {

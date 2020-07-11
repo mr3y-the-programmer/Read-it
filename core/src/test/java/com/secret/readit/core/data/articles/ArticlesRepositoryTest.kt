@@ -96,71 +96,71 @@ class ArticlesRepositoryTest {
 
     @Test
     fun addArticle2_ReturnTrue() = mainCoroutineRule.runBlockingTest {
-        //When trying to add An article(article2)
+        // When trying to add An article(article2)
         val result = articlesRepo.addArticle(TestData.article2)
 
-        //Assert it returns true
+        // Assert it returns true
         assertThat(result).isTrue()
     }
 
     @Test
     fun addNonValidArticle_ReturnFalse() = mainCoroutineRule.runBlockingTest {
-        //When trying to add An invalid article(emptyArticle)
+        // When trying to add An invalid article(emptyArticle)
         val result = articlesRepo.addArticle(TestData.emptyArticle)
 
-        //Assert it returns false
+        // Assert it returns false
         assertThat(result).isFalse()
     }
 
     @Test
     fun dataSourceFails_ReturnFalse() = mainCoroutineRule.runBlockingTest {
-        //GIVEN a dataSource that fails to add new data
+        // GIVEN a dataSource that fails to add new data
         val mockedDataSource = mock<FakeArticlesDataSource> {
             on(it.addArticle(TestData.article2)).doReturn(Result.Error(Exception()))
         }
         articlesRepo = articlesRepo.copy(mockedDataSource)
 
-        //When trying to add an article
+        // When trying to add an article
         val result = articlesRepo.addArticle(TestData.article2)
 
-        //Assert it returns false
+        // Assert it returns false
         assertThat(result).isFalse()
     }
 
     @Test
     fun bookmark_ReturnTrue() = mainCoroutineRule.runBlockingTest {
-        //When trying to bookmark any article
+        // When trying to bookmark any article
         val result = articlesRepo.toggleBookmark(TestData.article2, true)
 
-        //Assert it Returns True
+        // Assert it Returns True
         assertThat(result).isTrue()
     }
 
     @Test
     fun dataSourceFailure_ReturnFalse() = mainCoroutineRule.runBlockingTest {
-        //GIVEN a dataSource that fails to update data
+        // GIVEN a dataSource that fails to update data
         val mockedDataSource = mock<FakeArticlesDataSource> {
             on(it.bookmark(TestData.article2.id, true)).doReturn(Result.Error(Exception()))
         }
         articlesRepo = articlesRepo.copy(mockedDataSource)
 
-        //When trying to bookmark any article
+        // When trying to bookmark any article
         val result = articlesRepo.toggleBookmark(TestData.article2, true)
 
-        //Assert it Returns False
+        // Assert it Returns False
         assertThat(result).isFalse()
     }
 
     @Test
     fun bookmarkInvalid_ReturnFalse() = mainCoroutineRule.runBlockingTest {
-        //When trying to bookmark Invalid article
+        // When trying to bookmark Invalid article
         val result = articlesRepo.toggleBookmark(TestData.emptyArticle, true)
 
-        //Assert it Returns False
+        // Assert it Returns False
         assertThat(result).isFalse()
     }
 
-    private fun ArticlesRepository.copy(dataSource: FakeArticlesDataSource): ArticlesRepository{
+    private fun ArticlesRepository.copy(dataSource: FakeArticlesDataSource): ArticlesRepository {
         return ArticlesRepository(dataSource)
     }
 }

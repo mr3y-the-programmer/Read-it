@@ -8,7 +8,6 @@
 package com.secret.readit.core.data.articles.utils
 
 import com.secret.readit.model.Article
-import com.secret.readit.model.publisherId
 import timber.log.Timber
 import java.lang.IllegalArgumentException
 
@@ -23,7 +22,7 @@ class CustomIDHandler {
      * @throws IllegalArgumentException if (timestamp, publisherId, title) of article wasn't valid
      * @return the id generated
      */
-    fun getID(article: Article): String{
+    fun getID(article: Article): String {
         val stringTimestamp = article.timestamp.toString()
         val pubId = article.publisher.id
         val title = article.title
