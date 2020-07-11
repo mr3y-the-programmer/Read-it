@@ -11,6 +11,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.secret.readit.core.data.articles.ArticlesDataSource
 import com.secret.readit.core.data.articles.DefaultArticlesDataSource
 import com.secret.readit.core.data.articles.NormalizeHelper
@@ -29,7 +31,7 @@ class MainModule {
     @Provides
     @Singleton
     fun provideFirestore(): FirebaseFirestore {
-        val firestore = FirebaseFirestore.getInstance()
+        val firestore = Firebase.firestore
 
         firestore.firestoreSettings = FirebaseFirestoreSettings.Builder()
             .setPersistenceEnabled(true)
