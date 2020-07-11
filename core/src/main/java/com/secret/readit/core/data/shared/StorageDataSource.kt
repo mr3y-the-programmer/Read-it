@@ -7,10 +7,10 @@
 
 package com.secret.readit.core.data.shared
 
+import android.graphics.Bitmap
 import android.net.Uri
 import com.secret.readit.core.result.Result
 import com.secret.readit.model.articleId
-import java.io.InputStream
 
 /**
  * Blueprint for cloud storage operations for publishers/articles...etc
@@ -18,16 +18,16 @@ import java.io.InputStream
 interface StorageDataSource {
 
     /**
-     * Upload the bitmap's input stream to path within 'articles/articleId/'
+     * Upload the bitmap at this local-file system path
      *
-     * @return the download Uri
+     * @return the Uri to download this bitmap later, **NOTE**: it can be revoked from firebase console
      */
-    suspend fun uploadBitmap(id: articleId, inputStream: InputStream): Result<Uri>
+    suspend fun uploadBitmap(id: articleId, imgPath: String): Result<Uri>
 
     /**
      * Download bitmap that this uri represent
      *
-     * @return bitmap's input stream
+     * @return bitmap
      */
-    suspend fun downloadBitmap(id: articleId, uri: Uri): Result<InputStream>
+    suspend fun downloadBitmap(id: articleId, uri: Uri): Result<Bitmap>
 }
