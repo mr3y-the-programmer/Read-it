@@ -60,12 +60,10 @@ class DefaultStorageDataSource @Inject constructor(private val storage: Firebase
 
     /**
      * Download the Bitmap represented with [uri]
-     *
      */
-    override suspend fun downloadBitmap(id: articleId, uri: Uri): Result<Bitmap> {
+    override suspend fun downloadBitmap(uri: Uri): Result<Bitmap> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
-            val root = storage.reference    //root reference
-            root.child(ARTICLES_DIR).child(id)
+                storage.getReferenceFromUrl(uri.toString())
                 .stream
                 .addOnSuccessListener {
                     if (continuation.isActive) {
