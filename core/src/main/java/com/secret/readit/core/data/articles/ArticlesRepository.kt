@@ -65,19 +65,20 @@ class ArticlesRepository @Inject constructor(
         return successful
     }
 
-     private fun deFormatElements(elements: List<Element>): List<Element>{
-        val deFormattedElements = mutableListOf<Element>()
-        for (element in elements){
-            var deFormattedElement = element
-            var deFormattedString = ""
-            if (element.imageUri == null) { //reverse only text
-                deFormattedString = parser.reverseParse(element)
-            }
-            deFormattedElement = deFormattedElement.copy(text = deFormattedString)
-            deFormattedElements += deFormattedElement
+    /**
+     * update bookmark state on firestore
+     *
+     * @return true on success, false on data source failure like: No Internet connection
+     */
+    suspend fun toggleBookmark(id: articleId, bookmark: Boolean): Boolean{
+        var successful = false
+        val result = articlesDataSource.bookmark(id, bookmark)
+        if (result.succeeded){
+            successful = (result as Result.Success).data
         }
-        return deFormattedElements
+        return successful
     }
+
     /**
      * format articles in expected format for consumers
      */
@@ -117,5 +118,19 @@ class ArticlesRepository @Inject constructor(
     private fun getEmptyArticle(): Article {
         val publisher = Publisher("", "", "", memberSince = -1)
         return Article("", "", Content(emptyList()), publisher, 0, 0, emptyList(), category = emptyList())
+    }
+
+    private fun deFormatElements(elements: List<Element>): List<Element>{
+        val deFormattedElements = mutableListOf<Element>()
+        for (element in elements){
+            var deFormattedElement = element
+            var deFormattedString = ""
+            if (element.imageUri == null) { //reverse only text
+                deFormattedString = parser.reverseParse(element)
+            }
+            deFormattedElement = deFormattedElement.copy(text = deFormattedString)
+            deFormattedElements += deFormattedElement
+        }
+        return deFormattedElements
     }
 }

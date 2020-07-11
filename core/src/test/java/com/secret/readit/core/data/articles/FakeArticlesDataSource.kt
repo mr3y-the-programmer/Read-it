@@ -23,11 +23,11 @@ open class FakeArticlesDataSource : ArticlesDataSource {
     }
 
     override suspend fun bookmark(id: articleId, bookmark: Boolean): Result<Boolean> {
-        TODO("Not yet implemented")
+        return Result.Success(true)
     }
 
     override suspend fun addArticle(article: Article): Result<Boolean> {
-        if (article == TestData.article2){
+        if (article.id == TestData.article2.id){
             return Result.Success(true)
         }
         return Result.Success(false)
