@@ -14,6 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.secret.readit.core.data.articles.ArticlesDataSource
 import com.secret.readit.core.data.articles.DefaultArticlesDataSource
 import com.secret.readit.core.data.articles.NormalizeHelper
+import com.secret.readit.core.data.articles.utils.CustomIDHandler
 import com.secret.readit.core.data.articles.utils.Parser
 import com.secret.readit.core.data.auth.AuthDataSource
 import com.secret.readit.core.data.auth.DefaultAuthDataSource
@@ -65,7 +66,13 @@ class MainModule {
     fun provideParserObject(): Parser {
         return Parser
     }
+
+    @Provides
+    fun provideCustomIDHandler(): CustomIDHandler{
+        return CustomIDHandler()
+    }
     // TODO: make drafts database
 //    TODO: make all Repositories @Singleton
     // TODO: make all dataSources internal
+    //TODO(optionally): Replace @Provides with @Binds in project's own dependencies
 }

@@ -7,10 +7,12 @@
 
 package com.secret.readit.core.data.articles
 
+import com.secret.readit.core.data.articles.utils.CustomIDHandler
 import com.secret.readit.core.data.articles.utils.Parser
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.model.*
+import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 /**
@@ -21,7 +23,8 @@ import javax.inject.Inject
 // TODO: update repository to use Flows on results
 class ArticlesRepository @Inject constructor(
     private val articlesDataSource: ArticlesDataSource,
-    private val parser: Parser
+    private val parser: Parser,
+    private val idHandler: CustomIDHandler
 ) {
 
     /**
@@ -52,13 +55,19 @@ class ArticlesRepository @Inject constructor(
     /**
      * Publish this article, add it to firestore
      *
-     * @return true on success, false on data source failure like: No Internet connection
+     * @return true on success, false on data source failure like: No Internet connection or adding invalid article
      */
     suspend fun addArticle(article: Article): Boolean{
         var successful = false
         val deFormattedElements = deFormatElements(article.content.elements)
+        var id = ""
+        try {
+            id = idHandler.getID(article)
+        } catch (ex: IllegalArgumentException) {
+            return false
+        }
 
-        val result = articlesDataSource.addArticle(article.copy(content = Content(deFormattedElements)))
+        val result = articlesDataSource.addArticle(article.copy(id = id, content = Content(deFormattedElements)))
         if(result != null && result.succeeded){
             successful = (result as Result.Success).data
         }
