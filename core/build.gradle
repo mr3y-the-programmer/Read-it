@@ -72,6 +72,7 @@ dependencies {
 
     //Firebase
     implementation "com.google.firebase:firebase-firestore-ktx:$firestore_version"
+    implementation "com.google.firebase:firebase-storage-ktx:$storage_version"
     api "com.firebaseui:firebase-ui-auth:$firebase_ui_version"
 
     // Dagger

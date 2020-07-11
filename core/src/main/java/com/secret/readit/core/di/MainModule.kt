@@ -13,13 +13,15 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 import com.secret.readit.core.data.articles.ArticlesDataSource
 import com.secret.readit.core.data.articles.DefaultArticlesDataSource
 import com.secret.readit.core.data.articles.NormalizeHelper
-import com.secret.readit.core.data.articles.utils.CustomIDHandler
-import com.secret.readit.core.data.articles.utils.Parser
 import com.secret.readit.core.data.auth.AuthDataSource
 import com.secret.readit.core.data.auth.DefaultAuthDataSource
+import com.secret.readit.core.data.shared.Converter
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -62,6 +64,17 @@ class MainModule {
         @IoDispatcher ioDispatcher: CoroutineDispatcher
     ): ArticlesDataSource {
         return DefaultArticlesDataSource(firestore, ioDispatcher, NormalizeHelper())
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseStorage(): FirebaseStorage {
+        return Firebase.storage
+    }
+
+    @Provides
+    fun provideInStreamConverter(@DefaultDispatcher defaultDispatcher: CoroutineDispatcher): Converter {
+        return Converter(defaultDispatcher)
     }
     // TODO: make drafts database
 //    TODO: make all Repositories @Singleton
