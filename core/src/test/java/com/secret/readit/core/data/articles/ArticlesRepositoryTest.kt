@@ -29,17 +29,14 @@ class ArticlesRepositoryTest {
     // Object under test
     private lateinit var articlesRepo: ArticlesRepository
 
-    private lateinit var idHandler: CustomIDHandler
-
     @Before
     fun setUp() {
-        idHandler = CustomIDHandler()
         /*
         Notice here we used a real object(Parser, CustomIDHandler) in testing, because it is:
         -fast, see: Benchmark results
         -Reliable and well tested, so it cannot fail easily
          */
-        articlesRepo = ArticlesRepository(FakeArticlesDataSource(), Parser, idHandler)
+        articlesRepo = ArticlesRepository(FakeArticlesDataSource(), Parser, CustomIDHandler())
     }
 
     @Test
@@ -62,7 +59,7 @@ class ArticlesRepositoryTest {
             on(it.getArticles()).doReturn(Result.Error(Exception()))
         }
 
-        articlesRepo = ArticlesRepository(mockedDataSource, Parser, idHandler)
+        articlesRepo = articlesRepo.copy(mockedDataSource)
 
         // When trying to get new results
         val result = articlesRepo.getNewArticles()
@@ -90,7 +87,7 @@ class ArticlesRepositoryTest {
             on(it.getArticle(TestData.article1.id)).doReturn(Result.Error(Exception()))
         }
 
-        articlesRepo = ArticlesRepository(mockedDataSource, Parser, idHandler)
+        articlesRepo = articlesRepo.copy(mockedDataSource)
 
         // When trying to get new results
         val result = articlesRepo.getArticle(TestData.article1.id)
@@ -123,7 +120,7 @@ class ArticlesRepositoryTest {
         val mockedDataSource = mock<FakeArticlesDataSource> {
             on(it.addArticle(TestData.article2)).doReturn(Result.Error(Exception()))
         }
-        articlesRepo = ArticlesRepository(mockedDataSource, Parser, idHandler)
+        articlesRepo = articlesRepo.copy(mockedDataSource)
 
         //When trying to add an article
         val result = articlesRepo.addArticle(TestData.article2)
@@ -147,12 +144,16 @@ class ArticlesRepositoryTest {
         val mockedDataSource = mock<FakeArticlesDataSource> {
             on(it.bookmark(TestData.article2.id, true)).doReturn(Result.Error(Exception()))
         }
-        articlesRepo = ArticlesRepository(mockedDataSource, Parser, idHandler)
+        articlesRepo = articlesRepo.copy(mockedDataSource)
 
         //When trying to bookmark any article
         val result = articlesRepo.toggleBookmark(TestData.article2.id, true)
 
         //Assert it Returns False
         assertThat(result).isFalse()
+    }
+
+    private fun ArticlesRepository.copy(dataSource: FakeArticlesDataSource): ArticlesRepository{
+        return ArticlesRepository(dataSource, Parser, CustomIDHandler())
     }
 }
