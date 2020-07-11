@@ -18,4 +18,8 @@ class CoroutineModule {
     @Provides
     @IoDispatcher
     fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+    @Provides
+    @DefaultDispatcher
+    fun provideDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
 }
