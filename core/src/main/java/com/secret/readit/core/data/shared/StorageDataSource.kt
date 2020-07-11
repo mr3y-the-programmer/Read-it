@@ -29,5 +29,5 @@ interface StorageDataSource {
      *
      * @return bitmap
      */
-    suspend fun downloadBitmap(id: articleId, uri: Uri): Result<Bitmap>
+    suspend fun downloadBitmap(uri: Uri): Result<Bitmap>
 }
