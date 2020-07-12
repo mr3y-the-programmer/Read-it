@@ -14,6 +14,7 @@ import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
 import com.secret.readit.core.di.IoDispatcher
 import com.secret.readit.core.result.Result
 import com.secret.readit.model.articleId
+import dagger.Lazy
 import kotlinx.coroutines.CoroutineDispatcher
 import timber.log.Timber
 import javax.inject.Inject
@@ -37,7 +38,7 @@ class DefaultStorageDataSource @Inject constructor(
             val root = storage.reference // root reference
             val ref = root.child(ARTICLES_DIR).child(id)
 
-            val pathInStream = converter.value.pathToInputStream(imgPath)
+            val pathInStream = converter.get().pathToInputStream(imgPath)
             ref.putStream(pathInStream)
                 .continueWithTask {
                     if (it.isSuccessful) {
@@ -71,7 +72,7 @@ class DefaultStorageDataSource @Inject constructor(
                     if (continuation.isActive) {
                         Timber.d("Downloading Image success")
                         val stream = it.stream
-                        val bitmap = converter.value.inputStreamToBitmap(stream) ?: return@addOnSuccessListener continuation.resumeWithException(NullPointerException())
+                        val bitmap = converter.get().inputStreamToBitmap(stream) ?: return@addOnSuccessListener continuation.resumeWithException(NullPointerException())
 
                         // Don't forget to close the stream
                         stream.close()
