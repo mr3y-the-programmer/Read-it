@@ -20,7 +20,12 @@ import com.secret.readit.core.data.articles.DefaultArticlesDataSource
 import com.secret.readit.core.data.articles.NormalizeHelper
 import com.secret.readit.core.data.auth.AuthDataSource
 import com.secret.readit.core.data.auth.DefaultAuthDataSource
+import com.secret.readit.core.data.categories.CategoryDataSource
+import com.secret.readit.core.data.categories.DefaultCategoryDataSource
 import com.secret.readit.core.data.shared.Converter
+import com.secret.readit.core.data.shared.DefaultStorageDataSource
+import com.secret.readit.core.data.shared.StorageDataSource
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -74,6 +79,18 @@ class MainModule {
     @Provides
     fun provideInStreamConverter(@DefaultDispatcher defaultDispatcher: CoroutineDispatcher): Converter {
         return Converter(defaultDispatcher)
+    }
+
+    @Provides
+    fun provideStorageDataSource(storage: FirebaseStorage,
+                                 @IoDispatcher ioDispatcher: CoroutineDispatcher,
+                                 converter: Lazy<Converter>): StorageDataSource {
+        return DefaultStorageDataSource(storage, ioDispatcher, converter)
+    }
+
+    @Provides
+    fun provideCategoryDataSource(firestore: FirebaseFirestore, @IoDispatcher ioDispatcher: CoroutineDispatcher): CategoryDataSource{
+        return DefaultCategoryDataSource(firestore, ioDispatcher)
     }
     // TODO: make drafts database
 //    TODO: make all Repositories @Singleton
