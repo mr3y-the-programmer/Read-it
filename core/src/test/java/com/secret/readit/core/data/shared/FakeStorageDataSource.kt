@@ -9,15 +9,22 @@ package com.secret.readit.core.data.shared
 
 import android.graphics.Bitmap
 import android.net.Uri
+import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.result.Result
 import com.secret.readit.model.articleId
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 open class FakeStorageDataSource: StorageDataSource {
+
     override suspend fun uploadBitmap(id: articleId, imgPath: String): Result<Uri> {
         TODO("Not yet implemented")
     }
 
     override suspend fun downloadBitmap(uri: Uri): Result<Bitmap> {
-        TODO("Not yet implemented")
+        val mockedBitmap = mock<Bitmap> {
+            //no-op
+        }
+        return Result.Success(mockedBitmap)
     }
 }
