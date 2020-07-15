@@ -12,11 +12,13 @@ import android.net.Uri
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Any consumers should interact with this Repo not with DataSource directly to avoid boilerplate
  * Rule: -forward operations to and from StorageDataSource
  */
+@Singleton
 class StorageRepository @Inject constructor(private val storageDataSource: StorageDataSource) {
 
     /**
