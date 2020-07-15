@@ -19,12 +19,16 @@ import com.secret.readit.core.data.articles.ArticlesDataSource
 import com.secret.readit.core.data.articles.DefaultArticlesDataSource
 import com.secret.readit.core.data.articles.NormalizeHelper
 import com.secret.readit.core.data.auth.AuthDataSource
+import com.secret.readit.core.data.auth.AuthRepository
 import com.secret.readit.core.data.auth.DefaultAuthDataSource
 import com.secret.readit.core.data.categories.CategoryDataSource
 import com.secret.readit.core.data.categories.DefaultCategoryDataSource
+import com.secret.readit.core.data.publisher.DefaultPublisherInfoDataSource
+import com.secret.readit.core.data.publisher.PublisherInfoDataSource
 import com.secret.readit.core.data.shared.Converter
 import com.secret.readit.core.data.shared.DefaultStorageDataSource
 import com.secret.readit.core.data.shared.StorageDataSource
+import com.secret.readit.core.data.shared.StorageRepository
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
@@ -91,6 +95,23 @@ class MainModule {
     @Provides
     fun provideCategoryDataSource(firestore: FirebaseFirestore, @IoDispatcher ioDispatcher: CoroutineDispatcher): CategoryDataSource{
         return DefaultCategoryDataSource(firestore, ioDispatcher)
+    }
+
+    @Provides
+    fun providePublisherInfoDataSource(firestore: FirebaseFirestore,  @IoDispatcher ioDispatcher: CoroutineDispatcher): PublisherInfoDataSource{
+        return DefaultPublisherInfoDataSource(firestore, ioDispatcher)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(authDataSource: AuthDataSource, firestore: FirebaseFirestore, @IoDispatcher ioDispatcher: CoroutineDispatcher): AuthRepository{
+        return AuthRepository(authDataSource, firestore, ioDispatcher)
+    }
+
+    @Provides
+    @Singleton
+    fun provideStorageRepository(storageSource: StorageDataSource): StorageRepository{
+        return StorageRepository(storageSource)
     }
     // TODO: make drafts database
 //    TODO: make all Repositories @Singleton
