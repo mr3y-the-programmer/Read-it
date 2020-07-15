@@ -19,14 +19,14 @@ import javax.inject.Singleton
  * Rule: -forward operations to and from StorageDataSource
  */
 @Singleton
-class StorageRepository @Inject constructor(private val storageDataSource: StorageDataSource) {
+open class StorageRepository @Inject constructor(private val storageDataSource: StorageDataSource) {
 
     /**
      * download Img with this Uri or fallback to defaultValue if uri is null,
      * @param imgUri: the Uri of required image to download
      * @param defaultValue: String represent the url of default img, this param should never be null
      */
-    suspend fun downloadImg(imgUri: Uri?, defaultValue: String): Bitmap?{
+    open suspend fun downloadImg(imgUri: Uri?, defaultValue: String): Bitmap?{
         val default = Uri.parse(defaultValue)
         val result = storageDataSource.downloadBitmap(imgUri ?: default)
 
