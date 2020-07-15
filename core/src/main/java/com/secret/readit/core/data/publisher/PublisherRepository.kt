@@ -11,10 +11,13 @@ import android.graphics.Bitmap
 import android.net.Uri
 import com.secret.readit.core.data.auth.AuthRepository
 import com.secret.readit.core.data.shared.StorageRepository
+import com.secret.readit.core.data.utils.CustomIDHandler
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.core.uimodels.UiPublisher
+import com.secret.readit.model.Article
 import com.secret.readit.model.Publisher
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -24,7 +27,9 @@ import javax.inject.Inject
  */
 class PublisherRepository @Inject constructor(private val publisherDataSource: PublisherInfoDataSource,
                                               private val authRepo: AuthRepository,
-                                              private val storageRepo: StorageRepository) {
+                                              private val storageRepo: StorageRepository,
+                                              private val idHandler: CustomIDHandler = CustomIDHandler()
+) {
 
     /**
      * get Current Signed-in publisher/user, empty Publisher if no signed-in user
@@ -51,6 +56,21 @@ class PublisherRepository @Inject constructor(private val publisherDataSource: P
     suspend fun updateName(newName: String): Boolean {
         val id = authRepo.getId() ?: return false //User isn't Signed-in
         val result = publisherDataSource.setDisplayName(newName, id)
+        return if (result.succeeded) (result as Result.Success).data else false
+    }
+
+    //TODO: update to UiArticle
+    suspend fun addNewArticle(article: Article): Boolean{
+        val id = authRepo.getId() ?: return false //User isn't Signed-in
+        var articleId = ""
+        try {
+            articleId = idHandler.getID(article)
+        }catch (ex: IllegalArgumentException) {
+            Timber.e("Not valid article")
+            return false
+        }
+        val result = publisherDataSource.addNewArticleId(articleId, id)
+
         return if (result.succeeded) (result as Result.Success).data else false
     }
 

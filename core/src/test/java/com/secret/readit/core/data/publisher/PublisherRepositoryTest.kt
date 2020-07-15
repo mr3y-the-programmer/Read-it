@@ -124,4 +124,52 @@ class PublisherRepositoryTest {
         //Assert We failed
         assertThat(result).isFalse()
     }
+
+    @Test
+    fun allOk_AddNewArticleSuccessfully() = mainCoroutineRule.runBlockingTest {
+        //When trying to publish new article
+        val result = publisherRepo.addNewArticle(TestData.article1)
+
+        //Assert process is success
+        assertThat(result).isTrue()
+    }
+
+    @Test
+    fun nullUser_CannotAddNewArticle() = mainCoroutineRule.runBlockingTest {
+        //GIVEN no signed-in User
+        mockedAuthRepository = mock {
+            on(it.getId()).doReturn(null)
+        }
+        publisherRepo = PublisherRepository(FakePublisherInfoDataSource(), mockedAuthRepository, DummyStorageRepository())
+
+        //When trying to publish new article
+        val result = publisherRepo.addNewArticle(TestData.article1)
+
+        //Assert We return false(failed)
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun dataSourceFails_CannotAddNewArticle() = mainCoroutineRule.runBlockingTest {
+        //GIVEN failed dataSource(i.e No Internet Connection)
+        val mockedPublisherDataSource = mock<FakePublisherInfoDataSource> {
+            on(it.addNewArticleId(TestData.article1.id, TestData.publisher1.id)).doReturn(Result.Error(Exception()))
+        }
+        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
+
+        //When trying to publish new article
+        val result = publisherRepo.addNewArticle(TestData.article1)
+
+        //Assert We failed
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun invalidArticle_CannotAddNewArticle() = mainCoroutineRule.runBlockingTest {
+        //When trying to publish invalid article
+        val result = publisherRepo.addNewArticle(TestData.emptyArticle)
+
+        //Assert We return false(failed)
+        assertThat(result).isFalse()
+    }
 }
