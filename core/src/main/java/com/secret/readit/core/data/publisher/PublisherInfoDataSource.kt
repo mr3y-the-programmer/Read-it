@@ -18,6 +18,11 @@ import com.secret.readit.model.publisherId
 interface PublisherInfoDataSource {
 
     /**
+     * get Unique publisher id stored in firestore Using Publisher (name, email, creation time)
+     */
+    suspend fun getPublisherId(publisher: PubImportantInfo): Result<publisherId>
+
+    /**
      * get All Publisher Info as a bundle cause we can't retrieve partial document in firestore
      */
     suspend fun getPublisher(id: publisherId): Result<Publisher>
