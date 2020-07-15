@@ -13,6 +13,11 @@ import com.secret.readit.model.articleId
 import com.secret.readit.model.publisherId
 
 class FakePublisherInfoDataSource: PublisherInfoDataSource {
+
+    override suspend fun getPublisherId(publisher: PubImportantInfo): Result<publisherId> {
+        return Result.Success(TestData.publisher1.id)
+    }
+
     override suspend fun getPublisher(id: publisherId): Result<Publisher> {
         return Result.Success(TestData.publisher1)
     }
@@ -37,17 +42,11 @@ class FakePublisherInfoDataSource: PublisherInfoDataSource {
         return Result.Success(true)
     }
 
-    override suspend fun follow(
-        followedPublisherID: publisherId,
-        publisherID: publisherId
-    ): Result<Boolean> {
-        TODO("Not yet implemented")
+    override suspend fun follow(followedPublisherID: publisherId, publisherID: publisherId): Result<Boolean> {
+        return Result.Success(true)
     }
 
-    override suspend fun unFollow(
-        unFollowedPublisherID: publisherId,
-        publisherID: publisherId
-    ): Result<Boolean> {
-        TODO("Not yet implemented")
+    override suspend fun unFollow(unFollowedPublisherID: publisherId, publisherID: publisherId): Result<Boolean> {
+        return Result.Success(true)
     }
 }

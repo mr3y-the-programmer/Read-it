@@ -93,6 +93,20 @@ class PublisherRepository @Inject constructor(private val publisherDataSource: P
     }
 
     /**
+     * follow publisher
+     */
+    suspend fun followPublisher(publisher: UiPublisher): Boolean {
+        return updateFollowers(publisher)
+    }
+
+    /**
+     * unFollow publisher
+     */
+    suspend fun unFollowPublisher(publisher: UiPublisher): Boolean {
+        return updateFollowers(publisher, positive = false)
+    }
+
+    /**
      * @param positive when true mean adding, false mean removing
      */
     private suspend fun updateArticle(article: Article, positive: Boolean = true): Boolean {
@@ -123,6 +137,23 @@ class PublisherRepository @Inject constructor(private val publisherDataSource: P
         }
         val result = if (positive) publisherDataSource.addNewCategoryId(categoryId, id) else publisherDataSource.unFollowExistingCategoryId(categoryId, id)
 
+        return if (result != null && result.succeeded) (result as Result.Success).data else false
+    }
+
+    /**
+     * @param positive when true mean adding, false mean removing
+     */
+    private suspend fun updateFollowers(publisher: UiPublisher, positive: Boolean = true): Boolean {
+        val userID = authRepo.getId() ?: return false
+        val firestorePub = publisher.publisher
+        val publisherIdResult = publisherDataSource.getPublisherId(PubImportantInfo(firestorePub.name, firestorePub.emailAddress, firestorePub.memberSince))
+        val publisherId = if (publisherIdResult != null && publisherIdResult.succeeded) {
+            (publisherIdResult as Result.Success).data
+        } else {
+            return false
+        }
+
+        val result = if (positive) publisherDataSource.follow(publisherId, userID) else publisherDataSource.unFollow(publisherId, userID)
         return if (result != null && result.succeeded) (result as Result.Success).data else false
     }
 
