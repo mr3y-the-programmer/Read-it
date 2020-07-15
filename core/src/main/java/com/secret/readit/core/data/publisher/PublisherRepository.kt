@@ -44,6 +44,16 @@ class PublisherRepository @Inject constructor(private val publisherDataSource: P
         return UiPublisher(publisher = publisher, profileImg = profileImg)
     }
 
+    /**
+     * update Current signed-in user name,
+     * @return true on success, false on failure or no signed-in user
+     */
+    suspend fun updateName(newName: String): Boolean {
+        val id = authRepo.getId() ?: return false //User isn't Signed-in
+        val result = publisherDataSource.setDisplayName(newName, id)
+        return if (result.succeeded) (result as Result.Success).data else false
+    }
+
     private fun getEmptyPublisher(): UiPublisher {
         val pub = Publisher(id = "", name = "", emailAddress = "", memberSince = -1)
         return UiPublisher(publisher = pub, profileImg = null)

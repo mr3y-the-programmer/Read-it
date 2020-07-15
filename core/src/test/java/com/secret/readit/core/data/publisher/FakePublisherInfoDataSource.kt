@@ -18,7 +18,7 @@ class FakePublisherInfoDataSource: PublisherInfoDataSource {
     }
 
     override suspend fun setDisplayName(newName: String, id: publisherId): Result<Boolean> {
-        TODO("Not yet implemented")
+        return Result.Success(true)
     }
 
     override suspend fun addNewArticleId(

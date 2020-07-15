@@ -85,4 +85,43 @@ class PublisherRepositoryTest {
         assertThat(result.publisher).isEqualTo(TestData.emptyPublisher)
         assertThat(result.profileImg).isNull()
     }
+
+    @Test
+    fun allOk_UpdateUserNameSuccessfully() = mainCoroutineRule.runBlockingTest {
+        //When trying to update CurrentUser name
+        val result = publisherRepo.updateName(TestData.publisher1.name)
+
+        //Assert process is success
+        assertThat(result).isTrue()
+    }
+
+    @Test
+    fun nullUser_CannotUpdateUserName() = mainCoroutineRule.runBlockingTest {
+        //GIVEN no signed-in User
+        mockedAuthRepository = mock {
+            on(it.getId()).doReturn(null)
+        }
+        publisherRepo = PublisherRepository(FakePublisherInfoDataSource(), mockedAuthRepository, DummyStorageRepository())
+
+        //When trying to update name
+        val result = publisherRepo.updateName(TestData.publisher1.name)
+
+        //Assert We return false(failed)
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun dataSourceFails_CannotUpdateUserName() = mainCoroutineRule.runBlockingTest {
+        //GIVEN failed dataSource(i.e No Internet Connection)
+        val mockedPublisherDataSource = mock<FakePublisherInfoDataSource> {
+            on(it.setDisplayName(TestData.publisher1.name, TestData.publisher1.id)).doReturn(Result.Error(Exception()))
+        }
+        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
+
+        //When trying to update name
+        val result = publisherRepo.updateName(TestData.publisher1.name)
+
+        //Assert We failed
+        assertThat(result).isFalse()
+    }
 }
