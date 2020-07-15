@@ -111,9 +111,8 @@ class PublisherRepository @Inject constructor(private val publisherDataSource: P
      */
     private suspend fun updateArticle(article: Article, positive: Boolean = true): Boolean {
         val id = authRepo.getId() ?: return false //User isn't Signed-in
-        var articleId = ""
-        try {
-            articleId = idHandler.getID(article)
+        val articleId = try {
+            idHandler.getID(article)
         }catch (ex: IllegalArgumentException) {
             Timber.e("Not valid article")
             return false
@@ -128,9 +127,8 @@ class PublisherRepository @Inject constructor(private val publisherDataSource: P
      */
     private suspend fun updateCategories(category: Category, positive: Boolean = true): Boolean {
         val id = authRepo.getId() ?: return false
-        var categoryId = ""
-        try {
-            categoryId = idHandler.getID(category)
+        val categoryId = try {
+            idHandler.getID(category)
         }catch (ex: IllegalArgumentException) {
             Timber.e("Not Valid Category")
             return false
