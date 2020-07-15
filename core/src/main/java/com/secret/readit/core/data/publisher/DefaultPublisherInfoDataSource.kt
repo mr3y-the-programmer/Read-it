@@ -30,6 +30,34 @@ class DefaultPublisherInfoDataSource @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : PublisherInfoDataSource {
 
+    override suspend fun getPublisherId(publisher: PubImportantInfo): Result<publisherId> {
+        return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
+            firestore.collection(PUBLISHERS_COLLECTION)
+                .whereEqualTo(NAME_FIELD, publisher.name)
+                .whereEqualTo(EMAIL_ADDRESS_FIELD, publisher.emailAddress)
+                .whereEqualTo(MEMBER_SINCE_FIELD, publisher.memberSince)
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (continuation.isActive) {
+                        Timber.d("Returned publisher document successfully, doc: ${documents.documents[0]}")
+                        val publisherDoc = documents.documents[0].toObject(Publisher::class.java)
+
+                        if (publisherDoc == null) {
+                            Timber.d("Couldn't convert firestore model to publisher model, or publisher isn't exist")
+                            return@addOnSuccessListener continuation.resumeWithException(NullPointerException())
+                        }
+
+                        continuation.resume(Result.Success(publisherDoc.id))
+                    } else {
+                        Timber.d("continuation is no longer active")
+                    }
+                }.addOnFailureListener {
+                    Timber.d("Failed to get Publisher id For publisher: $publisher, cause: ${it.cause}")
+                    continuation.resumeWithException(it)
+                }
+        }
+    }
+
     override suspend fun getPublisher(id: publisherId): Result<Publisher> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
             firestore.collection(PUBLISHERS_COLLECTION)
@@ -180,6 +208,9 @@ class DefaultPublisherInfoDataSource @Inject constructor(
 
     companion object {
         const val PUBLISHERS_COLLECTION = "publishers"
+        const val NAME_FIELD = "name"
+        const val EMAIL_ADDRESS_FIELD = "emailAddress"
+        const val MEMBER_SINCE_FIELD = "memberSince"
         const val PUBLISHED_ARTICLES_FIELD = "publishedArticlesIds"
         const val FOLLOWED_CATEGORIES_FIELD = "followedCategoriesIds"
         const val FOLLOWED_PUBLISHERS_FIELD = "followedPublishersIds"
