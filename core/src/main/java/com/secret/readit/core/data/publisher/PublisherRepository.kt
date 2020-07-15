@@ -65,75 +65,53 @@ class PublisherRepository @Inject constructor(private val publisherDataSource: P
      * @return true on success, false on failure or no signed-in user
      */
     //TODO: update to UiArticle
-    suspend fun addNewArticle(article: Article): Boolean{
-        return updateArticle(article)
-    }
+    suspend fun addNewArticle(article: Article): Boolean = update(article = article)
 
     /**
      * remove existing article,
      * @return true on success, false on failure or no signed-in user
      */
     //TODO: update to UiArticle
-    suspend fun removeArticle(article: Article): Boolean{
-        return updateArticle(article, positive = false)
-    }
+    suspend fun removeArticle(article: Article): Boolean = update(article = article, positive = false)
 
     /**
      * start following/subscribing new category
      */
-    suspend fun followCategory(category: Category): Boolean {
-        return updateCategories(category)
-    }
+    suspend fun followCategory(category: Category): Boolean = update(category = category)
 
     /**
      * UnFollow/UnSubscribe category
      */
-    suspend fun unFollowCategory(category: Category): Boolean {
-        return updateCategories(category, positive = false)
-    }
+    suspend fun unFollowCategory(category: Category): Boolean = update(category = category, positive = false)
 
     /**
      * follow publisher
      */
-    suspend fun followPublisher(publisher: UiPublisher): Boolean {
-        return updateFollowers(publisher)
-    }
+    suspend fun followPublisher(publisher: UiPublisher): Boolean = updateFollowers(publisher)
 
     /**
      * unFollow publisher
      */
-    suspend fun unFollowPublisher(publisher: UiPublisher): Boolean {
-        return updateFollowers(publisher, positive = false)
-    }
+    suspend fun unFollowPublisher(publisher: UiPublisher): Boolean = updateFollowers(publisher, positive = false)
 
     /**
+     * Callers should only specify one of two params either article or category
      * @param positive when true mean adding, false mean removing
      */
-    private suspend fun updateArticle(article: Article, positive: Boolean = true): Boolean {
-        val id = authRepo.getId() ?: return false //User isn't Signed-in
-        val articleId = try {
-            idHandler.getID(article)
-        }catch (ex: IllegalArgumentException) {
-            Timber.e("Not valid article")
-            return false
-        }
-        val result = if (positive) publisherDataSource.addNewArticleId(articleId, id) else publisherDataSource.removeExistingArticleId(articleId, id)
-
-        return if (result != null && result.succeeded) (result as Result.Success).data else false
-    }
-
-    /**
-     * @param positive when true mean adding, false mean removing
-     */
-    private suspend fun updateCategories(category: Category, positive: Boolean = true): Boolean {
+    private suspend fun update(article: Article? = null, category: Category? = null, positive: Boolean = true): Boolean {
         val id = authRepo.getId() ?: return false
-        val categoryId = try {
-            idHandler.getID(category)
+        val objectID = try {
+            if (article != null) idHandler.getID(article) else idHandler.getID(category!!)
         }catch (ex: IllegalArgumentException) {
-            Timber.e("Not Valid Category")
+            Timber.e("Not Valid Article/Category")
             return false
         }
-        val result = if (positive) publisherDataSource.addNewCategoryId(categoryId, id) else publisherDataSource.unFollowExistingCategoryId(categoryId, id)
+
+        val result = if (article != null) {
+            if (positive) publisherDataSource.addNewArticleId(objectID, id) else publisherDataSource.removeExistingArticleId(objectID, id)
+        } else {
+            if (positive) publisherDataSource.addNewCategoryId(objectID, id) else publisherDataSource.unFollowExistingCategoryId(objectID, id)
+        }
 
         return if (result != null && result.succeeded) (result as Result.Success).data else false
     }
