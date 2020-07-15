@@ -25,11 +25,8 @@ class FakePublisherInfoDataSource: PublisherInfoDataSource {
         return Result.Success(true)
     }
 
-    override suspend fun removeExistingArticleId(
-        articleID: articleId,
-        publisherID: publisherId
-    ): Result<Boolean> {
-        TODO("Not yet implemented")
+    override suspend fun removeExistingArticleId(articleID: articleId, publisherID: publisherId): Result<Boolean> {
+        return Result.Success(true)
     }
 
     override suspend fun addNewCategoryId(

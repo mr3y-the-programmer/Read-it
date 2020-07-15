@@ -172,4 +172,52 @@ class PublisherRepositoryTest {
         //Assert We return false(failed)
         assertThat(result).isFalse()
     }
+
+    @Test
+    fun allOk_RemoveArticleSuccessfully() = mainCoroutineRule.runBlockingTest {
+        //When trying to remove article
+        val result = publisherRepo.removeArticle(TestData.article1)
+
+        //Assert process is success
+        assertThat(result).isTrue()
+    }
+
+    @Test
+    fun nullUser_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest {
+        //GIVEN no signed-in User
+        mockedAuthRepository = mock {
+            on(it.getId()).doReturn(null)
+        }
+        publisherRepo = PublisherRepository(FakePublisherInfoDataSource(), mockedAuthRepository, DummyStorageRepository())
+
+        //When trying to remove article
+        val result = publisherRepo.removeArticle(TestData.article1)
+
+        //Assert We return false(failed)
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun dataSourceFails_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest {
+        //GIVEN failed dataSource(i.e No Internet Connection)
+        val mockedPublisherDataSource = mock<FakePublisherInfoDataSource> {
+            on(it.removeExistingArticleId(TestData.article1.id, TestData.publisher1.id)).doReturn(Result.Error(Exception()))
+        }
+        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
+
+        //When trying to remove article
+        val result = publisherRepo.removeArticle(TestData.article1)
+
+        //Assert We failed
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun invalidArticle_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest {
+        //When trying to remove invalid article
+        val result = publisherRepo.removeArticle(TestData.emptyArticle)
+
+        //Assert We return false(failed)
+        assertThat(result).isFalse()
+    }
 }

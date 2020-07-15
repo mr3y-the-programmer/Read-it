@@ -59,6 +59,10 @@ class PublisherRepository @Inject constructor(private val publisherDataSource: P
         return if (result.succeeded) (result as Result.Success).data else false
     }
 
+    /**
+     * publish new article,
+     * @return true on success, false on failure or no signed-in user
+     */
     //TODO: update to UiArticle
     suspend fun addNewArticle(article: Article): Boolean{
         val id = authRepo.getId() ?: return false //User isn't Signed-in
@@ -70,6 +74,25 @@ class PublisherRepository @Inject constructor(private val publisherDataSource: P
             return false
         }
         val result = publisherDataSource.addNewArticleId(articleId, id)
+
+        return if (result.succeeded) (result as Result.Success).data else false
+    }
+
+    /**
+     * remove existing article,
+     * @return true on success, false on failure or no signed-in user
+     */
+    //TODO: update to UiArticle
+    suspend fun removeArticle(article: Article): Boolean{
+        val id = authRepo.getId() ?: return false //User isn't Signed-in
+        var articleId = ""
+        try {
+            articleId = idHandler.getID(article)
+        }catch (ex: IllegalArgumentException) {
+            Timber.e("Not valid article")
+            return false
+        }
+        val result = publisherDataSource.removeExistingArticleId(articleId, id)
 
         return if (result.succeeded) (result as Result.Success).data else false
     }
