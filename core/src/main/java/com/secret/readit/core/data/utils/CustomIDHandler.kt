@@ -8,11 +8,12 @@
 package com.secret.readit.core.data.utils
 
 import com.secret.readit.model.Article
+import com.secret.readit.model.Category
 import timber.log.Timber
-import java.lang.IllegalArgumentException
+import kotlin.IllegalArgumentException
 
 /**
- * CustomIDHandler has one responsibility to get ids of each article
+ * CustomIDHandler has one responsibility to get(generate) ids of article, category....etc
  */
 class CustomIDHandler {
 
@@ -36,6 +37,38 @@ class CustomIDHandler {
         val last = title.substring(0, 4)
 
         return "$first$DASH$middle$DASH$last"
+    }
+
+    /**
+     * get an Id for each category
+     *
+     * @throws IllegalArgumentException if (name) of category wasn't valid
+     * @return the id generated
+     */
+    fun getID(category: Category): String {
+        val name = category.name
+        if (name.length < 2) {
+            Timber.e("not valid category, check its name")
+            throw IllegalArgumentException("Cannot create an id for category: $category")
+        }
+
+        val firstChar = name[0]
+        val lastChar = name[name.length.minus(1)]
+        val randomPrefix = when(firstChar.toUpperCase()) {
+            in 'A'..'D' -> "a${firstChar}d"
+            in 'E'..'O' -> "e${firstChar}o"
+            in 'P'..'T' -> "p${firstChar}t"
+            else -> "u${firstChar}z"
+        }
+
+        val randomSuffix = when(lastChar.toUpperCase()) {
+            in 'A'..'D' -> "a${lastChar}d"
+            in 'E'..'O' -> "e${lastChar}o"
+            in 'P'..'T' -> "p${lastChar}t"
+            else -> "u${lastChar}z"
+        }
+
+        return "$randomPrefix$DASH$name$DASH$randomSuffix"
     }
 
     companion object {

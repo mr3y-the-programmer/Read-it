@@ -47,6 +47,7 @@ object TestData {
     val category1 = Category("categ1", "Programming", 0xFF00F3)
     val category2 = Category("categ2", "Software Engineering", 0x00FFD4)
     val category3 = Category("categ3", "Design", 0xF0D255)
+    val emptyCategory = Category("", "", 0)
 
     val categories = listOf(category1, category2, category3)
     val articleCategories = listOf(category1, category2)

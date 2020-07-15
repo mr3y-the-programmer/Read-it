@@ -52,4 +52,23 @@ class CustomIDHandlerTest {
 
         // assert it throws an exception
     }
+
+    @Test
+    fun inputCategory1_ReturnValidId() {
+        // When entering valid category
+        val result = customIDHandler.getID(TestData.category1)
+
+        val expected = "pPt-Programming-ego"
+
+        // assert it matches our expectations
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun inputInvalidCategory_ThrowsException() {
+        // When entering Invalid category
+        val result = customIDHandler.getID(TestData.emptyCategory)
+
+        // assert it throws an exception
+    }
 }
