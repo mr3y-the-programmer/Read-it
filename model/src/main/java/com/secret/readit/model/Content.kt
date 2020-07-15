@@ -10,7 +10,7 @@ package com.secret.readit.model
 /**
  * Wrapper around all elements whether they are (image,text...etc)
  */
-data class Content(val elements: List<Element>)
+data class Content(val elements: List<BaseElement>)
 
 
 /**
@@ -27,7 +27,7 @@ data class Content(val elements: List<Element>)
 data class Element private constructor(
     val text: String? = null,
     val markup: Markup? = null,
-    val imageUri: String? = null) {
+    val imageUri: String? = null): BaseElement() {
 
     //One that should be called when inserting text
     constructor(text: String, markup: Markup): this(text, markup, null)
