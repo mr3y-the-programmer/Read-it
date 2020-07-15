@@ -13,4 +13,4 @@ import com.secret.readit.model.BaseElement
 /**
  * image Element's format that consumers expect to have
  */
-data class ImageUiElement(val bitmap: Bitmap): BaseElement()
+data class ImageUiElement(val bitmap: Bitmap?): BaseElement()
