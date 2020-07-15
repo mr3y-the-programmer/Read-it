@@ -29,18 +29,12 @@ class FakePublisherInfoDataSource: PublisherInfoDataSource {
         return Result.Success(true)
     }
 
-    override suspend fun addNewCategoryId(
-        categoryID: String,
-        publisherID: publisherId
-    ): Result<Boolean> {
-        TODO("Not yet implemented")
+    override suspend fun addNewCategoryId(categoryID: String, publisherID: publisherId): Result<Boolean> {
+        return Result.Success(true)
     }
 
-    override suspend fun unFollowExistingCategoryId(
-        categoryID: String,
-        publisherID: publisherId
-    ): Result<Boolean> {
-        TODO("Not yet implemented")
+    override suspend fun unFollowExistingCategoryId(categoryID: String, publisherID: publisherId): Result<Boolean> {
+        return Result.Success(true)
     }
 
     override suspend fun follow(

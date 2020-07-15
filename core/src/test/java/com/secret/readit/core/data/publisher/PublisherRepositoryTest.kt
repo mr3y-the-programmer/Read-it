@@ -220,4 +220,100 @@ class PublisherRepositoryTest {
         //Assert We return false(failed)
         assertThat(result).isFalse()
     }
+
+    @Test
+    fun allOk_FollowCategorySuccessfully() = mainCoroutineRule.runBlockingTest {
+        //When trying to follow category
+        val result = publisherRepo.followCategory(TestData.category1)
+
+        //Assert process is success
+        assertThat(result).isTrue()
+    }
+
+    @Test
+    fun nullUser_CannotFollowCategory() = mainCoroutineRule.runBlockingTest {
+        //GIVEN no signed-in User
+        mockedAuthRepository = mock {
+            on(it.getId()).doReturn(null)
+        }
+        publisherRepo = PublisherRepository(FakePublisherInfoDataSource(), mockedAuthRepository, DummyStorageRepository())
+
+        //When trying to follow category
+        val result = publisherRepo.followCategory(TestData.category1)
+
+        //Assert We return false(failed)
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun dataSourceFails_CannotFollowCategory() = mainCoroutineRule.runBlockingTest {
+        //GIVEN failed dataSource(i.e No Internet Connection)
+        val mockedPublisherDataSource = mock<FakePublisherInfoDataSource> {
+            on(it.addNewCategoryId(TestData.category1.id, TestData.publisher1.id)).doReturn(Result.Error(Exception()))
+        }
+        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
+
+        //When trying to follow category
+        val result = publisherRepo.followCategory(TestData.category1)
+
+        //Assert We failed
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun invalidArticle_CannotFollowCategory() = mainCoroutineRule.runBlockingTest {
+        //When trying to follow invalid category
+        val result = publisherRepo.followCategory(TestData.emptyCategory)
+
+        //Assert We return false(failed)
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun allOk_unFollowCategorySuccessfully() = mainCoroutineRule.runBlockingTest {
+        //When trying to unFollow category
+        val result = publisherRepo.unFollowCategory(TestData.category1)
+
+        //Assert process is success
+        assertThat(result).isTrue()
+    }
+
+    @Test
+    fun nullUser_CannotunFollowCategory() = mainCoroutineRule.runBlockingTest {
+        //GIVEN no signed-in User
+        mockedAuthRepository = mock {
+            on(it.getId()).doReturn(null)
+        }
+        publisherRepo = PublisherRepository(FakePublisherInfoDataSource(), mockedAuthRepository, DummyStorageRepository())
+
+        //When trying to unFollow category
+        val result = publisherRepo.unFollowCategory(TestData.category1)
+
+        //Assert We return false(failed)
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun dataSourceFails_CannotunFollowCategory() = mainCoroutineRule.runBlockingTest {
+        //GIVEN failed dataSource(i.e No Internet Connection)
+        val mockedPublisherDataSource = mock<FakePublisherInfoDataSource> {
+            on(it.unFollowExistingCategoryId(TestData.category1.id, TestData.publisher1.id)).doReturn(Result.Error(Exception()))
+        }
+        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
+
+        //When trying to unFollow category
+        val result = publisherRepo.unFollowCategory(TestData.category1)
+
+        //Assert We failed
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun invalidArticle_CannotunFollowCategory() = mainCoroutineRule.runBlockingTest {
+        //When trying to unFollow invalid category
+        val result = publisherRepo.unFollowCategory(TestData.emptyCategory)
+
+        //Assert We return false(failed)
+        assertThat(result).isFalse()
+    }
 }

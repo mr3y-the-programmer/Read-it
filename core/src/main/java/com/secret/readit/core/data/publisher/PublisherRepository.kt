@@ -16,6 +16,7 @@ import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.core.uimodels.UiPublisher
 import com.secret.readit.model.Article
+import com.secret.readit.model.Category
 import com.secret.readit.model.Publisher
 import timber.log.Timber
 import javax.inject.Inject
@@ -78,6 +79,20 @@ class PublisherRepository @Inject constructor(private val publisherDataSource: P
     }
 
     /**
+     * start following/subscribing new category
+     */
+    suspend fun followCategory(category: Category): Boolean {
+        return updateCategories(category)
+    }
+
+    /**
+     * UnFollow/UnSubscribe category
+     */
+    suspend fun unFollowCategory(category: Category): Boolean {
+        return updateCategories(category, positive = false)
+    }
+
+    /**
      * @param positive when true mean adding, false mean removing
      */
     private suspend fun updateArticle(article: Article, positive: Boolean = true): Boolean {
@@ -91,7 +106,24 @@ class PublisherRepository @Inject constructor(private val publisherDataSource: P
         }
         val result = if (positive) publisherDataSource.addNewArticleId(articleId, id) else publisherDataSource.removeExistingArticleId(articleId, id)
 
-        return if (result.succeeded) (result as Result.Success).data else false
+        return if (result != null && result.succeeded) (result as Result.Success).data else false
+    }
+
+    /**
+     * @param positive when true mean adding, false mean removing
+     */
+    private suspend fun updateCategories(category: Category, positive: Boolean = true): Boolean {
+        val id = authRepo.getId() ?: return false
+        var categoryId = ""
+        try {
+            categoryId = idHandler.getID(category)
+        }catch (ex: IllegalArgumentException) {
+            Timber.e("Not Valid Category")
+            return false
+        }
+        val result = if (positive) publisherDataSource.addNewCategoryId(categoryId, id) else publisherDataSource.unFollowExistingCategoryId(categoryId, id)
+
+        return if (result != null && result.succeeded) (result as Result.Success).data else false
     }
 
     private fun getEmptyPublisher(): UiPublisher {
