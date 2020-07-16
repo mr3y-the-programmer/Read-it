@@ -7,6 +7,7 @@
 
 package com.secret.readit.core.di
 
+import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -29,10 +30,13 @@ import com.secret.readit.core.data.shared.Converter
 import com.secret.readit.core.data.shared.DefaultStorageDataSource
 import com.secret.readit.core.data.shared.StorageDataSource
 import com.secret.readit.core.data.shared.StorageRepository
+import com.secret.readit.core.prefs.DefaultSharedPrefs
+import com.secret.readit.core.prefs.SharedPrefs
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton
 
 @Module
@@ -112,6 +116,13 @@ class MainModule {
     @Singleton
     fun provideStorageRepository(storageSource: StorageDataSource): StorageRepository{
         return StorageRepository(storageSource)
+    }
+
+    @Provides
+    @ExperimentalCoroutinesApi
+    @Singleton
+    fun provideSharedPreferences(applicationContext: Context): SharedPrefs{
+        return DefaultSharedPrefs(applicationContext)
     }
     // TODO: make drafts database
 //    TODO: make all Repositories @Singleton
