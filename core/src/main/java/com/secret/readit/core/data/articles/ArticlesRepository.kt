@@ -7,15 +7,14 @@
 
 package com.secret.readit.core.data.articles
 
-import com.secret.readit.core.data.articles.utils.CustomIDHandler
+import android.net.Uri
+import com.secret.readit.core.data.utils.CustomIDHandler
 import com.secret.readit.core.data.articles.utils.Parser
+import com.secret.readit.core.data.shared.StorageRepository
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
-import com.secret.readit.model.Article
-import com.secret.readit.model.Content
-import com.secret.readit.model.Element
-import com.secret.readit.model.Publisher
-import com.secret.readit.model.articleId
+import com.secret.readit.core.uimodels.ImageUiElement
+import com.secret.readit.model.*
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
@@ -27,6 +26,7 @@ import javax.inject.Inject
 // TODO: update repository to use Flows on results
 class ArticlesRepository @Inject constructor(
     private val articlesDataSource: ArticlesDataSource,
+    private val storageRepo: StorageRepository,
     private val parser: Parser = Parser,
     private val idHandler: CustomIDHandler = CustomIDHandler()
 ) {
@@ -103,7 +103,7 @@ class ArticlesRepository @Inject constructor(
      * format articles in expected format for consumers
      */
     @Suppress("UNCHECKED_CAST")
-    private fun <T> formatArticles(result: Result<T>, singleItem: Boolean = false): MutableList<Article> {
+    private suspend fun <T> formatArticles(result: Result<T>, singleItem: Boolean = false): MutableList<Article> {
         val formattedArticles = mutableListOf<Article>()
         if (result.succeeded) {
             val data = (result as Result.Success).data
@@ -123,14 +123,19 @@ class ArticlesRepository @Inject constructor(
         return formattedArticles
     }
 
-    private fun formatContent(content: Content): MutableList<Element> {
-        val formattedElements = mutableListOf<Element>()
-        for (element in content.elements) {
-            var parsedElement = element
-            if (element.imageUri == null) { // parse text only
-                parsedElement = parser.parse(element.text!!)
+    private suspend fun formatContent(content: Content): MutableList<BaseElement> {
+        val formattedElements = mutableListOf<BaseElement>()
+        for (baseElement in content.elements) {
+            var firestoreElement = (baseElement as Element)
+            if (firestoreElement.imageUri == null) { // parse text only
+                firestoreElement = parser.parse(baseElement.text!!)
+                formattedElements += firestoreElement //In this case UiElement is the same as firestoreElement
             }
-            formattedElements += parsedElement
+            if (firestoreElement.imageUri != null) {
+                val imgUri = Uri.parse(firestoreElement.imageUri)
+                val bitmap = storageRepo.downloadImg(imgUri, PLACE_HOLDER_URL)
+                formattedElements += ImageUiElement(bitmap)
+            }
         }
         return formattedElements
     }
@@ -147,10 +152,18 @@ class ArticlesRepository @Inject constructor(
             var deFormattedString = ""
             if (element.imageUri == null) { // reverse only text
                 deFormattedString = parser.reverseParse(element)
+                deFormattedElement = deFormattedElement.copy(text = deFormattedString)
             }
-            deFormattedElement = deFormattedElement.copy(text = deFormattedString)
+            /*if (element.imageUri != null) {
+
+            }*/
             deFormattedElements += deFormattedElement
         }
         return deFormattedElements
+    }
+
+    companion object {
+        const val PLACE_HOLDER_URL = "https://firebasestorage.googleapis.com/v0/b/read-it-b9c8b.appspot.com" +
+                "/o/articles%2Fplace_holder_image.png?alt=media&token=fd6b444e-0115-4f40-8b8d-f6deaf238179"
     }
 }
