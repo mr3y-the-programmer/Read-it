@@ -5,13 +5,13 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: "org.jmailen.kotlinter"
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion rootProject.compile_sdk_version
     buildToolsVersion "29.0.3"
 
     defaultConfig {
         applicationId "com.secret.readit"
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdkVersion rootProject.min_sdk_version
+        targetSdkVersion rootProject.target_sdk_version
         versionCode 1
         versionName "1.0"
 
