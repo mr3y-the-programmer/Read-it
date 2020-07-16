@@ -7,10 +7,6 @@
 
 package com.secret.readit.model
 
-data class Theme(val type: ThemeType,
-                 val isSelected: Boolean = false)
-
-
 
 enum class ThemeType(val label: String){
     LIGHT("light"),
