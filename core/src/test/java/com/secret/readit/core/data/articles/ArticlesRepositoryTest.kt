@@ -129,39 +129,6 @@ class ArticlesRepositoryTest {
         assertThat(result).isFalse()
     }
 
-    @Test
-    fun bookmark_ReturnTrue() = mainCoroutineRule.runBlockingTest {
-        // When trying to bookmark any article
-        val result = articlesRepo.toggleBookmark(TestData.article2, true)
-
-        // Assert it Returns True
-        assertThat(result).isTrue()
-    }
-
-    @Test
-    fun dataSourceFailure_ReturnFalse() = mainCoroutineRule.runBlockingTest {
-        // GIVEN a dataSource that fails to update data
-        val mockedDataSource = mock<FakeArticlesDataSource> {
-            on(it.bookmark(TestData.article2.id, true)).doReturn(Result.Error(Exception()))
-        }
-        articlesRepo = articlesRepo.copy(mockedDataSource)
-
-        // When trying to bookmark any article
-        val result = articlesRepo.toggleBookmark(TestData.article2, true)
-
-        // Assert it Returns False
-        assertThat(result).isFalse()
-    }
-
-    @Test
-    fun bookmarkInvalid_ReturnFalse() = mainCoroutineRule.runBlockingTest {
-        // When trying to bookmark Invalid article
-        val result = articlesRepo.toggleBookmark(TestData.emptyArticle, true)
-
-        // Assert it Returns False
-        assertThat(result).isFalse()
-    }
-
     private fun ArticlesRepository.copy(dataSource: FakeArticlesDataSource): ArticlesRepository {
         return ArticlesRepository(dataSource, DummyStorageRepository())
     }
