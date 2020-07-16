@@ -23,6 +23,9 @@ buildscript {
         //timber
         timber_version = "4.7.1"
 
+        //Room
+        room_version = "2.2.5"
+
         //test
         junit_version = "4.12"
         nhaarman_version = "2.2.0"
