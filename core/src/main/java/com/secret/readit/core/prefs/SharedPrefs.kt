@@ -7,7 +7,6 @@
 
 package com.secret.readit.core.prefs
 
-import com.secret.readit.model.ThemeType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 
@@ -35,7 +34,7 @@ interface SharedPrefs {
     /**
      * hold the current theme value(light, dark...etc)
      */
-    val currentTheme: StateFlow<ThemeType>
+    val currentTheme: StateFlow<String>
 
     /**
      * hold current User/Publisher name
