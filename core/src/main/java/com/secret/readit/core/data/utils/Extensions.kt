@@ -8,6 +8,9 @@
 package com.secret.readit.core.data.utils
 
 import com.secret.readit.core.result.Result
+import com.secret.readit.core.uimodels.ImageUiElement
+import com.secret.readit.model.BaseElement
+import com.secret.readit.model.Element
 import com.secret.readit.model.Publisher
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,6 +28,12 @@ suspend fun <T> wrapInCoroutineCancellable(
         }
     }
 }
+
+val BaseElement.isTextElement
+    get() = this is Element && this.imageUri == null
+
+val BaseElement.isImageElement
+    get() = this is ImageUiElement && this.bitmap != null
 
 // Refactored thumbnail to be an extension property, it help our model code to be more clean
 val Publisher.thumbnail
