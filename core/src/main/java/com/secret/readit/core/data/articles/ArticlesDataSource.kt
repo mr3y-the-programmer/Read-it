@@ -31,8 +31,8 @@ interface ArticlesDataSource {
      * toggle bookmark state to article with specified id
      *
      * @return true on Success, otherwise returns false
-     */
-    suspend fun bookmark(id: articleId, bookmark: Boolean = true): Result<Boolean>
+     *///Cancelled for now until solving some problems
+    /*suspend fun bookmark(id: articleId, bookmark: Boolean = true): Result<Boolean>*/
 
     /**
      * add the [article] to firestore

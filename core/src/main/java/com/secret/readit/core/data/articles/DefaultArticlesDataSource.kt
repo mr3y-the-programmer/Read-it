@@ -38,9 +38,9 @@ class DefaultArticlesDataSource @Inject constructor(
         return fetchArticle(id)
     }
 
-    override suspend fun bookmark(id: articleId, bookmark: Boolean): Result<Boolean> {
+    /*override suspend fun bookmark(id: articleId, bookmark: Boolean): Result<Boolean> {
         return updateExistingArticle(id, bookmark)
-    }
+    }*/
 
     override suspend fun addArticle(article: Article): Result<Boolean> {
         return addNewArticle(article)
@@ -123,7 +123,7 @@ class DefaultArticlesDataSource @Inject constructor(
         }
     }
 
-    private suspend fun updateExistingArticle(id: articleId, bookmark: Boolean): Result<Boolean> {
+    /*private suspend fun updateExistingArticle(id: articleId, bookmark: Boolean): Result<Boolean> {
         return wrapInCoroutineCancellable(
             ioDispatcher
         ) { continuation ->
@@ -147,7 +147,7 @@ class DefaultArticlesDataSource @Inject constructor(
                     continuation.resumeWithException(it)
                 }
         }
-    }
+    }*/
 
     companion object {
         const val ARTICLES_COLLECTION = "articles"
