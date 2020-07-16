@@ -18,7 +18,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 open class FakeStorageDataSource: StorageDataSource {
 
     override suspend fun uploadBitmap(id: articleId, imgPath: String): Result<Uri> {
-        TODO("Not yet implemented")
+        val mockedUri = mock<Uri> {
+            //no-op
+        }
+        return Result.Success(mockedUri)
     }
 
     override suspend fun downloadBitmap(uri: Uri): Result<Bitmap> {
