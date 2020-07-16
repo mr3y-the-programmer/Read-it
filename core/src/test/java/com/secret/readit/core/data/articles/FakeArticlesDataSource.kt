@@ -22,10 +22,6 @@ open class FakeArticlesDataSource : ArticlesDataSource {
         return Result.Success(TestData.article1)
     }
 
-    override suspend fun bookmark(id: articleId, bookmark: Boolean): Result<Boolean> {
-        return Result.Success(true)
-    }
-
     override suspend fun addArticle(article: Article): Result<Boolean> {
         if (article.id == TestData.article2.id) {
             return Result.Success(true)
