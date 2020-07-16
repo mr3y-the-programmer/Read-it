@@ -64,14 +64,12 @@ class PublisherRepository @Inject constructor(private val publisherDataSource: P
      * publish new article,
      * @return true on success, false on failure or no signed-in user
      */
-    //TODO: update to UiArticle
     suspend fun addNewArticle(article: Article): Boolean = update(article = article)
 
     /**
      * remove existing article,
      * @return true on success, false on failure or no signed-in user
      */
-    //TODO: update to UiArticle
     suspend fun removeArticle(article: Article): Boolean = update(article = article, positive = false)
 
     /**
