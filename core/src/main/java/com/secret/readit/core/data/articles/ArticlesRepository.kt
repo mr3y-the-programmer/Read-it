@@ -11,6 +11,8 @@ import android.net.Uri
 import com.secret.readit.core.data.utils.CustomIDHandler
 import com.secret.readit.core.data.articles.utils.Parser
 import com.secret.readit.core.data.shared.StorageRepository
+import com.secret.readit.core.data.utils.isImageElement
+import com.secret.readit.core.data.utils.isTextElement
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.core.uimodels.ImageUiElement
@@ -63,15 +65,14 @@ class ArticlesRepository @Inject constructor(
      */
     suspend fun addArticle(article: Article): Boolean {
         var successful = false
-        val deFormattedElements = deFormatElements(article.content.elements)
-        var id = ""
-        try {
-            id = idHandler.getID(article)
+        val id = try {
+            idHandler.getID(article)
         } catch (ex: IllegalArgumentException) {
             return false
         }
-
+        val deFormattedElements = deFormatElements(id, article.content.elements)
         val result = articlesDataSource.addArticle(article.copy(id = id, content = Content(deFormattedElements)))
+
         if (result != null && result.succeeded) {
             successful = (result as Result.Success).data
         }
@@ -85,9 +86,8 @@ class ArticlesRepository @Inject constructor(
      */
     suspend fun toggleBookmark(article: Article, bookmark: Boolean): Boolean {
         var successful = false
-        var id = ""
-        try {
-            id = idHandler.getID(article)
+        val id = try {
+            idHandler.getID(article)
         } catch (ex: IllegalArgumentException) {
             return false
         }
@@ -134,7 +134,7 @@ class ArticlesRepository @Inject constructor(
             if (firestoreElement.imageUri != null) {
                 val imgUri = Uri.parse(firestoreElement.imageUri)
                 val bitmap = storageRepo.downloadImg(imgUri, PLACE_HOLDER_URL)
-                formattedElements += ImageUiElement(bitmap)
+                formattedElements += ImageUiElement(bitmap, firestoreElement.imageUri!!)
             }
         }
         return formattedElements
@@ -145,21 +145,22 @@ class ArticlesRepository @Inject constructor(
         return Article("", "", Content(emptyList()), publisher, 0, 0, emptyList(), category = emptyList())
     }
 
-    private fun deFormatElements(elements: List<Element>): List<Element> {
-        val deFormattedElements = mutableListOf<Element>()
+    private suspend fun deFormatElements(id: articleId, elements: List<BaseElement>): List<Element> {
+        val firestoreElements = mutableListOf<Element>()
         for (element in elements) {
-            var deFormattedElement = element
-            var deFormattedString = ""
-            if (element.imageUri == null) { // reverse only text
-                deFormattedString = parser.reverseParse(element)
-                deFormattedElement = deFormattedElement.copy(text = deFormattedString)
+            if (element.isTextElement) { // reverse only text
+                var textElement = element as Element
+                val deFormattedString = parser.reverseParse(textElement)
+                textElement = textElement.copy(text = deFormattedString)
+                firestoreElements += textElement
             }
-            /*if (element.imageUri != null) {
-
-            }*/
-            deFormattedElements += deFormattedElement
+            if (element.isImageElement) {
+                val imageElement = element as ImageUiElement
+                val downloadUri = storageRepo.uploadImg(id, imageElement.imgPath) ?: Uri.parse(PLACE_HOLDER_URL)
+                firestoreElements += Element(downloadUri.toString())
+            }
         }
-        return deFormattedElements
+        return firestoreElements
     }
 
     companion object {
