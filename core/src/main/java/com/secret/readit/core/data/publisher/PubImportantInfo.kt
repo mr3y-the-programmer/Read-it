@@ -10,6 +10,8 @@ package com.secret.readit.core.data.publisher
 /**
  * data class which contain the needed Info for publisher so we can get its id from firestore
  */
-data class PubImportantInfo(val name: String,
-                            val emailAddress: String,
-                            val memberSince: Long)
+data class PubImportantInfo(
+    val name: String,
+    val emailAddress: String,
+    val memberSince: Long
+)

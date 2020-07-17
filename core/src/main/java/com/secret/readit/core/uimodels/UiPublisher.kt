@@ -15,5 +15,7 @@ import com.secret.readit.model.Publisher
  *
  * This is what Ui Consumers expect to have
  */
-data class UiPublisher(val publisher: Publisher,
-                       val profileImg: Bitmap?)
+data class UiPublisher(
+    val publisher: Publisher,
+    val profileImg: Bitmap?
+)

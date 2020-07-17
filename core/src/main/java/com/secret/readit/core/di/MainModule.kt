@@ -90,38 +90,40 @@ class MainModule {
     }
 
     @Provides
-    fun provideStorageDataSource(storage: FirebaseStorage,
-                                 @IoDispatcher ioDispatcher: CoroutineDispatcher,
-                                 converter: Lazy<Converter>): StorageDataSource {
+    fun provideStorageDataSource(
+        storage: FirebaseStorage,
+        @IoDispatcher ioDispatcher: CoroutineDispatcher,
+        converter: Lazy<Converter>
+    ): StorageDataSource {
         return DefaultStorageDataSource(storage, ioDispatcher, converter)
     }
 
     @Provides
-    fun provideCategoryDataSource(firestore: FirebaseFirestore, @IoDispatcher ioDispatcher: CoroutineDispatcher): CategoryDataSource{
+    fun provideCategoryDataSource(firestore: FirebaseFirestore, @IoDispatcher ioDispatcher: CoroutineDispatcher): CategoryDataSource {
         return DefaultCategoryDataSource(firestore, ioDispatcher)
     }
 
     @Provides
-    fun providePublisherInfoDataSource(firestore: FirebaseFirestore,  @IoDispatcher ioDispatcher: CoroutineDispatcher): PublisherInfoDataSource{
+    fun providePublisherInfoDataSource(firestore: FirebaseFirestore, @IoDispatcher ioDispatcher: CoroutineDispatcher): PublisherInfoDataSource {
         return DefaultPublisherInfoDataSource(firestore, ioDispatcher)
     }
 
     @Provides
     @Singleton
-    fun provideAuthRepository(authDataSource: AuthDataSource, firestore: FirebaseFirestore, @IoDispatcher ioDispatcher: CoroutineDispatcher): AuthRepository{
+    fun provideAuthRepository(authDataSource: AuthDataSource, firestore: FirebaseFirestore, @IoDispatcher ioDispatcher: CoroutineDispatcher): AuthRepository {
         return AuthRepository(authDataSource, firestore, ioDispatcher)
     }
 
     @Provides
     @Singleton
-    fun provideStorageRepository(storageSource: StorageDataSource): StorageRepository{
+    fun provideStorageRepository(storageSource: StorageDataSource): StorageRepository {
         return StorageRepository(storageSource)
     }
 
     @Provides
     @ExperimentalCoroutinesApi
     @Singleton
-    fun provideSharedPreferences(applicationContext: Context): SharedPrefs{
+    fun provideSharedPreferences(applicationContext: Context): SharedPrefs {
         return DefaultSharedPrefs(applicationContext)
     }
     // TODO: make drafts database

@@ -15,18 +15,18 @@ import com.secret.readit.model.articleId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
-open class FakeStorageDataSource: StorageDataSource {
+open class FakeStorageDataSource : StorageDataSource {
 
     override suspend fun uploadBitmap(id: articleId, imgPath: String): Result<Uri> {
         val mockedUri = mock<Uri> {
-            //no-op
+            // no-op
         }
         return Result.Success(mockedUri)
     }
 
     override suspend fun downloadBitmap(uri: Uri): Result<Bitmap> {
         val mockedBitmap = mock<Bitmap> {
-            //no-op
+            // no-op
         }
         return Result.Success(mockedBitmap)
     }

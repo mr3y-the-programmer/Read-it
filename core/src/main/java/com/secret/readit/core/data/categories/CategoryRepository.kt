@@ -20,15 +20,16 @@ import javax.inject.Inject
  * Rule: -forward actions when needed to dataSource
  *       -normalize data(with help of some utils) to consumers in expected format
  */
-class CategoryRepository @Inject constructor(private val categoryDataSource: CategoryDataSource,
-                                             private val idHandler: CustomIDHandler = CustomIDHandler()
+class CategoryRepository @Inject constructor(
+    private val categoryDataSource: CategoryDataSource,
+    private val idHandler: CustomIDHandler = CustomIDHandler()
 ) {
 
     /**
      * Return Categories from data source or empty if dataSource failed
      */
-    //TODO: normalize Int color to Color
-    suspend fun getAllCategories(): List<Category>{
+    // TODO: normalize Int color to Color
+    suspend fun getAllCategories(): List<Category> {
         val result = categoryDataSource.getCategories()
         return getCategories(result)
     }
@@ -47,9 +48,9 @@ class CategoryRepository @Inject constructor(private val categoryDataSource: Cat
         return getCategories(result)
     }
 
-    private fun getCategories(result: Result<List<Category>>): List<Category>{
+    private fun getCategories(result: Result<List<Category>>): List<Category> {
         val formattedCategories = mutableListOf<Category>()
-        if (result != null && result.succeeded){
+        if (result != null && result.succeeded) {
             val categories = (result as Result.Success).data
             for (category in categories) formattedCategories += category
         }

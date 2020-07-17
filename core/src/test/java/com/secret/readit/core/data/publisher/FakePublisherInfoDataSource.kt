@@ -12,7 +12,7 @@ import com.secret.readit.model.Publisher
 import com.secret.readit.model.articleId
 import com.secret.readit.model.publisherId
 
-class FakePublisherInfoDataSource: PublisherInfoDataSource {
+class FakePublisherInfoDataSource : PublisherInfoDataSource {
 
     override suspend fun getPublisherId(publisher: PubImportantInfo): Result<publisherId> = Result.Success(TestData.publisher1.id)
 
@@ -20,7 +20,7 @@ class FakePublisherInfoDataSource: PublisherInfoDataSource {
 
     override suspend fun setDisplayName(newName: String, id: publisherId): Result<Boolean> = Result.Success(true)
 
-    override suspend fun addNewArticleId(articleID: articleId, publisherID: publisherId): Result<Boolean> =  Result.Success(true)
+    override suspend fun addNewArticleId(articleID: articleId, publisherID: publisherId): Result<Boolean> = Result.Success(true)
 
     override suspend fun removeExistingArticleId(articleID: articleId, publisherID: publisherId): Result<Boolean> = Result.Success(true)
 

@@ -24,67 +24,67 @@ class CategoryRepositoryTest {
     @get:Rule
     val mainCoroutineRule = MainCoroutineRule()
 
-    //Object under test
+    // Object under test
     private lateinit var categoryRepo: CategoryRepository
 
     @Before
-    fun setUp(){
+    fun setUp() {
         categoryRepo = CategoryRepository(FakeCategoryDataSource())
     }
 
     @Test
     fun dataSourceSuccess_ReturnAllCategories() = mainCoroutineRule.runBlockingTest {
-        //When trying to get a Successful result
+        // When trying to get a Successful result
         val result = categoryRepo.getAllCategories()
 
         val expected = TestData.categories
 
-        //Assert it equals our expectations
+        // Assert it equals our expectations
         assertThat(result).isEqualTo(expected)
     }
 
     @Test
     fun dataSourceFails_ReturnEmptyResult() = mainCoroutineRule.runBlockingTest {
-        //GIVEN data Source that fails to get new result
+        // GIVEN data Source that fails to get new result
         val mockedDataSource = mock<FakeCategoryDataSource> {
             on(it.getCategories()).doReturn(Result.Error(Exception()))
         }
 
         categoryRepo = categoryRepo.copy(mockedDataSource)
-        //When trying to get a result
+        // When trying to get a result
         val result = categoryRepo.getAllCategories()
 
-        //Assert it is empty
+        // Assert it is empty
         assertThat(result).isEmpty()
     }
 
     @Test
     fun dataSourceSuccess_ReturnArticleCategories() = mainCoroutineRule.runBlockingTest {
-        //When trying to get a successful result
+        // When trying to get a successful result
         val result = categoryRepo.getArticleCategories(TestData.article1)
 
         val expected = TestData.articleCategories
 
-        //Assert it equals our expectations
+        // Assert it equals our expectations
         assertThat(result).isEqualTo(expected)
     }
 
     @Test
     fun dataSourceFails_ReturnEmptyArticleCategories() = mainCoroutineRule.runBlockingTest {
-        //GIVEN data Source that fails to get new result
+        // GIVEN data Source that fails to get new result
         val mockedDataSource = mock<FakeCategoryDataSource> {
             on(it.getArticleCategories("fake")).doReturn(Result.Error(Exception()))
         }
 
         categoryRepo = categoryRepo.copy(mockedDataSource)
-        //When trying to get a result
+        // When trying to get a result
         val result = categoryRepo.getArticleCategories(TestData.article1)
 
-        //Assert it is empty
+        // Assert it is empty
         assertThat(result).isEmpty()
     }
 
-    private fun CategoryRepository.copy(dataSource: CategoryDataSource): CategoryRepository{
+    private fun CategoryRepository.copy(dataSource: CategoryDataSource): CategoryRepository {
         return CategoryRepository(dataSource)
     }
 }

@@ -42,8 +42,8 @@ interface SharedPrefs {
      */
     val currentUserName: StateFlow<String>
 
-    //End of getting values
-    //Start of updating values
+    // End of getting values
+    // Start of updating values
 
     /**
      * Update User Authentication state

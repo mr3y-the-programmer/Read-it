@@ -31,7 +31,7 @@ interface ArticlesDataSource {
      * toggle bookmark state to article with specified id
      *
      * @return true on Success, otherwise returns false
-     *///Cancelled for now until solving some problems
+     */ // Cancelled for now until solving some problems
     /*suspend fun bookmark(id: articleId, bookmark: Boolean = true): Result<Boolean>*/
 
     /**

@@ -8,9 +8,9 @@
 package com.secret.readit.core.data.articles
 
 import android.net.Uri
-import com.secret.readit.core.data.utils.CustomIDHandler
 import com.secret.readit.core.data.articles.utils.Parser
 import com.secret.readit.core.data.shared.StorageRepository
+import com.secret.readit.core.data.utils.CustomIDHandler
 import com.secret.readit.core.data.utils.isImageElement
 import com.secret.readit.core.data.utils.isTextElement
 import com.secret.readit.core.result.Result
@@ -109,7 +109,7 @@ class ArticlesRepository @Inject constructor(
             var firestoreElement = (baseElement as Element)
             if (firestoreElement.imageUri == null) { // parse text only
                 firestoreElement = parser.parse(baseElement.text!!)
-                formattedElements += firestoreElement //In this case UiElement is the same as firestoreElement
+                formattedElements += firestoreElement // In this case UiElement is the same as firestoreElement
             }
             if (firestoreElement.imageUri != null) {
                 val imgUri = Uri.parse(firestoreElement.imageUri)
@@ -145,6 +145,6 @@ class ArticlesRepository @Inject constructor(
 
     companion object {
         const val PLACE_HOLDER_URL = "https://firebasestorage.googleapis.com/v0/b/read-it-b9c8b.appspot.com" +
-                "/o/articles%2Fplace_holder_image.png?alt=media&token=fd6b444e-0115-4f40-8b8d-f6deaf238179"
+            "/o/articles%2Fplace_holder_image.png?alt=media&token=fd6b444e-0115-4f40-8b8d-f6deaf238179"
     }
 }

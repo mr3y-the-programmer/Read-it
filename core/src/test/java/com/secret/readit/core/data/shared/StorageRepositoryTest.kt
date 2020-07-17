@@ -45,21 +45,21 @@ class StorageRepositoryTest {
 
     @Test
     fun dataSourceSuccess_ReturnBitmap() = mainCoroutineRule.runBlockingTest {
-        //GIVEN a valid uri
+        // GIVEN a valid uri
         val validUri = Uri.parse(validStringUri)
 
-        //When trying to download image with any valid Uri
+        // When trying to download image with any valid Uri
         val result = storageRepo.downloadImg(validUri, "not needed when uri valid")
 
-        //Assert we have a bitmap value
+        // Assert we have a bitmap value
         assertThat(result).isNotNull()
-        //In other words
+        // In other words
         assertThat(result).isInstanceOf(Bitmap::class.java)
     }
 
     @Test
     fun dataSourceFails_ReturnNull() = mainCoroutineRule.runBlockingTest {
-        //GIVEN a valid uri, dataSource that fails to get data
+        // GIVEN a valid uri, dataSource that fails to get data
         val validUri = Uri.parse(validStringUri)
         val mockedDataSource = mock<FakeStorageDataSource> {
             on(it.downloadBitmap(validUri)).doReturn(Result.Error(Exception()))
@@ -67,45 +67,45 @@ class StorageRepositoryTest {
 
         storageRepo = StorageRepository(mockedDataSource)
 
-        //When trying to get a result
+        // When trying to get a result
         val result = storageRepo.downloadImg(validUri, "not needed")
 
-        //Assert data is null, although url is valid
+        // Assert data is null, although url is valid
         assertThat(result).isNull()
     }
 
     @Test
     fun dataSourceSuccess_ReturnUri() = mainCoroutineRule.runBlockingTest {
-        //GIVEN a valid image local-path
+        // GIVEN a valid image local-path
         val path = "images/favourites/myImg.png"
 
-        //When trying to upload image with valid local path
+        // When trying to upload image with valid local path
         val result = storageRepo.uploadImg(TestData.article1.id, path)
 
-        //Assert we have a uri value
+        // Assert we have a uri value
         assertThat(result).isNotNull()
-        //In other words
+        // In other words
         assertThat(result).isInstanceOf(Uri::class.java)
     }
 
     @Test
     fun dataSourceFails_ReturnNullUri() = mainCoroutineRule.runBlockingTest {
-        //GIVEN a valid path, valid articleID and dataSource that fails to get data
+        // GIVEN a valid path, valid articleID and dataSource that fails to get data
         val path = "images/favourites/myImg.png"
         val mockedDataSource = mock<FakeStorageDataSource> {
             on(it.uploadBitmap(TestData.article1.id, path)).doReturn(Result.Error(Exception()))
         }
         storageRepo = StorageRepository(mockedDataSource)
 
-        //When trying to get a result
+        // When trying to get a result
         val result = storageRepo.uploadImg(TestData.article1.id, path)
 
-        //Assert data is null, although path is valid
+        // Assert data is null, although path is valid
         assertThat(result).isNull()
     }
 
     companion object {
         const val validStringUri = "https://firebasestorage.googleapis.com/v0/b/read-it-b9c8b.appspot.com/" +
-                "o/publishers%2Faccount_default.png?alt=media&token=1502d0e1-c30f-4d45-997d-e39ac5af62ba"
+            "o/publishers%2Faccount_default.png?alt=media&token=1502d0e1-c30f-4d45-997d-e39ac5af62ba"
     }
 }

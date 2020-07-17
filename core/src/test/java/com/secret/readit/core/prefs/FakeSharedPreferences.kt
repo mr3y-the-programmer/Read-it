@@ -12,7 +12,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 
 @ExperimentalCoroutinesApi
-class FakeSharedPreferences: SharedPrefs {
+class FakeSharedPreferences : SharedPrefs {
 
     override val isUserLoggedIn: StateFlow<Boolean>
         get() = TODO("Not yet implemented")

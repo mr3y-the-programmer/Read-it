@@ -54,14 +54,14 @@ class CustomIDHandler {
 
         val firstChar = name[0]
         val lastChar = name[name.length.minus(1)]
-        val randomPrefix = when(firstChar.toUpperCase()) {
+        val randomPrefix = when (firstChar.toUpperCase()) {
             in 'A'..'D' -> "a${firstChar}d"
             in 'E'..'O' -> "e${firstChar}o"
             in 'P'..'T' -> "p${firstChar}t"
             else -> "u${firstChar}z"
         }
 
-        val randomSuffix = when(lastChar.toUpperCase()) {
+        val randomSuffix = when (lastChar.toUpperCase()) {
             in 'A'..'D' -> "a${lastChar}d"
             in 'E'..'O' -> "e${lastChar}o"
             in 'P'..'T' -> "p${lastChar}t"

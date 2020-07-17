@@ -14,16 +14,16 @@ import com.secret.readit.model.articleId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
-class DummyStorageRepository: StorageRepository(FakeStorageDataSource()) {
+class DummyStorageRepository : StorageRepository(FakeStorageDataSource()) {
     override suspend fun downloadImg(imgUri: Uri?, defaultValue: String): Bitmap? {
         return mock {
-            //no-op
+            // no-op
         }
     }
 
     override suspend fun uploadImg(id: articleId, imgPath: String): Uri? {
         return mock {
-            //no-op
+            // no-op
         }
     }
 }

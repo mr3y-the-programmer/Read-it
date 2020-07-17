@@ -27,14 +27,14 @@ open class StorageRepository @Inject constructor(private val storageDataSource: 
      * @param imgUri: the Uri of required image to download
      * @param defaultValue: String represent the url of default img, this param should never be null
      */
-    open suspend fun downloadImg(imgUri: Uri?, defaultValue: String): Bitmap?{
+    open suspend fun downloadImg(imgUri: Uri?, defaultValue: String): Bitmap? {
         val default = Uri.parse(defaultValue)
         val result = storageDataSource.downloadBitmap(imgUri ?: default)
 
         return if (result.succeeded) (result as Result.Success).data else null
     }
 
-    open suspend fun uploadImg(id: articleId, imgPath: String): Uri?{
+    open suspend fun uploadImg(id: articleId, imgPath: String): Uri? {
         val result = storageDataSource.uploadBitmap(id, imgPath)
 
         return if (result.succeeded) (result as Result.Success).data else null

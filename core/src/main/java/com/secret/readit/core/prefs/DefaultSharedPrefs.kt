@@ -22,7 +22,7 @@ import javax.inject.Singleton
  */
 @ExperimentalCoroutinesApi
 @Singleton
-class DefaultSharedPrefs @Inject constructor(private val applicationContext: Context): SharedPrefs {
+class DefaultSharedPrefs @Inject constructor(private val applicationContext: Context) : SharedPrefs {
 
     private val prefs: Lazy<SharedPreferences> = lazy {
         applicationContext.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE)
@@ -46,7 +46,7 @@ class DefaultSharedPrefs @Inject constructor(private val applicationContext: Con
 
     override fun updateUserName(newName: String) = update(CURRENT_USER_NAME_KEY, newName, _currentUserName)
 
-    private fun <T> update(prefsKey: String, value: T, updatedField: MutableStateFlow<T>){
+    private fun <T> update(prefsKey: String, value: T, updatedField: MutableStateFlow<T>) {
         prefs.value.edit {
             if (value is String) putString(prefsKey, value) else putBoolean(prefsKey, value as Boolean)
         }.also {

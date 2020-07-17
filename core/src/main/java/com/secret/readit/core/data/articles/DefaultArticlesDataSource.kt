@@ -8,7 +8,6 @@
 package com.secret.readit.core.data.articles
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
 import com.secret.readit.core.di.IoDispatcher
 import com.secret.readit.core.result.Result

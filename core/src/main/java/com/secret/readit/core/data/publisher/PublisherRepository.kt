@@ -26,23 +26,24 @@ import javax.inject.Inject
  * Rule: -forward actions when needed to dataSource
  *       -provide Publisher data to consumers in expected format
  */
-class PublisherRepository @Inject constructor(private val publisherDataSource: PublisherInfoDataSource,
-                                              private val authRepo: AuthRepository,
-                                              private val storageRepo: StorageRepository,
-                                              private val idHandler: CustomIDHandler = CustomIDHandler()
+class PublisherRepository @Inject constructor(
+    private val publisherDataSource: PublisherInfoDataSource,
+    private val authRepo: AuthRepository,
+    private val storageRepo: StorageRepository,
+    private val idHandler: CustomIDHandler = CustomIDHandler()
 ) {
 
     /**
      * get Current Signed-in publisher/user, empty Publisher if no signed-in user
      */
-    suspend fun getCurrentUser(): UiPublisher{
+    suspend fun getCurrentUser(): UiPublisher {
         val id = authRepo.getId() ?: return getEmptyPublisher()
 
         val result = publisherDataSource.getPublisher(id)
 
         var publisher = getEmptyPublisher().publisher
         var profileImg: Bitmap? = null
-        if (result.succeeded){
+        if (result.succeeded) {
             publisher = (result as Result.Success).data
             val imgUri = Uri.parse(publisher.profileImgUri)
             profileImg = storageRepo.downloadImg(imgUri, DEFAULT_PROFILE_IMG_URL)
@@ -55,7 +56,7 @@ class PublisherRepository @Inject constructor(private val publisherDataSource: P
      * @return true on success, false on failure or no signed-in user
      */
     suspend fun updateName(newName: String): Boolean {
-        val id = authRepo.getId() ?: return false //User isn't Signed-in
+        val id = authRepo.getId() ?: return false // User isn't Signed-in
         val result = publisherDataSource.setDisplayName(newName, id)
         return if (result.succeeded) (result as Result.Success).data else false
     }
@@ -100,7 +101,7 @@ class PublisherRepository @Inject constructor(private val publisherDataSource: P
         val id = authRepo.getId() ?: return false
         val objectID = try {
             if (article != null) idHandler.getID(article) else idHandler.getID(category!!)
-        }catch (ex: IllegalArgumentException) {
+        } catch (ex: IllegalArgumentException) {
             Timber.e("Not Valid Article/Category")
             return false
         }
@@ -138,6 +139,6 @@ class PublisherRepository @Inject constructor(private val publisherDataSource: P
 
     companion object {
         const val DEFAULT_PROFILE_IMG_URL = "https://firebasestorage.googleapis.com/v0/b/read-it-b9c8b.appspot.com/" +
-                "o/publishers%2Faccount_default.png?alt=media&token=1502d0e1-c30f-4d45-997d-e39ac5af62ba"
+            "o/publishers%2Faccount_default.png?alt=media&token=1502d0e1-c30f-4d45-997d-e39ac5af62ba"
     }
 }
