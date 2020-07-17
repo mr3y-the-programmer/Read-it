@@ -7,6 +7,7 @@
 
 package com.secret.readit.core.prefs
 
+import com.secret.readit.model.ThemeType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 
@@ -40,4 +41,22 @@ interface SharedPrefs {
      * hold current User/Publisher name
      */
     val currentUserName: StateFlow<String>
+
+    //End of getting values
+    //Start of updating values
+
+    /**
+     * Update User Authentication state
+     */
+    fun updateUserAuthState(newState: Boolean)
+
+    /**
+     * Update theme
+     */
+    fun updateCurrentTheme(newTheme: ThemeType)
+
+    /**
+     * Update User name
+     */
+    fun updateUserName(newName: String)
 }
