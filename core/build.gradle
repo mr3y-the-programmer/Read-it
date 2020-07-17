@@ -31,6 +31,7 @@ android {
                 arguments += ["room.schemaLocation": "$projectDir/schemas".toString(),  //Export schema file location
                               "room.incremental": "true",
                               "room.expandProjection": "true"]
+                arguments << ["dagger.gradle.incremental": "true"]
             }
         }
     }
