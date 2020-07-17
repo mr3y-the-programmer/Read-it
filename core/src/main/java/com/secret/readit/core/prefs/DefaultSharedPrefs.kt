@@ -40,7 +40,8 @@ class DefaultSharedPrefs @Inject constructor(private val applicationContext: Con
     override val currentUserName: StateFlow<String>
         get() = _currentUserName
 
-    fun updateUserAuthState(newState: Boolean) {
+    //TODO:Refactor
+    override fun updateUserAuthState(newState: Boolean) {
         prefs.value.edit {
             putBoolean(USER_LOGGED_IN_KEY, newState)
         }.also {
@@ -48,7 +49,7 @@ class DefaultSharedPrefs @Inject constructor(private val applicationContext: Con
         }
     }
 
-    fun updateCurrentTheme(newTheme: ThemeType) {
+    override fun updateCurrentTheme(newTheme: ThemeType) {
         prefs.value.edit {
             putString(CURRENT_THEME_KEY, newTheme.label)
         }.also {
@@ -56,7 +57,7 @@ class DefaultSharedPrefs @Inject constructor(private val applicationContext: Con
         }
     }
 
-    fun updateUserName(newName: String) {
+    override fun updateUserName(newName: String) {
         prefs.value.edit {
             putString(CURRENT_USER_NAME_KEY, newName)
         }.also {
