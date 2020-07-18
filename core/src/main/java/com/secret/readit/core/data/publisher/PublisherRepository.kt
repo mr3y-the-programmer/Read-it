@@ -121,6 +121,9 @@ class PublisherRepository @Inject constructor(
     private suspend fun updateFollowers(publisher: UiPublisher, positive: Boolean = true): Boolean {
         val userID = authRepo.getId() ?: return false
         val firestorePub = publisher.publisher
+
+        if (firestorePub.emailAddress.isEmpty() || firestorePub.name.isEmpty() || firestorePub.memberSince < 0) return false
+
         val publisherIdResult = publisherDataSource.getPublisherId(PubImportantInfo(firestorePub.name, firestorePub.emailAddress, firestorePub.memberSince))
         val publisherId = if (publisherIdResult != null && publisherIdResult.succeeded) {
             (publisherIdResult as Result.Success).data
