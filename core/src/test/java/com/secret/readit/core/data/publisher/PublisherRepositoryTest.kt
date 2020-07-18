@@ -199,7 +199,7 @@ class PublisherRepositoryTest {
 
     /**
      * Refactor boilerplate to this private fun
-     * it takes 4 parameters the only two mandatory Param is [funUnderTest] which is function under test
+     * it takes 4 parameters, only 1 mandatory Param is [funUnderTest] which is function under test
      */
     private suspend fun runTest(
         nullUser: Boolean = false,
