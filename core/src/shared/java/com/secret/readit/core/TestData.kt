@@ -1,3 +1,4 @@
+import com.secret.readit.core.uimodels.UiPublisher
 import com.secret.readit.model.Article
 import com.secret.readit.model.Category
 import com.secret.readit.model.Comment
@@ -37,6 +38,7 @@ object TestData {
 
     val publisher1 = Publisher("1pub", "fake1", "fake1@gamil.com", memberSince = 1280282737737)
     val publisher2 = publisher1.copy(id = "2pub", name = "fake2", emailAddress = "fake2@gmail.com")
+    val uiPublisher1 = UiPublisher(publisher1, null)
 
     val comment0 = Comment("6", publisher2, "I've replied to you", 787542322223, emptyList())
     val comment1 = Comment("1", publisher1, "That's Awesome", 1968764334, emptyList())
@@ -63,6 +65,7 @@ object TestData {
     )
 
     val emptyPublisher = Publisher("", "", "", memberSince = -1)
+    val emptyUiPublisher = UiPublisher(emptyPublisher, null)
     val emptyArticle = Article(
         "", "", Content(emptyList()), emptyPublisher, 0, 0, emptyList(), category = emptyList()
     )

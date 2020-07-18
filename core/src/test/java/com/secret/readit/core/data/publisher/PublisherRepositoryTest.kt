@@ -126,302 +126,95 @@ class PublisherRepositoryTest {
     }
 
     @Test
-    fun allOk_AddNewArticleSuccessfully() = mainCoroutineRule.runBlockingTest {
-        // When trying to publish new article
-        val result = publisherRepo.addNewArticle(TestData.article1)
-
-        // Assert process is success
-        assertThat(result).isTrue()
-    }
+    fun allOk_AddNewArticleSuccessfully() = mainCoroutineRule.runBlockingTest { runTest{ publisherRepo.addNewArticle(TestData.article1) }}
 
     @Test
-    fun nullUser_CannotAddNewArticle() = mainCoroutineRule.runBlockingTest {
-        // GIVEN no signed-in User
-        mockedAuthRepository = mock {
-            on(it.getId()).doReturn(null)
-        }
-        publisherRepo = PublisherRepository(FakePublisherInfoDataSource(), mockedAuthRepository, DummyStorageRepository())
-
-        // When trying to publish new article
-        val result = publisherRepo.addNewArticle(TestData.article1)
-
-        // Assert We return false(failed)
-        assertThat(result).isFalse()
-    }
+    fun nullUser_CannotAddArticle() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true){ publisherRepo.addNewArticle(TestData.article1) }}
 
     @Test
-    fun dataSourceFails_CannotAddNewArticle() = mainCoroutineRule.runBlockingTest {
-        // GIVEN failed dataSource(i.e No Internet Connection)
-        val mockedPublisherDataSource = mock<FakePublisherInfoDataSource> {
-            on(it.addNewArticleId(TestData.article1.id, TestData.publisher1.id)).doReturn(Result.Error(Exception()))
-        }
+    fun dataSourceFails_CannotAddArticle() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true){ publisherRepo.addNewArticle(TestData.article1) }}
+
+    @Test
+    fun invalidArticle_CannotAddNewArticle() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true){ publisherRepo.addNewArticle(TestData.emptyArticle) }}
+
+    @Test
+    fun allOk_RemoveArticleSuccessfully() = mainCoroutineRule.runBlockingTest { runTest{ publisherRepo.removeArticle(TestData.article1) }}
+
+    @Test
+    fun nullUser_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true){ publisherRepo.removeArticle(TestData.article1) }}
+
+    @Test
+    fun dataSourceFails_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true){ publisherRepo.removeArticle(TestData.article1) }}
+
+    @Test
+    fun invalidArticle_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true){ publisherRepo.removeArticle(TestData.emptyArticle) }}
+
+    @Test
+    fun allOk_FollowCategorySuccessfully() = mainCoroutineRule.runBlockingTest { runTest{publisherRepo.followCategory(TestData.category1)}}
+
+    @Test
+    fun nullUser_CannotFollowCategory() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true){publisherRepo.followCategory(TestData.category1)}}
+
+    @Test
+    fun dataSourceFails_CannotFollowCategory() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true){publisherRepo.followCategory(TestData.category1)}}
+
+    @Test
+    fun invalidCategory_CannotFollowCategory() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true){publisherRepo.followCategory(TestData.emptyCategory)}}
+
+    @Test
+    fun allOk_unFollowCategorySuccessfully() = mainCoroutineRule.runBlockingTest { runTest{publisherRepo.unFollowCategory(TestData.category1)}}
+
+    @Test
+    fun nullUser_CannotunFollowCategory() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true){publisherRepo.unFollowCategory(TestData.category1)} }
+
+    @Test
+    fun dataSourceFails_CannotunFollowCategory() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true){publisherRepo.unFollowCategory(TestData.category1)}}
+
+    @Test
+    fun invalidCategory_CannotunFollowCategory() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true){publisherRepo.unFollowCategory(TestData.emptyCategory)}}
+
+    @Test
+    fun allOk_FollowPublisherSuccessfully() = mainCoroutineRule.runBlockingTest { runTest{publisherRepo.followPublisher(TestData.uiPublisher1)}}
+
+    @Test
+    fun nullUser_CannotFollowPublisher() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true){publisherRepo.followPublisher(TestData.uiPublisher1)}}
+
+    @Test
+    fun dataSourceFails_CannotFollowPublisher() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true){publisherRepo.followPublisher(TestData.uiPublisher1)}}
+
+    @Test
+    fun invalidPublisher_CannotFollowPublisher() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true){publisherRepo.followPublisher(TestData.emptyUiPublisher)}}
+
+    @Test
+    fun allOk_unFollowPublisherSuccessfully() = mainCoroutineRule.runBlockingTest { runTest{ publisherRepo.unFollowPublisher(TestData.uiPublisher1) }}
+
+    @Test
+    fun nullUser_CannotunFollowPublisher() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true){ publisherRepo.unFollowPublisher(TestData.uiPublisher1) }}
+
+    @Test
+    fun dataSourceFails_CannotunFollowPublisher() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true){ publisherRepo.unFollowPublisher(TestData.uiPublisher1) }}
+
+    @Test
+    fun invalidPublisher_CannotunFollowPublisher() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true){ publisherRepo.unFollowPublisher(TestData.emptyUiPublisher) }}
+
+    /**
+     * Refactor boilerplate to this private fun
+     * it takes 4 parameters the only two mandatory Param is [funUnderTest] which is function under test
+     */
+    private suspend fun runTest(
+        nullUser: Boolean = false,
+        mockDataSourceFun: Boolean = false,
+        invalidParameter: Boolean = false,
+        funUnderTest: suspend PublisherRepository.() -> Boolean)
+    {
+        if (nullUser) mockedAuthRepository = mock { on(it.getId()).doReturn(null) } // GIVEN no signed-in User
+
+        val mockedPublisherDataSource = if (mockDataSourceFun) DummyPublisherDataSource() else FakePublisherInfoDataSource() // GIVEN failed dataSource
+
+        //Satisfy dependencies based on conditions
         publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
-
-        // When trying to publish new article
-        val result = publisherRepo.addNewArticle(TestData.article1)
-
-        // Assert We failed
-        assertThat(result).isFalse()
-    }
-
-    @Test
-    fun invalidArticle_CannotAddNewArticle() = mainCoroutineRule.runBlockingTest {
-        // When trying to publish invalid article
-        val result = publisherRepo.addNewArticle(TestData.emptyArticle)
-
-        // Assert We return false(failed)
-        assertThat(result).isFalse()
-    }
-
-    @Test
-    fun allOk_RemoveArticleSuccessfully() = mainCoroutineRule.runBlockingTest {
-        // When trying to remove article
-        val result = publisherRepo.removeArticle(TestData.article1)
-
-        // Assert process is success
-        assertThat(result).isTrue()
-    }
-
-    @Test
-    fun nullUser_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest {
-        // GIVEN no signed-in User
-        mockedAuthRepository = mock {
-            on(it.getId()).doReturn(null)
-        }
-        publisherRepo = PublisherRepository(FakePublisherInfoDataSource(), mockedAuthRepository, DummyStorageRepository())
-
-        // When trying to remove article
-        val result = publisherRepo.removeArticle(TestData.article1)
-
-        // Assert We return false(failed)
-        assertThat(result).isFalse()
-    }
-
-    @Test
-    fun dataSourceFails_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest {
-        // GIVEN failed dataSource(i.e No Internet Connection)
-        val mockedPublisherDataSource = mock<FakePublisherInfoDataSource> {
-            on(it.removeExistingArticleId(TestData.article1.id, TestData.publisher1.id)).doReturn(Result.Error(Exception()))
-        }
-        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
-
-        // When trying to remove article
-        val result = publisherRepo.removeArticle(TestData.article1)
-
-        // Assert We failed
-        assertThat(result).isFalse()
-    }
-
-    @Test
-    fun invalidArticle_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest {
-        // When trying to remove invalid article
-        val result = publisherRepo.removeArticle(TestData.emptyArticle)
-
-        // Assert We return false(failed)
-        assertThat(result).isFalse()
-    }
-
-    @Test
-    fun allOk_FollowCategorySuccessfully() = mainCoroutineRule.runBlockingTest {
-        // When trying to follow category
-        val result = publisherRepo.followCategory(TestData.category1)
-
-        // Assert process is success
-        assertThat(result).isTrue()
-    }
-
-    @Test
-    fun nullUser_CannotFollowCategory() = mainCoroutineRule.runBlockingTest {
-        // GIVEN no signed-in User
-        mockedAuthRepository = mock {
-            on(it.getId()).doReturn(null)
-        }
-        publisherRepo = PublisherRepository(FakePublisherInfoDataSource(), mockedAuthRepository, DummyStorageRepository())
-
-        // When trying to follow category
-        val result = publisherRepo.followCategory(TestData.category1)
-
-        // Assert We return false(failed)
-        assertThat(result).isFalse()
-    }
-
-    @Test
-    fun dataSourceFails_CannotFollowCategory() = mainCoroutineRule.runBlockingTest {
-        // GIVEN failed dataSource(i.e No Internet Connection)
-        val mockedPublisherDataSource = mock<FakePublisherInfoDataSource> {
-            on(it.addNewCategoryId(TestData.category1.id, TestData.publisher1.id)).doReturn(Result.Error(Exception()))
-        }
-        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
-
-        // When trying to follow category
-        val result = publisherRepo.followCategory(TestData.category1)
-
-        // Assert We failed
-        assertThat(result).isFalse()
-    }
-
-    @Test
-    fun invalidCategory_CannotFollowCategory() = mainCoroutineRule.runBlockingTest {
-        // When trying to follow invalid category
-        val result = publisherRepo.followCategory(TestData.emptyCategory)
-
-        // Assert We return false(failed)
-        assertThat(result).isFalse()
-    }
-
-    @Test
-    fun allOk_unFollowCategorySuccessfully() = mainCoroutineRule.runBlockingTest {
-        // When trying to unFollow category
-        val result = publisherRepo.unFollowCategory(TestData.category1)
-
-        // Assert process is success
-        assertThat(result).isTrue()
-    }
-
-    @Test
-    fun nullUser_CannotunFollowCategory() = mainCoroutineRule.runBlockingTest {
-        // GIVEN no signed-in User
-        mockedAuthRepository = mock {
-            on(it.getId()).doReturn(null)
-        }
-        publisherRepo = PublisherRepository(FakePublisherInfoDataSource(), mockedAuthRepository, DummyStorageRepository())
-
-        // When trying to unFollow category
-        val result = publisherRepo.unFollowCategory(TestData.category1)
-
-        // Assert We return false(failed)
-        assertThat(result).isFalse()
-    }
-
-    @Test
-    fun dataSourceFails_CannotunFollowCategory() = mainCoroutineRule.runBlockingTest {
-        // GIVEN failed dataSource(i.e No Internet Connection)
-        val mockedPublisherDataSource = mock<FakePublisherInfoDataSource> {
-            on(it.unFollowExistingCategoryId(TestData.category1.id, TestData.publisher1.id)).doReturn(Result.Error(Exception()))
-        }
-        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
-
-        // When trying to unFollow category
-        val result = publisherRepo.unFollowCategory(TestData.category1)
-
-        // Assert We failed
-        assertThat(result).isFalse()
-    }
-
-    @Test
-    fun invalidCategory_CannotunFollowCategory() = mainCoroutineRule.runBlockingTest {
-        // When trying to unFollow invalid category
-        val result = publisherRepo.unFollowCategory(TestData.emptyCategory)
-
-        // Assert We return false(failed)
-        assertThat(result).isFalse()
-    }
-
-    @Test
-    fun allOk_FollowPublisherSuccessfully() = mainCoroutineRule.runBlockingTest {
-        // When trying to follow publisher
-        val result = publisherRepo.followPublisher(UiPublisher(TestData.publisher1, null))
-
-        // Assert process is success
-        assertThat(result).isTrue()
-    }
-
-    @Test
-    fun nullUser_CannotFollowPublisher() = mainCoroutineRule.runBlockingTest {
-        // GIVEN no signed-in User
-        mockedAuthRepository = mock {
-            on(it.getId()).doReturn(null)
-        }
-        publisherRepo = PublisherRepository(FakePublisherInfoDataSource(), mockedAuthRepository, DummyStorageRepository())
-
-        // When trying to follow publisher
-        val result = publisherRepo.followPublisher(UiPublisher(TestData.publisher1, null))
-
-        // Assert We return false(failed)
-        assertThat(result).isFalse()
-    }
-
-    @Test
-    fun dataSourceFails_CannotFollowPublisher() = mainCoroutineRule.runBlockingTest {
-        // GIVEN failed dataSource(i.e No Internet Connection)
-        val mockedPublisherDataSource = mock<FakePublisherInfoDataSource> {
-            on(it.follow(TestData.publisher2.id, TestData.publisher1.id)).doReturn(Result.Error(Exception()))
-        }
-        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
-
-        // When trying to follow publisher
-        val result = publisherRepo.followPublisher(UiPublisher(TestData.publisher2, null))
-
-        // Assert We failed
-        assertThat(result).isFalse()
-    }
-
-    @Test
-    fun invalidPublisher_CannotFollowPublisher() = mainCoroutineRule.runBlockingTest {
-        // GIVEN failed dataSource(i.e user/publisher isn't exist)
-        val mockedPublisherDataSource = mock<FakePublisherInfoDataSource> {
-            on(it.getPublisherId(PubImportantInfo("not exist", "not exist", -1))).doReturn(Result.Error(Exception()))
-        }
-        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
-
-        // When trying to follow publisher
-        val result = publisherRepo.followPublisher(UiPublisher(TestData.publisher1, null))
-
-        // Assert We return false(failed)
-        assertThat(result).isFalse()
-    }
-
-    @Test
-    fun allOk_unFollowPublisherSuccessfully() = mainCoroutineRule.runBlockingTest {
-        // When trying to unfollow publisher
-        val result = publisherRepo.unFollowPublisher(UiPublisher(TestData.publisher1, null))
-
-        // Assert process is success
-        assertThat(result).isTrue()
-    }
-
-    @Test
-    fun nullUser_CannotunFollowPublisher() = mainCoroutineRule.runBlockingTest {
-        // GIVEN no signed-in User
-        mockedAuthRepository = mock {
-            on(it.getId()).doReturn(null)
-        }
-        publisherRepo = PublisherRepository(FakePublisherInfoDataSource(), mockedAuthRepository, DummyStorageRepository())
-
-        // When trying to unFollow publisher
-        val result = publisherRepo.unFollowPublisher(UiPublisher(TestData.publisher1, null))
-
-        // Assert We return false(failed)
-        assertThat(result).isFalse()
-    }
-
-    @Test
-    fun dataSourceFails_CannotunFollowPublisher() = mainCoroutineRule.runBlockingTest {
-        // GIVEN failed dataSource(i.e No Internet Connection)
-        val mockedPublisherDataSource = mock<FakePublisherInfoDataSource> {
-            on(it.unFollow(TestData.publisher2.id, TestData.publisher1.id)).doReturn(Result.Error(Exception()))
-        }
-        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
-
-        // When trying to unFollow publisher
-        val result = publisherRepo.unFollowPublisher(UiPublisher(TestData.publisher2, null))
-
-        // Assert We failed
-        assertThat(result).isFalse()
-    }
-
-    @Test
-    fun invalidPublisher_CannotunFollowPublisher() = mainCoroutineRule.runBlockingTest {
-        // GIVEN failed dataSource(i.e user/publisher isn't exist)
-        val mockedPublisherDataSource = mock<FakePublisherInfoDataSource> {
-            on(it.getPublisherId(PubImportantInfo("not exist", "not exist", -1))).doReturn(Result.Error(Exception()))
-        }
-        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
-
-        // When trying to unFollow publisher
-        val result = publisherRepo.unFollowPublisher(UiPublisher(TestData.publisher1, null))
-
-        // Assert We return false(failed)
-        assertThat(result).isFalse()
+        val result = publisherRepo.funUnderTest()
+        // Assert it all goes as intended
+        if (nullUser || mockDataSourceFun || invalidParameter) assertThat(result).isFalse() else assertThat(result).isTrue()
     }
 }
