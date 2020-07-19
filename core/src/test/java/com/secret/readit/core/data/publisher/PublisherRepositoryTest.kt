@@ -87,43 +87,13 @@ class PublisherRepositoryTest {
     }
 
     @Test
-    fun allOk_UpdateUserNameSuccessfully() = mainCoroutineRule.runBlockingTest {
-        // When trying to update CurrentUser name
-        val result = publisherRepo.updateName(TestData.publisher1.name)
-
-        // Assert process is success
-        assertThat(result).isTrue()
-    }
+    fun allOk_UpdateUserNameSuccessfully() = mainCoroutineRule.runBlockingTest { runTest{ publisherRepo.updateName(TestData.publisher1.name) }}
 
     @Test
-    fun nullUser_CannotUpdateUserName() = mainCoroutineRule.runBlockingTest {
-        // GIVEN no signed-in User
-        mockedAuthRepository = mock {
-            on(it.getId()).doReturn(null)
-        }
-        publisherRepo = PublisherRepository(FakePublisherInfoDataSource(), mockedAuthRepository, DummyStorageRepository())
-
-        // When trying to update name
-        val result = publisherRepo.updateName(TestData.publisher1.name)
-
-        // Assert We return false(failed)
-        assertThat(result).isFalse()
-    }
+    fun nullUser_CannotUpdateUserName() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true){ publisherRepo.updateName(TestData.publisher1.name) }}
 
     @Test
-    fun dataSourceFails_CannotUpdateUserName() = mainCoroutineRule.runBlockingTest {
-        // GIVEN failed dataSource(i.e No Internet Connection)
-        val mockedPublisherDataSource = mock<FakePublisherInfoDataSource> {
-            on(it.setDisplayName(TestData.publisher1.name, TestData.publisher1.id)).doReturn(Result.Error(Exception()))
-        }
-        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
-
-        // When trying to update name
-        val result = publisherRepo.updateName(TestData.publisher1.name)
-
-        // Assert We failed
-        assertThat(result).isFalse()
-    }
+    fun dataSourceFails_CannotUpdateUserName() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true){ publisherRepo.updateName(TestData.publisher1.name) }}
 
     @Test
     fun allOk_AddNewArticleSuccessfully() = mainCoroutineRule.runBlockingTest { runTest{ publisherRepo.addNewArticle(TestData.article1) }}
