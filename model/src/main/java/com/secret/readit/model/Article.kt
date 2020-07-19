@@ -17,5 +17,5 @@ data class Article(val id: articleId,
                    val timestamp: Long,
                    val comments: List<Comment>,
                    val numOfAppreciate: Int = 0,
-                   val numOfProtest: Int = 0,
+                   val numOfDisagree: Int = 0,
                    val category: List<Category>)
