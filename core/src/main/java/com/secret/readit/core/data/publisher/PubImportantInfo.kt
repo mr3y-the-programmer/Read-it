@@ -13,5 +13,6 @@ package com.secret.readit.core.data.publisher
 data class PubImportantInfo(
     val name: String,
     val emailAddress: String,
-    val memberSince: Long
+    val memberSince: Long,
+    val numOfFollowers: Int = 0 //(Optional) Only added because of [MostFollowedPublishersArticles]
 )
