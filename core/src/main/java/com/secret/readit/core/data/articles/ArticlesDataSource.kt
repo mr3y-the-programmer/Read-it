@@ -17,10 +17,14 @@ import com.secret.readit.model.articleId
 interface ArticlesDataSource {
 
     /**
-     * Basically, this function gets a number of articles from firestore (i.e: 50),
-     * cause fetching entire articles in firestore is waste of network and quota and will never needed by user
+     * the main function to get articles from articles collection,
+     * it takes many parameters the only one needed is [limit] to avoid fetching unNeeded articles
      */
-    suspend fun getArticles(): Result<List<Article>>
+    suspend fun getArticles(limit: Int,
+                            numOfAppreciation: Int = 0,
+                            containCategories: List<String> = emptyList(),
+                            numOfMinutesRead: Int = 0,
+                            pubFollowersMoreThan: Int = 0): Result<List<Article>>
 
     /**
      * get specific article by [id]
