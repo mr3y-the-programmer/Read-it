@@ -14,7 +14,13 @@ import com.secret.readit.model.articleId
 // The class need to be opened, so it can be mocked
 // Another Solution by using Mockito2 and make extensions file on Resources
 open class FakeArticlesDataSource : ArticlesDataSource {
-    override suspend fun getArticles(): Result<List<Article>> {
+    override suspend fun getArticles(
+        limit: Int,
+        numOfAppreciation: Int,
+        containCategories: List<String>,
+        numOfMinutesRead: Int,
+        pubFollowersMoreThan: Int
+    ): Result<List<Article>> {
         return Result.Success(TestData.articles1)
     }
 
