@@ -7,27 +7,20 @@
 
 package com.secret.readit.core.domain
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
-
 /**
  * Using UseCase technique is powerful in domain layer to separate business logic from presenter,
  *
  * This really inspired by IOsched app, see: https://github.com/google/iosched/tree/adssched/shared/src/main/java/com/google/samples/apps/iosched/shared/domain
  */
-abstract class UseCase<in P, out R>(private val dispatcher: CoroutineDispatcher) {
+abstract class UseCase<in P, out R> {
 
     /**
      * Executes the UseCase asynchronously
      */
-    suspend operator fun invoke(parameters: P): R{
-        return withContext(dispatcher) {
-            execute(parameters)
-        }
-    }
+    suspend operator fun invoke(parameters: P): R = execute(parameters)
 
     /**
      * This is should be overridden by children to execute their special case
      */
-    protected abstract fun execute(parameters: P): R
+    protected abstract suspend fun execute(parameters: P): R
 }
