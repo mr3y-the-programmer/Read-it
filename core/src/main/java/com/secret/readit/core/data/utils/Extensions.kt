@@ -18,9 +18,9 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
 // firebase doesn't support coroutines yet, so we use suspendCancellableCoroutine
-suspend fun <T> wrapInCoroutineCancellable(
+suspend inline fun <T> wrapInCoroutineCancellable(
     dispatcher: CoroutineDispatcher,
-    block: (continuation: CancellableContinuation<Result<T>>) -> Unit
+    crossinline block: (continuation: CancellableContinuation<Result<T>>) -> Unit
 ): Result<T> {
     return withContext(dispatcher) {
         suspendCancellableCoroutine<Result<T>> {
