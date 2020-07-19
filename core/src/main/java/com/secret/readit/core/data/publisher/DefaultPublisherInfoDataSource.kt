@@ -84,6 +84,33 @@ class DefaultPublisherInfoDataSource @Inject constructor(
         }
     }
 
+    override suspend fun getPublishersWithFollowers(numOfFollowers: Int, limit: Int): Result<List<Publisher>> {
+        return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
+            firestore.collection(PUBLISHERS_COLLECTION)
+                .whereGreaterThanOrEqualTo(FOLLOWERS_NUMBER_FIELD, numOfFollowers)
+                .limit(limit.toLong())
+                .get()
+                .addOnSuccessListener { publishersDocs ->
+                    if (continuation.isActive) {
+                        Timber.d("Returned publishers with NumOfFollowers: $numOfFollowers successfully, docs: ${publishersDocs.documents}")
+                        val publishers = publishersDocs.toObjects(Publisher::class.java)
+
+                        if (publishers.isNullOrEmpty()) {
+                            Timber.d("Couldn't convert firestore model to publishers model, or publishers isn't exist")
+                            return@addOnSuccessListener continuation.resume(Result.Success(emptyList()))
+                        }
+
+                        continuation.resume(Result.Success(publishers))
+                    } else {
+                        Timber.d("continuation is no longer active")
+                    }
+                }.addOnFailureListener {
+                    Timber.d("Failed to get Publishers with numOfFollowers: $numOfFollowers, cause: ${it.cause}")
+                    continuation.resumeWithException(it)
+                }
+        }
+    }
+
     // End of getting data
     // Beginning of setting/updating data
 
