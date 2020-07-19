@@ -7,27 +7,24 @@
 
 package com.secret.readit.core.domain
 
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
 import timber.log.Timber
 
 /**
  * the Flow version of [UseCase]
  */
-abstract class FlowUseCase<in P, out R>(private val dispatcher: CoroutineDispatcher) {
+abstract class FlowUseCase<in P, out R> {
     /**
      * Executes the FlowUseCase asynchronously
      */
-    operator fun invoke(parameters: P): Flow<R>{
+    suspend operator fun invoke(parameters: P): Flow<R>{
         return execute(parameters)
-            .catch { e -> Timber.e("Exception happened while executing, cause: ${e.message}"); throw e}  //Catch exceptions if happened
-            .flowOn(dispatcher)
+            .catch { e -> Timber.e("Exception happened while executing, cause: ${e.message}"); throw e}  //Catch exceptions if there's any
     }
 
     /**
      * This is should be overridden by children to execute their special Flow case
      */
-    protected abstract fun execute(parameters: P): Flow<R>
+    protected abstract suspend fun execute(parameters: P): Flow<R>
 }
