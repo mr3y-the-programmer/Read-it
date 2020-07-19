@@ -28,13 +28,6 @@ interface ArticlesDataSource {
     suspend fun getArticle(id: articleId): Result<Article>
 
     /**
-     * toggle bookmark state to article with specified id
-     *
-     * @return true on Success, otherwise returns false
-     */ // Cancelled for now until solving some problems
-    /*suspend fun bookmark(id: articleId, bookmark: Boolean = true): Result<Boolean>*/
-
-    /**
      * add the [article] to firestore
      */
     suspend fun addArticle(article: Article): Result<Boolean>
