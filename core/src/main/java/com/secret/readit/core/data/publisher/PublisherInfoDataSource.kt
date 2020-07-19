@@ -28,6 +28,11 @@ interface PublisherInfoDataSource {
     suspend fun getPublisher(id: publisherId): Result<Publisher>
 
     /**
+     * get publishers with number of followers equal to or more than [numOfFollowers] within specified limit [limit]
+     */
+    suspend fun getPublishersWithFollowers(numOfFollowers: Int, limit: Int): Result<List<Publisher>>
+
+    /**
      * update publisher/user name
      *
      * @return true on success, otherwise false
