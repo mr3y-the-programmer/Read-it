@@ -18,6 +18,7 @@ import com.secret.readit.core.uimodels.UiPublisher
 import com.secret.readit.model.Article
 import com.secret.readit.model.Category
 import com.secret.readit.model.Publisher
+import com.secret.readit.model.publisherId
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -124,15 +125,19 @@ class PublisherRepository @Inject constructor(
 
         if (firestorePub.emailAddress.isEmpty() || firestorePub.name.isEmpty() || firestorePub.memberSince < 0) return false
 
-        val publisherIdResult = publisherDataSource.getPublisherId(PubImportantInfo(firestorePub.name, firestorePub.emailAddress, firestorePub.memberSince))
-        val publisherId = if (publisherIdResult != null && publisherIdResult.succeeded) {
-            (publisherIdResult as Result.Success).data
-        } else {
-            return false
-        }
+        val publisherId = getPublisherId(PubImportantInfo(firestorePub.name, firestorePub.emailAddress, firestorePub.memberSince)) ?: return false
 
         val result = if (positive) publisherDataSource.follow(publisherId, userID) else publisherDataSource.unFollow(publisherId, userID)
         return if (result != null && result.succeeded) (result as Result.Success).data else false
+    }
+
+    suspend fun getPublisherId(pub: PubImportantInfo): publisherId?{
+        val publisherIdResult = publisherDataSource.getPublisherId(pub)
+        return if (publisherIdResult != null && publisherIdResult.succeeded) {
+            (publisherIdResult as Result.Success).data
+        } else {
+            null
+        }
     }
 
     private fun getEmptyPublisher(): UiPublisher {
