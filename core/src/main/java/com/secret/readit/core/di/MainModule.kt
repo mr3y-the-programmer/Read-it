@@ -31,6 +31,7 @@ import com.secret.readit.core.data.shared.Converter
 import com.secret.readit.core.data.shared.DefaultStorageDataSource
 import com.secret.readit.core.data.shared.StorageDataSource
 import com.secret.readit.core.data.shared.StorageRepository
+import com.secret.readit.core.domain.articles.MostFollowedPublishersArticles
 import com.secret.readit.core.prefs.DefaultSharedPrefs
 import com.secret.readit.core.prefs.SharedPrefs
 import dagger.Lazy
@@ -134,6 +135,11 @@ class MainModule {
                                    authRepo: AuthRepository,
                                    storageRepo: StorageRepository): PublisherRepository{
         return PublisherRepository(publisherDataSource, authRepo, storageRepo)
+    }
+
+    @Provides
+    fun provideMostFollowedPublishersUseCase(pubRepo: PublisherRepository): MostFollowedPublishersArticles{
+        return MostFollowedPublishersArticles(pubRepo)
     }
     // TODO: make drafts database
 //    TODO: make all Repositories @Singleton
