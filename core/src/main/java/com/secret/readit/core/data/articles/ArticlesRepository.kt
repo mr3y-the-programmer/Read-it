@@ -19,12 +19,14 @@ import com.secret.readit.core.uimodels.ImageUiElement
 import com.secret.readit.model.*
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Single Source Of Truth for articles data, Any consumers should consume from it not from data sources directly.
  *
  * Rule: -forward actions to dataSource when needed(i.e: loading new data) And to normalize data in expected format for consumers
  */
+@Singleton
 class ArticlesRepository @Inject constructor(
     private val articlesDataSource: ArticlesDataSource,
     private val storageRepo: StorageRepository,

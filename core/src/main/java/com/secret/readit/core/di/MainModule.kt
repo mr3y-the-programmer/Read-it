@@ -17,6 +17,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import com.secret.readit.core.data.articles.ArticlesDataSource
+import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.data.articles.DefaultArticlesDataSource
 import com.secret.readit.core.data.articles.NormalizeHelper
 import com.secret.readit.core.data.auth.AuthDataSource
@@ -140,6 +141,12 @@ class MainModule {
     @Provides
     fun provideMostFollowedPublishersUseCase(pubRepo: PublisherRepository): MostFollowedPublishersArticles{
         return MostFollowedPublishersArticles(pubRepo)
+    }
+
+    @Provides
+    @Singleton
+    fun provideArticlesRepository(articlesSource: ArticlesDataSource, storageRepo: StorageRepository): ArticlesRepository{
+        return ArticlesRepository(articlesSource, storageRepo)
     }
     // TODO: make drafts database
 //    TODO: make all Repositories @Singleton
