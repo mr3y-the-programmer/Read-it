@@ -20,7 +20,7 @@ open class FakeArticlesDataSource : ArticlesDataSource {
         numOfAppreciation: Int,
         containCategories: List<String>,
         numOfMinutesRead: Int,
-        pubId: publisherId
+        pubIds: List<publisherId>
     ): Result<List<Article>> {
         return Result.Success(TestData.articles1)
     }
