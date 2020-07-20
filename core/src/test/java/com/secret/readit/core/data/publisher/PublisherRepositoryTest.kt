@@ -87,6 +87,33 @@ class PublisherRepositoryTest {
     }
 
     @Test
+    fun allOk_ReturnPublishersSuccessfully() = mainCoroutineRule.runBlockingTest {
+        // When trying to get publishers with a number of followers
+        val result = publisherRepo.getPublishersWithNumberOfFollowers(23, 30)
+
+        // Assert all data is ok
+        assertThat(result).isNotEmpty()
+        assertThat(result).isEqualTo(listOf(TestData.publisher1))
+    }
+
+    @Test
+    fun dataSourceFails_ReturnEmptyPublishers() = mainCoroutineRule.runBlockingTest {
+        // GIVEN failed dataSource
+        val mockedPublisherDataSource = mock<FakePublisherInfoDataSource> {
+            on(it.getPublishersWithFollowers(23, 30)).doReturn(Result.Error(Exception()))
+        }
+        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
+
+        // When trying to get Publisher with valid number of followers
+        val result = publisherRepo.getPublishersWithNumberOfFollowers(23, 30)
+
+        // Assert We have an empty list
+        assertThat(result).isEmpty()
+    }
+
+    //TODO: refactor the above two tests
+
+    @Test
     fun allOk_UpdateUserNameSuccessfully() = mainCoroutineRule.runBlockingTest { runTest{ publisherRepo.updateName(TestData.publisher1.name) }}
 
     @Test

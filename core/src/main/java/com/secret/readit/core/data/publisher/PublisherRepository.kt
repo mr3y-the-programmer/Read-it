@@ -95,6 +95,21 @@ class PublisherRepository @Inject constructor(
     suspend fun unFollowPublisher(publisher: UiPublisher): Boolean = updateFollowers(publisher, positive = false)
 
     /**
+     * get Publishers who have followers more than or equalTo [followersNumber]
+     *
+     * This API maybe changed later to include other attributes like memberSince
+     */
+    suspend fun getPublishersWithNumberOfFollowers(followersNumber: Int, limit: Int): List<Publisher> {
+        val result = publisherDataSource.getPublishersWithFollowers(followersNumber, limit)
+        val publishers = mutableListOf<Publisher>()
+        if (result.succeeded) {
+            val data = (result as Result.Success).data
+            publishers.addAll(data)
+        }
+        return publishers
+    }
+
+    /**
      * Callers should only specify one of two params either article or category
      * @param positive when true mean adding, false mean removing
      */
