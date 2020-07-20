@@ -10,6 +10,7 @@ package com.secret.readit.core.data.articles
 import com.secret.readit.core.result.Result
 import com.secret.readit.model.Article
 import com.secret.readit.model.articleId
+import com.secret.readit.model.publisherId
 
 /**
  * Blueprint for basic operations on firestore articles
@@ -24,7 +25,7 @@ interface ArticlesDataSource {
                             numOfAppreciation: Int,
                             containCategories: List<String>,
                             numOfMinutesRead: Int,
-                            pubFollowersMoreThan: Int): Result<List<Article>>
+                            pubId: publisherId): Result<List<Article>>
 
     /**
      * get specific article by [id]
