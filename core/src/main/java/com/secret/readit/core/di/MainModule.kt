@@ -139,11 +139,6 @@ class MainModule {
     }
 
     @Provides
-    fun provideMostFollowedPublishersUseCase(pubRepo: PublisherRepository): MostFollowedPublishersArticles{
-        return MostFollowedPublishersArticles(pubRepo)
-    }
-
-    @Provides
     @Singleton
     fun provideArticlesRepository(articlesSource: ArticlesDataSource, storageRepo: StorageRepository): ArticlesRepository{
         return ArticlesRepository(articlesSource, storageRepo)
