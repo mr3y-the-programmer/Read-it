@@ -41,7 +41,7 @@ class ArticlesRepositoryTest {
     @Test
     fun dataSourceSuccess_ReturnFormattedArticles() = mainCoroutineRule.runBlockingTest {
         // When getting a result of Articles
-        val result = articlesRepo.getNewArticles()
+        val result = articlesRepo.getNewArticles(100)
 
         // Assert it matches our expectations
         assertThat(result).isNotEmpty()
@@ -55,13 +55,13 @@ class ArticlesRepositoryTest {
     fun dataSourceFails_ReturnEmptyArticles() = mainCoroutineRule.runBlockingTest {
         // GIVEN a data source that fails to get data
         val mockedDataSource = mock<FakeArticlesDataSource> {
-            on(it.getArticles()).doReturn(Result.Error(Exception()))
+            on(it.getArticles(0, 0, emptyList(), 0, listOf(TestData.publisher1.id))).doReturn(Result.Error(Exception()))
         }
 
         articlesRepo = articlesRepo.copy(mockedDataSource)
 
         // When trying to get new results
-        val result = articlesRepo.getNewArticles()
+        val result = articlesRepo.getNewArticles(100)
 
         // Assert list is empty
         assertThat(result).isEmpty()

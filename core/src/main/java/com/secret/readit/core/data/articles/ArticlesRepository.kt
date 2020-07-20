@@ -25,7 +25,6 @@ import javax.inject.Inject
  *
  * Rule: -forward actions to dataSource when needed(i.e: loading new data) And to normalize data in expected format for consumers
  */
-// TODO: update repository to use Flows on results
 class ArticlesRepository @Inject constructor(
     private val articlesDataSource: ArticlesDataSource,
     private val storageRepo: StorageRepository,
@@ -34,13 +33,15 @@ class ArticlesRepository @Inject constructor(
 ) {
 
     /**
-     * For now it is not clear how we will paginate the data, So These APIs are going to be modified
-     * when designing/building the domain layer
-     *
+     * get articles from data source with these attributes
      * @return valid articles or empty list if data source failed
      */
-    suspend fun getNewArticles(limit: Int = 0): List<Article> {
-        val articlesResult = articlesDataSource.getArticles()
+    suspend fun getNewArticles(limit: Int,
+                               appreciateNum: Int = 0,
+                               categories: List<Category> = emptyList(),
+                               withMinutesRead: Int = 0,
+                               mostFollowedPubsId: List<publisherId> = emptyList()): List<Article> {
+        val articlesResult = articlesDataSource.getArticles(limit, 0, emptyList(), 0, mostFollowedPubsId)
         return formatArticles(articlesResult)
     }
 
@@ -85,7 +86,7 @@ class ArticlesRepository @Inject constructor(
     @Suppress("UNCHECKED_CAST")
     private suspend fun <T> formatArticles(result: Result<T>, singleItem: Boolean = false): MutableList<Article> {
         val formattedArticles = mutableListOf<Article>()
-        if (result.succeeded) {
+        if (result != null && result.succeeded) {
             val data = (result as Result.Success).data
             val dataList = mutableListOf<Article>()
             if (singleItem) {
