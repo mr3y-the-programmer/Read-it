@@ -8,18 +8,19 @@
 package com.secret.readit.core.data.articles
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
 import com.secret.readit.core.di.IoDispatcher
 import com.secret.readit.core.result.Result
 import com.secret.readit.model.Article
 import com.secret.readit.model.articleId
+import com.secret.readit.model.publisherId
 import kotlinx.coroutines.CoroutineDispatcher
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-// TODO: return to this when working with domain layer (Usecases)
 /**
  * Our ArticlesDataSource has one responsibility, interact directly with firebase to get/set data
  */
@@ -29,29 +30,41 @@ class DefaultArticlesDataSource @Inject constructor(
     private val normalizeHelper: NormalizeHelper = NormalizeHelper()
 ) : ArticlesDataSource {
 
-    override suspend fun getArticles(): Result<List<Article>> {
-        return fetchArticles()
+    override suspend fun getArticles(
+        limit: Int,
+        numOfAppreciation: Int,
+        containCategories: List<String>,
+        numOfMinutesRead: Int,
+        pubIds: List<publisherId>
+    ): Result<List<Article>> {
+        return fetchArticles(limit, numOfAppreciation, containCategories, numOfMinutesRead, pubIds)
     }
 
     override suspend fun getArticle(id: articleId): Result<Article> {
         return fetchArticle(id)
     }
 
-    /*override suspend fun bookmark(id: articleId, bookmark: Boolean): Result<Boolean> {
-        return updateExistingArticle(id, bookmark)
-    }*/
-
     override suspend fun addArticle(article: Article): Result<Boolean> {
         return addNewArticle(article)
     }
 
-    private suspend fun fetchArticles(): Result<List<Article>> {
+    private suspend fun fetchArticles(
+        limit: Int,
+        numOfAppreciation: Int,
+        categoriesIds: List<String>,
+        numOfMinutesRead: Int,
+        pubIds: List<publisherId>
+    ): Result<List<Article>> {
         return wrapInCoroutineCancellable(
             ioDispatcher
         ) { continuation ->
             // TODO:try configure the number of limit with Remote config
             // or try some pagination to avoid wasting resources
             firestore.collection(ARTICLES_COLLECTION)
+                .whereGreaterThanOrEqualTo(NUM_OF_APPRECIATE_FIELD, numOfAppreciation)
+                .whereGreaterThanOrEqualTo(NUM_MINUTES_READ_FIELD, numOfMinutesRead)
+                .categoryOrPublishersQuery(categoriesIds, pubIds)
+                .limit(limit.toLong())
                 .get()
                 .addOnSuccessListener { articlesSnapshot ->
                     if (continuation.isActive) {
@@ -122,34 +135,23 @@ class DefaultArticlesDataSource @Inject constructor(
         }
     }
 
-    /*private suspend fun updateExistingArticle(id: articleId, bookmark: Boolean): Result<Boolean> {
-        return wrapInCoroutineCancellable(
-            ioDispatcher
-        ) { continuation ->
-
-            val dataMap = mapOf(
-                IS_BOOKMARKED_FIELD to bookmark
-            )
-
-            firestore.collection(ARTICLES_COLLECTION).document(id)
-                .set(dataMap, SetOptions.merge())
-                .addOnSuccessListener {
-                    if (continuation.isActive) {
-                        Timber.d("article bookmarked Successfully")
-
-                        continuation.resume(Result.Success(true))
-                    } else {
-                        Timber.d("Exception, continuation is no longer active")
-                    }
-                }.addOnFailureListener {
-                    Timber.d("Failed to bookmark article")
-                    continuation.resumeWithException(it)
-                }
+    //We Cannot get query based on publishers and category at the same query, So we need to choose between them
+    private fun Query.categoryOrPublishersQuery(categoriesIds: List<String>, pubIds: List<publisherId>): Query{
+        return if (!categoriesIds.isNullOrEmpty()) {
+            whereArrayContainsAny(CATEGORIES_FIELD, categoriesIds)
+        } else if (!pubIds.isNullOrEmpty()) {
+            whereIn(PUBLISHER_ID_FILED, pubIds)
+        } else {
+            // This query is always true with all articles but we must have an else branch here if lists is empty, So this is the safest query to return
+            whereGreaterThanOrEqualTo(TIMESTAMP_FIELD, 1)
         }
-    }*/
-
+    }
     companion object {
         const val ARTICLES_COLLECTION = "articles"
-        const val IS_BOOKMARKED_FIELD = "isBookmarked"
+        const val NUM_OF_APPRECIATE_FIELD = "numOfAppreciate"
+        const val NUM_MINUTES_READ_FIELD = "numMinutesRead"
+        const val CATEGORIES_FIELD = "category"
+        const val TIMESTAMP_FIELD = "timestamp"
+        const val PUBLISHER_ID_FILED = "publisher"
     }
 }
