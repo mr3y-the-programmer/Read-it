@@ -10,6 +10,7 @@ package com.secret.readit.core.data.articles
 import com.secret.readit.core.result.Result
 import com.secret.readit.model.Article
 import com.secret.readit.model.articleId
+import com.secret.readit.model.publisherId
 
 // The class need to be opened, so it can be mocked
 // Another Solution by using Mockito2 and make extensions file on Resources
@@ -19,7 +20,7 @@ open class FakeArticlesDataSource : ArticlesDataSource {
         numOfAppreciation: Int,
         containCategories: List<String>,
         numOfMinutesRead: Int,
-        pubFollowersMoreThan: Int
+        pubId: publisherId
     ): Result<List<Article>> {
         return Result.Success(TestData.articles1)
     }
