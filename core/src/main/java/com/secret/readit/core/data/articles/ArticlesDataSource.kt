@@ -25,7 +25,7 @@ interface ArticlesDataSource {
                             numOfAppreciation: Int,
                             containCategories: List<String>,
                             numOfMinutesRead: Int,
-                            pubId: publisherId): Result<List<Article>>
+                            pubIds: List<publisherId>): Result<List<Article>>
 
     /**
      * get specific article by [id]
