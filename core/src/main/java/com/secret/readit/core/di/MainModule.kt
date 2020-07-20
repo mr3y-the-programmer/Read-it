@@ -26,6 +26,7 @@ import com.secret.readit.core.data.categories.CategoryDataSource
 import com.secret.readit.core.data.categories.DefaultCategoryDataSource
 import com.secret.readit.core.data.publisher.DefaultPublisherInfoDataSource
 import com.secret.readit.core.data.publisher.PublisherInfoDataSource
+import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.core.data.shared.Converter
 import com.secret.readit.core.data.shared.DefaultStorageDataSource
 import com.secret.readit.core.data.shared.StorageDataSource
@@ -125,6 +126,14 @@ class MainModule {
     @Singleton
     fun provideSharedPreferences(applicationContext: Context): SharedPrefs {
         return DefaultSharedPrefs(applicationContext)
+    }
+
+    @Provides
+    @Singleton
+    fun providePublisherRepository(publisherDataSource: PublisherInfoDataSource,
+                                   authRepo: AuthRepository,
+                                   storageRepo: StorageRepository): PublisherRepository{
+        return PublisherRepository(publisherDataSource, authRepo, storageRepo)
     }
     // TODO: make drafts database
 //    TODO: make all Repositories @Singleton

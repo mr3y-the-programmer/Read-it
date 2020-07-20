@@ -21,12 +21,14 @@ import com.secret.readit.model.Publisher
 import com.secret.readit.model.publisherId
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Any consumers should interact with this Repo not with DataSources directly,
  * Rule: -forward actions when needed to dataSource
  *       -provide Publisher data to consumers in expected format
  */
+@Singleton
 class PublisherRepository @Inject constructor(
     private val publisherDataSource: PublisherInfoDataSource,
     private val authRepo: AuthRepository,
