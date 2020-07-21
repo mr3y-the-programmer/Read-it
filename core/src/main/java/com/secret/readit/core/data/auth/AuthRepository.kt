@@ -89,6 +89,7 @@ class AuthRepository @Inject constructor(
      */
     private suspend fun createDoc(id: publisherId): Result<Boolean> {
         val data = mapOf(
+            ID_FIELD to id,
             NAME_FIELD to dataSource.getDisplayName(),
             EMAIL_ADDRESS_FIELD to dataSource.getEmailAddress(),
             PROFILE_IMG_FIELD to dataSource.getProfileImgUri()?.toString(), // Firestore doesn't support Uri as data type
@@ -131,6 +132,7 @@ class AuthRepository @Inject constructor(
         const val FOLLOWED_CATEGORIES_FIELD = "followedCategoriesIds"
         const val FOLLOWED_PUBLISHERS_FIELD = "followedPublishersIds"
         const val FOLLOWERS_NUMBER_FIELD = "numOfFollowers"
+        const val ID_FIELD = "id"
         const val NAME_FIELD = "name"
         const val EMAIL_ADDRESS_FIELD = "emailAddress"
         const val PROFILE_IMG_FIELD = "profileImg"
