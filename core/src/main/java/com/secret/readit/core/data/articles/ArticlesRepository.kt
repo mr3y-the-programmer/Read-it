@@ -58,7 +58,7 @@ class ArticlesRepository @Inject constructor(
         limit: Int,
         appreciateNum: Int = 0,
         categories: List<Category> = emptyList(),
-        withMinutesRead: Int = 0,
+        withMinutesRead: Int = 999,
         mostFollowedPubsId: List<publisherId> = emptyList()
     ): List<Article> {
         val categoryIds = mutableListOf<String>()
