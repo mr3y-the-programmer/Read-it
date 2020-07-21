@@ -7,15 +7,11 @@
 
 package com.secret.readit.core.data.articles
 
-import android.net.Uri
 import androidx.annotation.VisibleForTesting
 import com.secret.readit.core.data.articles.utils.Formatter
 import com.secret.readit.core.data.utils.CustomIDHandler
-import com.secret.readit.core.data.utils.isImageElement
-import com.secret.readit.core.data.utils.isTextElement
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
-import com.secret.readit.core.uimodels.ImageUiElement
 import com.secret.readit.model.*
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
@@ -57,7 +53,6 @@ class ArticlesRepository @Inject constructor(
      * We are Using @VisibleForTesting here to guarantee encapsulation
      * Other Solutions would be: 1- using reflection , make a custom lint rule with high penalty on calling this function like raising a compiler error
      */
-    //TODO 2 : refactor de-formatter to another class
     @VisibleForTesting
     suspend fun getNewArticles(
         limit: Int,
@@ -99,7 +94,7 @@ class ArticlesRepository @Inject constructor(
         } catch (ex: IllegalArgumentException) {
             return false
         }
-        val deFormattedElements = deFormatElements(id, article.content.elements)
+        val deFormattedElements = formatter.deFormatElements(id, article.content.elements)
         val result = articlesDataSource.addArticle(article.copy(id = id, content = Content(deFormattedElements)))
 
         if (result != null && result.succeeded) {
@@ -111,24 +106,6 @@ class ArticlesRepository @Inject constructor(
     private fun getEmptyArticle(): Article {
         val publisher = Publisher("", "", "", memberSince = -1)
         return Article("", "", Content(emptyList()), publisher, 0, 0, emptyList(), category = emptyList())
-    }
-
-    private suspend fun deFormatElements(id: articleId, elements: List<BaseElement>): List<Element> {
-        val firestoreElements = mutableListOf<Element>()
-        for (element in elements) {
-            if (element.isTextElement) { // reverse only text
-                /*var textElement = element as Element
-                val deFormattedString = parser.reverseParse(textElement)
-                textElement = textElement.copy(text = deFormattedString)
-                firestoreElements += textElement*/
-            }
-            if (element.isImageElement) {
-               /* val imageElement = element as ImageUiElement
-                val downloadUri = storageRepo.uploadImg(id, imageElement.imgPath) ?: Uri.parse(PLACE_HOLDER_URL)
-                firestoreElements += Element(downloadUri.toString())*/
-            }
-        }
-        return firestoreElements
     }
 
     companion object {
