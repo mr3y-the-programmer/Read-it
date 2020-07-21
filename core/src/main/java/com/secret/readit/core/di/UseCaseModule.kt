@@ -9,7 +9,7 @@ package com.secret.readit.core.di
 
 import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.core.domain.UseCase
-import com.secret.readit.core.domain.articles.MostFollowedPublishersArticles
+import com.secret.readit.core.domain.homefeed.MostFollowedPublishersArticles
 import com.secret.readit.model.publisherId
 import dagger.Module
 import dagger.Provides

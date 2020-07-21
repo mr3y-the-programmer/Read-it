@@ -5,7 +5,7 @@
  *   Written by MR3Y <abdonasr379@gmail.com>, 2020.
  */
 
-package com.secret.readit.core.domain.articles
+package com.secret.readit.core.domain.homefeed
 
 import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.core.domain.UseCase
