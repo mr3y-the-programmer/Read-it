@@ -65,4 +65,6 @@ object TestData {
     )
 
     val articles1 = listOf(article1)
+    val articles2 = listOf(article2)
+    val articles3 = listOf(article1, article2)
 }
