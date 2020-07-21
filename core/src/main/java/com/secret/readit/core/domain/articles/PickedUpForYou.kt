@@ -7,7 +7,6 @@
 
 package com.secret.readit.core.domain.articles
 
-import androidx.annotation.VisibleForTesting
 import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.di.MostFollowedPublishers
 import com.secret.readit.core.domain.FlowUseCase
@@ -33,12 +32,15 @@ class PickedUpForYou @Inject constructor(
         val limit = parameters.coerceIn(5, 30) // Ensure we don't request big number of articles that user will never read
         val (mostAppreciateLimit, mostFollowedPubLimit, shortArticlesLimit) = getEachPartLimit(limit)
         // First
-        val mostAppreciated = articlesRepo.getNewArticles(limit = mostAppreciateLimit, appreciateNum = APPRECIATE_NUMBER).asFlow()
+        val mostAppreciated = articlesRepo.getMostAppreciatedArticles(limit = mostAppreciateLimit, appreciateNum = APPRECIATE_NUMBER).asFlow()
         // Second
         val pubIds = mostFollowedPubs(Pair(NUMBER_OF_FOLLOWERS, mostFollowedPubLimit))
-        val mostFollowedPublishers = articlesRepo.getNewArticles(limit = mostFollowedPubLimit, mostFollowedPubsId = pubIds).asFlow()
+        val mostFollowedPublishers = articlesRepo.getMostFollowedPublishersArticles(limit = mostFollowedPubLimit, pubsIds = pubIds).asFlow()
         // Third
-        val shortAppreciatedArticles = articlesRepo.getNewArticles(limit = shortArticlesLimit, withMinutesRead = MINUTES_READ_NUMBER, appreciateNum = SHORT_ARTICLES_APPRECIATE_NUMBER).asFlow()
+        val shortAppreciatedArticles = articlesRepo.getShortAndAppreciatedArticles(
+                                                                   limit = shortArticlesLimit,
+                                                                   maximumMinutesRead = MINUTES_READ_NUMBER,
+                                                                   appreciateNum = SHORT_ARTICLES_APPRECIATE_NUMBER).asFlow()
         // Wrap and combine them
         val articles = mostAppreciated.combine(mostFollowedPublishers) { fromMA, fromMFP ->
             if (Random().nextInt(2) == 0) fromMA else fromMFP
