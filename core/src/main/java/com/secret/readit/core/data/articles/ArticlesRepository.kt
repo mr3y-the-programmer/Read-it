@@ -38,11 +38,13 @@ class ArticlesRepository @Inject constructor(
      * get articles from data source with these attributes
      * @return valid articles or empty list if data source failed
      */
-    suspend fun getNewArticles(limit: Int,
-                               appreciateNum: Int = 0,
-                               categories: List<Category> = emptyList(),
-                               withMinutesRead: Int = 0,
-                               mostFollowedPubsId: List<publisherId> = emptyList()): List<Article> {
+    suspend fun getNewArticles(
+        limit: Int,
+        appreciateNum: Int = 0,
+        categories: List<Category> = emptyList(),
+        withMinutesRead: Int = 0,
+        mostFollowedPubsId: List<publisherId> = emptyList()
+    ): List<Article> {
         val articlesResult = articlesDataSource.getArticles(limit, 0, emptyList(), 0, mostFollowedPubsId)
         return formatArticles(articlesResult)
     }

@@ -135,8 +135,8 @@ class DefaultArticlesDataSource @Inject constructor(
         }
     }
 
-    //We Cannot get query based on publishers and category at the same query, So we need to choose between them
-    private fun Query.categoryOrPublishersQuery(categoriesIds: List<String>, pubIds: List<publisherId>): Query{
+    // We Cannot get query based on publishers and category at the same query, So we need to choose between them
+    private fun Query.categoryOrPublishersQuery(categoriesIds: List<String>, pubIds: List<publisherId>): Query {
         return if (!categoriesIds.isNullOrEmpty()) {
             whereArrayContainsAny(CATEGORIES_FIELD, categoriesIds)
         } else if (!pubIds.isNullOrEmpty()) {

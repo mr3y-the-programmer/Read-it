@@ -18,9 +18,9 @@ abstract class FlowUseCase<in P, out R> {
     /**
      * Executes the FlowUseCase asynchronously
      */
-    suspend operator fun invoke(parameters: P): Flow<R>{
+    suspend operator fun invoke(parameters: P): Flow<R> {
         return execute(parameters)
-            .catch { e -> Timber.e("Exception happened while executing, cause: ${e.message}"); throw e}  //Catch exceptions if there's any
+            .catch { e -> Timber.e("Exception happened while executing, cause: ${e.message}"); throw e } // Catch exceptions if there's any
     }
 
     /**

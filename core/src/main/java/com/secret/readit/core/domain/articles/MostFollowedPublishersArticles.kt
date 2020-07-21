@@ -19,7 +19,7 @@ import javax.inject.Inject
  *
  * So This UseCase would follow the easiest solution we found to be ready for this query without breaking architecture
  */
-class MostFollowedPublishersArticles @Inject constructor(private val pubRepository: PublisherRepository): UseCase<Pair<Int, Int>, List<publisherId>>() {
+class MostFollowedPublishersArticles @Inject constructor(private val pubRepository: PublisherRepository) : UseCase<Pair<Int, Int>, List<publisherId>>() {
 
     /**
      * takes a pair of numberOfFollowers and limit respectively

@@ -10,6 +10,6 @@ package com.secret.readit.core.domain.articles
 import com.secret.readit.core.domain.UseCase
 import com.secret.readit.model.publisherId
 
-class FakeMostFollowedPublishers: UseCase<Pair<Int, Int>, List<publisherId>>() {
+class FakeMostFollowedPublishers : UseCase<Pair<Int, Int>, List<publisherId>>() {
     override suspend fun execute(parameters: Pair<Int, Int>): List<publisherId> = TestData.mostFollowedIds
 }

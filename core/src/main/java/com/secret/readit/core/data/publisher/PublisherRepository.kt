@@ -148,7 +148,7 @@ class PublisherRepository @Inject constructor(
         return if (result != null && result.succeeded) (result as Result.Success).data else false
     }
 
-    private suspend fun getPublisherId(pub: PubImportantInfo): publisherId?{
+    private suspend fun getPublisherId(pub: PubImportantInfo): publisherId? {
         val publisherIdResult = publisherDataSource.getPublisherId(pub)
         return if (publisherIdResult != null && publisherIdResult.succeeded) {
             (publisherIdResult as Result.Success).data

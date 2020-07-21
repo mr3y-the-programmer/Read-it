@@ -17,30 +17,32 @@ import com.secret.readit.model.publisherId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.combine
-import javax.inject.Inject
 import java.util.Random
+import javax.inject.Inject
 
 /**
  * Picked up for you Use case, which takes a limit [Int] and return semi-randomly customized articles for user
  * based on some factors like: most appreciated, most-followed publishers(composite index), (short articles & appreciated a lot)
  */
-class PickedUpForYou @Inject constructor(private val articlesRepo: ArticlesRepository,
-                                         @MostFollowedPublishers private val mostFollowedPubs: UseCase<Pair<Int, Int>, List<publisherId>>): FlowUseCase<Int, Article>() {
+class PickedUpForYou @Inject constructor(
+    private val articlesRepo: ArticlesRepository,
+    @MostFollowedPublishers private val mostFollowedPubs: UseCase<Pair<Int, Int>, List<publisherId>>
+) : FlowUseCase<Int, Article>() {
 
     override suspend fun execute(parameters: Int): Flow<Article> {
-        val limit = parameters.coerceIn(5, 30) //Ensure we don't request big number of articles that user will never read
+        val limit = parameters.coerceIn(5, 30) // Ensure we don't request big number of articles that user will never read
         val (mostAppreciateLimit, mostFollowedPubLimit, shortArticlesLimit) = getEachPartLimit(limit)
-        //First
+        // First
         val mostAppreciated = articlesRepo.getNewArticles(limit = mostAppreciateLimit, appreciateNum = APPRECIATE_NUMBER).asFlow()
-        //Second
+        // Second
         val pubIds = mostFollowedPubs(Pair(NUMBER_OF_FOLLOWERS, mostFollowedPubLimit))
         val mostFollowedPublishers = articlesRepo.getNewArticles(limit = mostFollowedPubLimit, mostFollowedPubsId = pubIds).asFlow()
-        //Third
+        // Third
         val shortAppreciatedArticles = articlesRepo.getNewArticles(limit = shortArticlesLimit, withMinutesRead = MINUTES_READ_NUMBER, appreciateNum = SHORT_ARTICLES_APPRECIATE_NUMBER).asFlow()
-        //Wrap and combine them
-        val articles = mostAppreciated.combine(mostFollowedPublishers){ fromMA, fromMFP ->
+        // Wrap and combine them
+        val articles = mostAppreciated.combine(mostFollowedPublishers) { fromMA, fromMFP ->
             if (Random().nextInt(2) == 0) fromMA else fromMFP
-        }.combine(shortAppreciatedArticles){ other, fromSAA ->
+        }.combine(shortAppreciatedArticles) { other, fromSAA ->
             if (Random().nextInt(2) == 0) other else fromSAA
         }
         return articles
@@ -49,8 +51,8 @@ class PickedUpForYou @Inject constructor(private val articlesRepo: ArticlesRepos
     /**
      * divide original limit into small limits
      */
-    @VisibleForTesting  //It is only non-private for testing purposes
-    fun getEachPartLimit(originalLimit: Int): Triple<Int, Int, Int>{
+    @VisibleForTesting // It is only non-private for testing purposes
+    fun getEachPartLimit(originalLimit: Int): Triple<Int, Int, Int> {
         val random = Random()
         val oneThirdOriginalLimit = originalLimit.div(3).coerceAtLeast(3)
 
@@ -62,7 +64,7 @@ class PickedUpForYou @Inject constructor(private val articlesRepo: ArticlesRepos
     }
 
     companion object {
-        //TODO: update this to be configured through RemoteConfig
+        // TODO: update this to be configured through RemoteConfig
         const val NUMBER_OF_FOLLOWERS = 100
         const val APPRECIATE_NUMBER = 1000
         const val MINUTES_READ_NUMBER = 4

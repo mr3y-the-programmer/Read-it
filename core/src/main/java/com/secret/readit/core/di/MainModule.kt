@@ -32,7 +32,6 @@ import com.secret.readit.core.data.shared.Converter
 import com.secret.readit.core.data.shared.DefaultStorageDataSource
 import com.secret.readit.core.data.shared.StorageDataSource
 import com.secret.readit.core.data.shared.StorageRepository
-import com.secret.readit.core.domain.articles.MostFollowedPublishersArticles
 import com.secret.readit.core.prefs.DefaultSharedPrefs
 import com.secret.readit.core.prefs.SharedPrefs
 import dagger.Lazy
@@ -132,15 +131,17 @@ class MainModule {
 
     @Provides
     @Singleton
-    fun providePublisherRepository(publisherDataSource: PublisherInfoDataSource,
-                                   authRepo: AuthRepository,
-                                   storageRepo: StorageRepository): PublisherRepository{
+    fun providePublisherRepository(
+        publisherDataSource: PublisherInfoDataSource,
+        authRepo: AuthRepository,
+        storageRepo: StorageRepository
+    ): PublisherRepository {
         return PublisherRepository(publisherDataSource, authRepo, storageRepo)
     }
 
     @Provides
     @Singleton
-    fun provideArticlesRepository(articlesSource: ArticlesDataSource, storageRepo: StorageRepository): ArticlesRepository{
+    fun provideArticlesRepository(articlesSource: ArticlesDataSource, storageRepo: StorageRepository): ArticlesRepository {
         return ArticlesRepository(articlesSource, storageRepo)
     }
     // TODO: make drafts database

@@ -21,11 +21,13 @@ interface ArticlesDataSource {
      * the main function to get articles from articles collection,
      * it takes many parameters the only one needed is [limit] to avoid fetching unNeeded articles
      */
-    suspend fun getArticles(limit: Int,
-                            numOfAppreciation: Int,
-                            containCategories: List<String>,
-                            numOfMinutesRead: Int,
-                            pubIds: List<publisherId>): Result<List<Article>>
+    suspend fun getArticles(
+        limit: Int,
+        numOfAppreciation: Int,
+        containCategories: List<String>,
+        numOfMinutesRead: Int,
+        pubIds: List<publisherId>
+    ): Result<List<Article>>
 
     /**
      * get specific article by [id]

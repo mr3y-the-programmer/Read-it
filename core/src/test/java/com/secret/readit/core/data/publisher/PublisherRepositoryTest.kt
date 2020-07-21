@@ -111,88 +111,88 @@ class PublisherRepositoryTest {
         assertThat(result).isEmpty()
     }
 
-    //TODO: refactor the above two tests
+    // TODO: refactor the above two tests
 
     @Test
-    fun allOk_UpdateUserNameSuccessfully() = mainCoroutineRule.runBlockingTest { runTest{ publisherRepo.updateName(TestData.publisher1.name) }}
+    fun allOk_UpdateUserNameSuccessfully() = mainCoroutineRule.runBlockingTest { runTest { publisherRepo.updateName(TestData.publisher1.name) } }
 
     @Test
-    fun nullUser_CannotUpdateUserName() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true){ publisherRepo.updateName(TestData.publisher1.name) }}
+    fun nullUser_CannotUpdateUserName() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true) { publisherRepo.updateName(TestData.publisher1.name) } }
 
     @Test
-    fun dataSourceFails_CannotUpdateUserName() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true){ publisherRepo.updateName(TestData.publisher1.name) }}
+    fun dataSourceFails_CannotUpdateUserName() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true) { publisherRepo.updateName(TestData.publisher1.name) } }
 
     @Test
-    fun allOk_AddNewArticleSuccessfully() = mainCoroutineRule.runBlockingTest { runTest{ publisherRepo.addNewArticle(TestData.article1) }}
+    fun allOk_AddNewArticleSuccessfully() = mainCoroutineRule.runBlockingTest { runTest { publisherRepo.addNewArticle(TestData.article1) } }
 
     @Test
-    fun nullUser_CannotAddArticle() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true){ publisherRepo.addNewArticle(TestData.article1) }}
+    fun nullUser_CannotAddArticle() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true) { publisherRepo.addNewArticle(TestData.article1) } }
 
     @Test
-    fun dataSourceFails_CannotAddArticle() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true){ publisherRepo.addNewArticle(TestData.article1) }}
+    fun dataSourceFails_CannotAddArticle() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true) { publisherRepo.addNewArticle(TestData.article1) } }
 
     @Test
-    fun invalidArticle_CannotAddNewArticle() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true){ publisherRepo.addNewArticle(TestData.emptyArticle) }}
+    fun invalidArticle_CannotAddNewArticle() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true) { publisherRepo.addNewArticle(TestData.emptyArticle) } }
 
     @Test
-    fun allOk_RemoveArticleSuccessfully() = mainCoroutineRule.runBlockingTest { runTest{ publisherRepo.removeArticle(TestData.article1) }}
+    fun allOk_RemoveArticleSuccessfully() = mainCoroutineRule.runBlockingTest { runTest { publisherRepo.removeArticle(TestData.article1) } }
 
     @Test
-    fun nullUser_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true){ publisherRepo.removeArticle(TestData.article1) }}
+    fun nullUser_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true) { publisherRepo.removeArticle(TestData.article1) } }
 
     @Test
-    fun dataSourceFails_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true){ publisherRepo.removeArticle(TestData.article1) }}
+    fun dataSourceFails_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true) { publisherRepo.removeArticle(TestData.article1) } }
 
     @Test
-    fun invalidArticle_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true){ publisherRepo.removeArticle(TestData.emptyArticle) }}
+    fun invalidArticle_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true) { publisherRepo.removeArticle(TestData.emptyArticle) } }
 
     @Test
-    fun allOk_FollowCategorySuccessfully() = mainCoroutineRule.runBlockingTest { runTest{publisherRepo.followCategory(TestData.category1)}}
+    fun allOk_FollowCategorySuccessfully() = mainCoroutineRule.runBlockingTest { runTest { publisherRepo.followCategory(TestData.category1) } }
 
     @Test
-    fun nullUser_CannotFollowCategory() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true){publisherRepo.followCategory(TestData.category1)}}
+    fun nullUser_CannotFollowCategory() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true) { publisherRepo.followCategory(TestData.category1) } }
 
     @Test
-    fun dataSourceFails_CannotFollowCategory() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true){publisherRepo.followCategory(TestData.category1)}}
+    fun dataSourceFails_CannotFollowCategory() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true) { publisherRepo.followCategory(TestData.category1) } }
 
     @Test
-    fun invalidCategory_CannotFollowCategory() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true){publisherRepo.followCategory(TestData.emptyCategory)}}
+    fun invalidCategory_CannotFollowCategory() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true) { publisherRepo.followCategory(TestData.emptyCategory) } }
 
     @Test
-    fun allOk_unFollowCategorySuccessfully() = mainCoroutineRule.runBlockingTest { runTest{publisherRepo.unFollowCategory(TestData.category1)}}
+    fun allOk_unFollowCategorySuccessfully() = mainCoroutineRule.runBlockingTest { runTest { publisherRepo.unFollowCategory(TestData.category1) } }
 
     @Test
-    fun nullUser_CannotunFollowCategory() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true){publisherRepo.unFollowCategory(TestData.category1)} }
+    fun nullUser_CannotunFollowCategory() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true) { publisherRepo.unFollowCategory(TestData.category1) } }
 
     @Test
-    fun dataSourceFails_CannotunFollowCategory() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true){publisherRepo.unFollowCategory(TestData.category1)}}
+    fun dataSourceFails_CannotunFollowCategory() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true) { publisherRepo.unFollowCategory(TestData.category1) } }
 
     @Test
-    fun invalidCategory_CannotunFollowCategory() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true){publisherRepo.unFollowCategory(TestData.emptyCategory)}}
+    fun invalidCategory_CannotunFollowCategory() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true) { publisherRepo.unFollowCategory(TestData.emptyCategory) } }
 
     @Test
-    fun allOk_FollowPublisherSuccessfully() = mainCoroutineRule.runBlockingTest { runTest{publisherRepo.followPublisher(TestData.uiPublisher1)}}
+    fun allOk_FollowPublisherSuccessfully() = mainCoroutineRule.runBlockingTest { runTest { publisherRepo.followPublisher(TestData.uiPublisher1) } }
 
     @Test
-    fun nullUser_CannotFollowPublisher() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true){publisherRepo.followPublisher(TestData.uiPublisher1)}}
+    fun nullUser_CannotFollowPublisher() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true) { publisherRepo.followPublisher(TestData.uiPublisher1) } }
 
     @Test
-    fun dataSourceFails_CannotFollowPublisher() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true){publisherRepo.followPublisher(TestData.uiPublisher1)}}
+    fun dataSourceFails_CannotFollowPublisher() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true) { publisherRepo.followPublisher(TestData.uiPublisher1) } }
 
     @Test
-    fun invalidPublisher_CannotFollowPublisher() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true){publisherRepo.followPublisher(TestData.emptyUiPublisher)}}
+    fun invalidPublisher_CannotFollowPublisher() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true) { publisherRepo.followPublisher(TestData.emptyUiPublisher) } }
 
     @Test
-    fun allOk_unFollowPublisherSuccessfully() = mainCoroutineRule.runBlockingTest { runTest{ publisherRepo.unFollowPublisher(TestData.uiPublisher1) }}
+    fun allOk_unFollowPublisherSuccessfully() = mainCoroutineRule.runBlockingTest { runTest { publisherRepo.unFollowPublisher(TestData.uiPublisher1) } }
 
     @Test
-    fun nullUser_CannotunFollowPublisher() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true){ publisherRepo.unFollowPublisher(TestData.uiPublisher1) }}
+    fun nullUser_CannotunFollowPublisher() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true) { publisherRepo.unFollowPublisher(TestData.uiPublisher1) } }
 
     @Test
-    fun dataSourceFails_CannotunFollowPublisher() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true){ publisherRepo.unFollowPublisher(TestData.uiPublisher1) }}
+    fun dataSourceFails_CannotunFollowPublisher() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true) { publisherRepo.unFollowPublisher(TestData.uiPublisher1) } }
 
     @Test
-    fun invalidPublisher_CannotunFollowPublisher() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true){ publisherRepo.unFollowPublisher(TestData.emptyUiPublisher) }}
+    fun invalidPublisher_CannotunFollowPublisher() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true) { publisherRepo.unFollowPublisher(TestData.emptyUiPublisher) } }
 
     /**
      * Refactor boilerplate to this private fun
@@ -202,13 +202,13 @@ class PublisherRepositoryTest {
         nullUser: Boolean = false,
         mockDataSourceFun: Boolean = false,
         invalidParameter: Boolean = false,
-        funUnderTest: suspend PublisherRepository.() -> Boolean)
-    {
+        funUnderTest: suspend PublisherRepository.() -> Boolean
+    ) {
         if (nullUser) mockedAuthRepository = mock { on(it.getId()).doReturn(null) } // GIVEN no signed-in User
 
         val mockedPublisherDataSource = if (mockDataSourceFun) DummyPublisherDataSource() else FakePublisherInfoDataSource() // GIVEN failed dataSource
 
-        //Satisfy dependencies based on conditions
+        // Satisfy dependencies based on conditions
         publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
         val result = publisherRepo.funUnderTest()
         // Assert it all goes as intended
