@@ -13,9 +13,7 @@ import com.secret.readit.core.domain.FlowUseCase
 import com.secret.readit.core.domain.UseCase
 import com.secret.readit.model.Article
 import com.secret.readit.model.publisherId
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.*
 import java.util.Random
 import javax.inject.Inject
 
@@ -46,7 +44,7 @@ class PickedUpForYou @Inject constructor(
             if (Random().nextInt(2) == 0) fromMA else fromMFP
         }.combine(shortAppreciatedArticles) { other, fromSAA ->
             if (Random().nextInt(2) == 0) other else fromSAA
-        }
+        }.filter { it.id.isEmpty() || it.timestamp < 0 }.cancellable()  //cancellable() because asFlow() is unSafeFlow
         return articles
     }
 
