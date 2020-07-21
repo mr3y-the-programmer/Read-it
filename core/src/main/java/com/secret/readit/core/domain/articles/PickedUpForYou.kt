@@ -51,8 +51,7 @@ class PickedUpForYou @Inject constructor(
     /**
      * divide original limit into small limits
      */
-    @VisibleForTesting // It is only non-private for testing purposes
-    fun getEachPartLimit(originalLimit: Int): Triple<Int, Int, Int> {
+    private fun getEachPartLimit(originalLimit: Int): Triple<Int, Int, Int> {
         val random = Random()
         val oneThirdOriginalLimit = originalLimit.div(3).coerceAtLeast(3)
 
