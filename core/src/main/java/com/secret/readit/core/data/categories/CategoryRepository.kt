@@ -13,6 +13,7 @@ import com.secret.readit.core.result.succeeded
 import com.secret.readit.model.Article
 import com.secret.readit.model.Category
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Any consumers should interact with this Repo not with dataSource directly
@@ -20,6 +21,7 @@ import javax.inject.Inject
  * Rule: -forward actions when needed to dataSource
  *       -normalize data(with help of some utils) to consumers in expected format
  */
+@Singleton
 class CategoryRepository @Inject constructor(
     private val categoryDataSource: CategoryDataSource,
     private val idHandler: CustomIDHandler = CustomIDHandler()

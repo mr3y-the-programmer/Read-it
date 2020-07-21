@@ -25,6 +25,7 @@ import com.secret.readit.core.data.auth.AuthDataSource
 import com.secret.readit.core.data.auth.AuthRepository
 import com.secret.readit.core.data.auth.DefaultAuthDataSource
 import com.secret.readit.core.data.categories.CategoryDataSource
+import com.secret.readit.core.data.categories.CategoryRepository
 import com.secret.readit.core.data.categories.DefaultCategoryDataSource
 import com.secret.readit.core.data.publisher.DefaultPublisherInfoDataSource
 import com.secret.readit.core.data.publisher.PublisherInfoDataSource
@@ -150,6 +151,11 @@ class MainModule {
     fun provideArticlesRepository(articlesSource: ArticlesDataSource, formatter: Formatter): ArticlesRepository {
         return ArticlesRepository(articlesSource, formatter)
     }
+
+    @Provides
+    @Singleton
+    fun provideCategoriesRepository(categoryDataSource: CategoryDataSource): CategoryRepository {
+        return CategoryRepository(categoryDataSource)
+    }
     // TODO: make drafts database
-//    TODO: make all Repositories @Singleton
 }
