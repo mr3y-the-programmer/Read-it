@@ -2,20 +2,23 @@ import com.secret.readit.core.uimodels.UiPublisher
 import com.secret.readit.model.*
 
 object TestData {
-    val markupQuote = Markup(MarkupType.QUOTE, 0, 16)
-    val markupText = markupQuote.copy(MarkupType.TEXT)
-    val markupCode = markupQuote.copy(MarkupType.CODE)
-    val markupBulletPoint = markupQuote.copy(MarkupType.BulletPoints)
+    val markupQuote = Markup(MarkupType.QUOTE, 0, 20)
+    val markupText = Markup(MarkupType.TEXT, 0, 43)
+    val markupCode = Markup(MarkupType.CODE, 0, 90)
+    val markupBulletPoint = Markup(MarkupType.BulletPoints, 0, 41)
 
     val oneLineQuoteElement = Element("> This is a Quote  >", markupQuote)
+    val reverseOneLineQuoteElement = oneLineQuoteElement.copy(text = oneLineQuoteElement.text?.removeSurrounding(">"))
     val multipleLineQuoteElement = oneLineQuoteElement.copy(
         text = ">      This is twwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwooooooooooooooooooooooo" +
             " Liiinnnnneeeeeeeeeeeeeee Quoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooote>"
     )
 
     val codeBlockElement = Element(text = "` THis is code in Kotllllllllllllllllllin And These are some codes on Javaaaaaaaaaaaaaaaa`", markup = markupCode)
+    val reverseCodeBlockElement = codeBlockElement.copy(text = codeBlockElement.text?.removeSurrounding("`"))
 
     val bulletPointElement = Element("~ This is One Bullet Point              ~", markupBulletPoint)
+    val reverseBulletPointElement = bulletPointElement.copy(text = bulletPointElement.text?.removeSurrounding("~"))
     val multipleBulletPointElement = bulletPointElement.copy(text = "~                               THis is Multiple                  Bullet                   Point        ~")
 
     val plaintTextElement = Element(text = "This is just a simple text, No more than it", markup = markupText)
@@ -23,6 +26,7 @@ object TestData {
     val elements1 = listOf(oneLineQuoteElement, codeBlockElement, bulletPointElement, plaintTextElement)
 
     val content1 = Content(elements1)
+    val reverseContent1 = Content(listOf(reverseOneLineQuoteElement, reverseCodeBlockElement, reverseBulletPointElement, plaintTextElement))
 
     val bulletPointElementWithoutMarkup = bulletPointElement.copy(text = bulletPointElement.text?.removeSurrounding("~"))
     val codeBlockElementWithoutMarkup = codeBlockElement.copy(text = codeBlockElement.text?.removeSurrounding("`"))
