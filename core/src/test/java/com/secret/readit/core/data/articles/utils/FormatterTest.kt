@@ -68,4 +68,13 @@ class FormatterTest {
         //assert it matches our expectations
         assertThat(formatResult).isEmpty()
     }
+
+    @Test
+    fun deFormatArticles_ReturnDeFormattedArticles() = mainCoroutineRule.runBlockingTest {
+        //When trying to deFormat content in order to upload
+        val deFormatResult = formatter.deFormatElements(TestData.article1.id, TestData.reverseContent1.elements)
+
+        //Assert the result is deFormatted as expected
+        assertThat(deFormatResult).isEqualTo(TestData.content1.elements)
+    }
 }

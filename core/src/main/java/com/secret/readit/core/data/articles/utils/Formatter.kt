@@ -10,17 +10,16 @@ package com.secret.readit.core.data.articles.utils
 import android.net.Uri
 import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.data.shared.StorageRepository
+import com.secret.readit.core.data.utils.isImageElement
+import com.secret.readit.core.data.utils.isTextElement
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.core.uimodels.ImageUiElement
-import com.secret.readit.model.Article
-import com.secret.readit.model.BaseElement
-import com.secret.readit.model.Content
-import com.secret.readit.model.Element
+import com.secret.readit.model.*
 import javax.inject.Inject
 
 /**
- * Handles Formatting Articles to expected Format
+ * Handles Formatting Articles to expected Format and vice-versa, Used mainly by ArticlesRepo
  */
 class Formatter @Inject constructor(
     private val storageRepo: StorageRepository,
@@ -67,5 +66,23 @@ class Formatter @Inject constructor(
             }
         }
         return formattedElements
+    }
+
+    suspend fun deFormatElements(id: articleId, elements: List<BaseElement>): List<Element> {
+        val firestoreElements = mutableListOf<Element>()
+        for (element in elements) {
+            if (element.isTextElement) { // reverse only text
+                var textElement = element as Element
+                val deFormattedString = parser.reverseParse(textElement)
+                textElement = textElement.copy(text = deFormattedString)
+                firestoreElements += textElement
+            }
+            if (element.isImageElement) {
+                 val imageElement = element as ImageUiElement
+                 val downloadUri = storageRepo.uploadImg(id, imageElement.imgPath) ?: Uri.parse(ArticlesRepository.PLACE_HOLDER_URL)
+                 firestoreElements += Element(downloadUri.toString())
+            }
+        }
+        return firestoreElements
     }
 }
