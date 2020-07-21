@@ -8,6 +8,7 @@
 package com.secret.readit.core.data.articles
 
 import android.net.Uri
+import androidx.annotation.VisibleForTesting
 import com.secret.readit.core.data.articles.utils.Parser
 import com.secret.readit.core.data.shared.StorageRepository
 import com.secret.readit.core.data.utils.CustomIDHandler
@@ -34,10 +35,32 @@ class ArticlesRepository @Inject constructor(
     private val idHandler: CustomIDHandler = CustomIDHandler()
 ) {
 
+    /** Exposed APIs For consumers to get articles based on these attributes */
+    suspend fun getMostAppreciatedArticles(limit: Int, appreciateNum: Int): List<Article> {
+        return getNewArticles(limit, appreciateNum)
+    }
+
+    suspend fun getMostFollowedPublishersArticles(limit: Int, pubsIds: List<publisherId>): List<Article> {
+        return getNewArticles(limit, mostFollowedPubsId = pubsIds)
+    }
+
+    suspend fun getShortAndAppreciatedArticles(limit: Int, maximumMinutesRead: Int, appreciateNum: Int): List<Article> {
+        return getNewArticles(limit, appreciateNum = appreciateNum, withMinutesRead = maximumMinutesRead)
+    }
+
+    suspend fun getArticlesWhichHaveCategories(limit: Int, categories: List<Category>): List<Article> {
+        return getNewArticles(limit, categories = categories)
+    }
+
     /**
-     * get articles from data source with these attributes
-     * @return valid articles or empty list if data source failed
+     * move/Encapsulate the boilerplate to this function that is only public for sake of testing,
+     * **IMPORTANT NOTE**: Consumers mustn't call this directly, instead Use one of [getMostAppreciatedArticles], [getMostFollowedPublishersArticles]...etc
+     *
+     * We are Using @VisibleForTesting here to guarantee encapsulation
+     * Other Solutions would be: 1- using reflection , make a custom lint rule with high penalty on calling this function like raising a compiler error
      */
+    //TODO 2 : refactor formatter to another class
+    @VisibleForTesting
     suspend fun getNewArticles(
         limit: Int,
         appreciateNum: Int = 0,
@@ -45,7 +68,7 @@ class ArticlesRepository @Inject constructor(
         withMinutesRead: Int = 0,
         mostFollowedPubsId: List<publisherId> = emptyList()
     ): List<Article> {
-        val articlesResult = articlesDataSource.getArticles(limit, 0, emptyList(), 0, mostFollowedPubsId)
+        val articlesResult = articlesDataSource.getArticles(limit, appreciateNum, emptyList(), withMinutesRead, mostFollowedPubsId)
         return formatArticles(articlesResult)
     }
 
