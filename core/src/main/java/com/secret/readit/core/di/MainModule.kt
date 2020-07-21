@@ -20,6 +20,7 @@ import com.secret.readit.core.data.articles.ArticlesDataSource
 import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.data.articles.DefaultArticlesDataSource
 import com.secret.readit.core.data.articles.NormalizeHelper
+import com.secret.readit.core.data.articles.utils.Formatter
 import com.secret.readit.core.data.auth.AuthDataSource
 import com.secret.readit.core.data.auth.AuthRepository
 import com.secret.readit.core.data.auth.DefaultAuthDataSource
@@ -140,9 +141,14 @@ class MainModule {
     }
 
     @Provides
+    fun provideArticlesFormatter(storageRepo: StorageRepository): Formatter{
+        return Formatter(storageRepo)
+    }
+
+    @Provides
     @Singleton
-    fun provideArticlesRepository(articlesSource: ArticlesDataSource, storageRepo: StorageRepository): ArticlesRepository {
-        return ArticlesRepository(articlesSource, storageRepo)
+    fun provideArticlesRepository(articlesSource: ArticlesDataSource, formatter: Formatter): ArticlesRepository {
+        return ArticlesRepository(articlesSource, formatter)
     }
     // TODO: make drafts database
 //    TODO: make all Repositories @Singleton

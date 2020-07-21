@@ -11,6 +11,7 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.MainCoroutineRule
+import com.secret.readit.core.data.articles.utils.Formatter
 import com.secret.readit.core.data.shared.DummyStorageRepository
 import com.secret.readit.core.result.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,7 +36,7 @@ class ArticlesRepositoryTest {
         -fast, see: Benchmark results
         -Reliable and well tested, so it cannot fail easily
          */
-        articlesRepo = ArticlesRepository(FakeArticlesDataSource(), DummyStorageRepository())
+        articlesRepo = ArticlesRepository(FakeArticlesDataSource(), Formatter(DummyStorageRepository()))
     }
 
     @Test
@@ -129,6 +130,6 @@ class ArticlesRepositoryTest {
     }
 
     private fun ArticlesRepository.copy(dataSource: FakeArticlesDataSource): ArticlesRepository {
-        return ArticlesRepository(dataSource, DummyStorageRepository())
+        return ArticlesRepository(dataSource, Formatter(DummyStorageRepository()))
     }
 }

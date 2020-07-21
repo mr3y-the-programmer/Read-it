@@ -9,8 +9,7 @@ package com.secret.readit.core.data.articles
 
 import android.net.Uri
 import androidx.annotation.VisibleForTesting
-import com.secret.readit.core.data.articles.utils.Parser
-import com.secret.readit.core.data.shared.StorageRepository
+import com.secret.readit.core.data.articles.utils.Formatter
 import com.secret.readit.core.data.utils.CustomIDHandler
 import com.secret.readit.core.data.utils.isImageElement
 import com.secret.readit.core.data.utils.isTextElement
@@ -25,13 +24,12 @@ import javax.inject.Singleton
 /**
  * Single Source Of Truth for articles data, Any consumers should consume from it not from data sources directly.
  *
- * Rule: -forward actions to dataSource when needed(i.e: loading new data) And to normalize data in expected format for consumers
+ * Rule: -forward actions to dataSource when needed(i.e: loading new data)
  */
 @Singleton
 class ArticlesRepository @Inject constructor(
     private val articlesDataSource: ArticlesDataSource,
-    private val storageRepo: StorageRepository,
-    private val parser: Parser = Parser,
+    private val formatter: Formatter,
     private val idHandler: CustomIDHandler = CustomIDHandler()
 ) {
 
@@ -59,7 +57,7 @@ class ArticlesRepository @Inject constructor(
      * We are Using @VisibleForTesting here to guarantee encapsulation
      * Other Solutions would be: 1- using reflection , make a custom lint rule with high penalty on calling this function like raising a compiler error
      */
-    //TODO 2 : refactor formatter to another class
+    //TODO 2 : refactor de-formatter to another class
     @VisibleForTesting
     suspend fun getNewArticles(
         limit: Int,
@@ -72,7 +70,7 @@ class ArticlesRepository @Inject constructor(
         for (category in categories) categoryIds += idHandler.getID(category)
 
         val articlesResult = articlesDataSource.getArticles(limit, appreciateNum, categoryIds, withMinutesRead, mostFollowedPubsId)
-        return formatArticles(articlesResult)
+        return formatter.formatArticles(articlesResult)
     }
 
     /**
@@ -82,7 +80,7 @@ class ArticlesRepository @Inject constructor(
      */
     suspend fun getArticle(id: articleId): Article {
         val articleResult = articlesDataSource.getArticle(id)
-        val formattedArticle = formatArticles(articleResult, true)
+        val formattedArticle = formatter.formatArticles(articleResult, true)
         if (formattedArticle.isNullOrEmpty()) {
             return getEmptyArticle()
         }
@@ -110,47 +108,6 @@ class ArticlesRepository @Inject constructor(
         return successful
     }
 
-    /**
-     * format articles in expected format for consumers
-     */
-    @Suppress("UNCHECKED_CAST")
-    private suspend fun <T> formatArticles(result: Result<T>, singleItem: Boolean = false): MutableList<Article> {
-        val formattedArticles = mutableListOf<Article>()
-        if (result != null && result.succeeded) {
-            val data = (result as Result.Success).data
-            val dataList = mutableListOf<Article>()
-            if (singleItem) {
-                dataList.add(data as Article)
-            } else {
-                dataList.addAll(data as List<Article>)
-            }
-            for (article in dataList) {
-                var parsedArticle = article
-                val formattedElements = formatContent(article.content)
-                parsedArticle = parsedArticle.copy(content = Content(formattedElements))
-                formattedArticles += parsedArticle
-            }
-        }
-        return formattedArticles
-    }
-
-    private suspend fun formatContent(content: Content): MutableList<BaseElement> {
-        val formattedElements = mutableListOf<BaseElement>()
-        for (baseElement in content.elements) {
-            var firestoreElement = (baseElement as Element)
-            if (firestoreElement.imageUri == null) { // parse text only
-                firestoreElement = parser.parse(baseElement.text!!)
-                formattedElements += firestoreElement // In this case UiElement is the same as firestoreElement
-            }
-            if (firestoreElement.imageUri != null) {
-                val imgUri = Uri.parse(firestoreElement.imageUri)
-                val bitmap = storageRepo.downloadImg(imgUri, PLACE_HOLDER_URL)
-                formattedElements += ImageUiElement(bitmap, firestoreElement.imageUri!!)
-            }
-        }
-        return formattedElements
-    }
-
     private fun getEmptyArticle(): Article {
         val publisher = Publisher("", "", "", memberSince = -1)
         return Article("", "", Content(emptyList()), publisher, 0, 0, emptyList(), category = emptyList())
@@ -160,15 +117,15 @@ class ArticlesRepository @Inject constructor(
         val firestoreElements = mutableListOf<Element>()
         for (element in elements) {
             if (element.isTextElement) { // reverse only text
-                var textElement = element as Element
+                /*var textElement = element as Element
                 val deFormattedString = parser.reverseParse(textElement)
                 textElement = textElement.copy(text = deFormattedString)
-                firestoreElements += textElement
+                firestoreElements += textElement*/
             }
             if (element.isImageElement) {
-                val imageElement = element as ImageUiElement
+               /* val imageElement = element as ImageUiElement
                 val downloadUri = storageRepo.uploadImg(id, imageElement.imgPath) ?: Uri.parse(PLACE_HOLDER_URL)
-                firestoreElements += Element(downloadUri.toString())
+                firestoreElements += Element(downloadUri.toString())*/
             }
         }
         return firestoreElements
