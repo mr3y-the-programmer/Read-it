@@ -42,8 +42,8 @@ class ArticlesRepository @Inject constructor(
         return getNewArticles(limit, appreciateNum = appreciateNum, withMinutesRead = maximumMinutesRead)
     }
 
-    suspend fun getArticlesWhichHaveCategories(limit: Int, categories: List<Category>): List<Article> {
-        return getNewArticles(limit, categories = categories)
+    suspend fun getArticlesWhichHaveCategories(limit: Int, categoriesIds: List<String>): List<Article> {
+        return getNewArticles(limit, categoriesIds = categoriesIds)
     }
 
     /**
@@ -57,14 +57,11 @@ class ArticlesRepository @Inject constructor(
     suspend fun getNewArticles(
         limit: Int,
         appreciateNum: Int = 0,
-        categories: List<Category> = emptyList(),
+        categoriesIds: List<String> = emptyList(),
         withMinutesRead: Int = 999,
         mostFollowedPubsId: List<publisherId> = emptyList()
     ): List<Article> {
-        val categoryIds = mutableListOf<String>()
-        for (category in categories) categoryIds += idHandler.getID(category)
-
-        val articlesResult = articlesDataSource.getArticles(limit, appreciateNum, categoryIds, withMinutesRead, mostFollowedPubsId)
+        val articlesResult = articlesDataSource.getArticles(limit, appreciateNum, categoriesIds, withMinutesRead, mostFollowedPubsId)
         return formatter.formatArticles(articlesResult)
     }
 
