@@ -62,7 +62,7 @@ class DefaultArticlesDataSource @Inject constructor(
             // or try some pagination to avoid wasting resources
             firestore.collection(ARTICLES_COLLECTION)
                 .whereGreaterThanOrEqualTo(NUM_OF_APPRECIATE_FIELD, numOfAppreciation)
-                .whereGreaterThanOrEqualTo(NUM_MINUTES_READ_FIELD, numOfMinutesRead)
+                .whereLessThanOrEqualTo(NUM_MINUTES_READ_FIELD, numOfMinutesRead)
                 .categoryOrPublishersQuery(categoriesIds, pubIds)
                 .limit(limit.toLong())
                 .get()
