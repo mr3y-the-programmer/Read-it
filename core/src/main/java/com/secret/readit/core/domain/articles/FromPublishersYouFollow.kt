@@ -23,13 +23,16 @@ import javax.inject.Inject
  */
 class FromPublishersYouFollow @Inject constructor(
     private val pubRepo: PublisherRepository,
-    private val articlesRepo: ArticlesRepository): FlowUseCase<Int, Article>(){
+    private val articlesRepo: ArticlesRepository
+) : FlowUseCase<Int, Article>() {
 
     override suspend fun execute(parameters: Int): Flow<Article> {
         val limit = parameters.coerceIn(5, 30) // Ensure we don't request big number of articles that user will never read
         val followingIds = pubRepo.getCurrentUser().publisher.followedPublishersIds
 
-        //asFlow is unSafeFlow so we need to check the cancellation by using cancellable()
-        return articlesRepo.getMostFollowedPublishersArticles(limit, followingIds).asFlow().filter { it.id.isEmpty() || it.timestamp < 0 }.cancellable()
+        // asFlow is unSafeFlow so we need to check the cancellation by using cancellable()
+        return articlesRepo.getMostFollowedPublishersArticles(limit, followingIds).asFlow()
+            .filter { it.id.isEmpty() || it.timestamp < 0 }
+            .cancellable()
     }
 }

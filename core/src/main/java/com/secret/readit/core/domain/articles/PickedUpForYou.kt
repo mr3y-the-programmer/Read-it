@@ -36,15 +36,16 @@ class PickedUpForYou @Inject constructor(
         val mostFollowedPublishers = articlesRepo.getMostFollowedPublishersArticles(limit = mostFollowedPubLimit, pubsIds = pubIds).asFlow()
         // Third
         val shortAppreciatedArticles = articlesRepo.getShortAndAppreciatedArticles(
-                                                                   limit = shortArticlesLimit,
-                                                                   maximumMinutesRead = MINUTES_READ_NUMBER,
-                                                                   appreciateNum = SHORT_ARTICLES_APPRECIATE_NUMBER).asFlow()
+            limit = shortArticlesLimit,
+            maximumMinutesRead = MINUTES_READ_NUMBER,
+            appreciateNum = SHORT_ARTICLES_APPRECIATE_NUMBER
+        ).asFlow()
         // Wrap and combine them
         val articles = mostAppreciated.combine(mostFollowedPublishers) { fromMA, fromMFP ->
             if (Random().nextInt(2) == 0) fromMA else fromMFP
         }.combine(shortAppreciatedArticles) { other, fromSAA ->
             if (Random().nextInt(2) == 0) other else fromSAA
-        }.filter { it.id.isEmpty() || it.timestamp < 0 }.cancellable()  //cancellable() because asFlow() is unSafeFlow
+        }.filter { it.id.isEmpty() || it.timestamp < 0 }.cancellable() // cancellable() because asFlow() is unSafeFlow
         return articles
     }
 

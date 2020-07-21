@@ -50,7 +50,7 @@ class Formatter @Inject constructor(
         return formattedArticles
     }
 
-    //Handle formatting content
+    // Handle formatting content
     private suspend fun formatContent(content: Content): MutableList<BaseElement> {
         val formattedElements = mutableListOf<BaseElement>()
         for (baseElement in content.elements) {
@@ -78,9 +78,9 @@ class Formatter @Inject constructor(
                 firestoreElements += textElement
             }
             if (element.isImageElement) {
-                 val imageElement = element as ImageUiElement
-                 val downloadUri = storageRepo.uploadImg(id, imageElement.imgPath) ?: Uri.parse(ArticlesRepository.PLACE_HOLDER_URL)
-                 firestoreElements += Element(downloadUri.toString())
+                val imageElement = element as ImageUiElement
+                val downloadUri = storageRepo.uploadImg(id, imageElement.imgPath) ?: Uri.parse(ArticlesRepository.PLACE_HOLDER_URL)
+                firestoreElements += Element(downloadUri.toString())
             }
         }
         return firestoreElements

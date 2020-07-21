@@ -141,7 +141,7 @@ class MainModule {
     }
 
     @Provides
-    fun provideArticlesFormatter(storageRepo: StorageRepository): Formatter{
+    fun provideArticlesFormatter(storageRepo: StorageRepository): Formatter {
         return Formatter(storageRepo)
     }
 
