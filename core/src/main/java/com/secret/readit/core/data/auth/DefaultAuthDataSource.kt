@@ -16,7 +16,7 @@ import javax.inject.Inject
  *
  * **NOTE**: This can be changed soon to get data from provider instead using [firebaseUser.providerData]
  */
-class DefaultAuthDataSource @Inject constructor(private val firebaseUser: FirebaseUser?) : AuthDataSource {
+internal class DefaultAuthDataSource @Inject constructor(private val firebaseUser: FirebaseUser?) : AuthDataSource {
 
     override fun isUserSignedIn(): Boolean = firebaseUser != null
 

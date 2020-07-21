@@ -24,7 +24,7 @@ import kotlin.coroutines.resumeWithException
 /**
  * Our DefaultStorageDataSource has one responsibility, interact directly with storage to upload/download images
  */
-class DefaultStorageDataSource @Inject constructor(
+internal class DefaultStorageDataSource @Inject constructor(
     private val storage: FirebaseStorage,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val converter: Lazy<Converter>

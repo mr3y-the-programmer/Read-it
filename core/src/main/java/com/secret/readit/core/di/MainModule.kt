@@ -152,5 +152,4 @@ class MainModule {
     }
     // TODO: make drafts database
 //    TODO: make all Repositories @Singleton
-    // TODO: make all dataSources internal
 }

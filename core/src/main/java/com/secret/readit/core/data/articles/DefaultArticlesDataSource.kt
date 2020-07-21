@@ -24,7 +24,7 @@ import kotlin.coroutines.resumeWithException
 /**
  * Our ArticlesDataSource has one responsibility, interact directly with firebase to get/set data
  */
-class DefaultArticlesDataSource @Inject constructor(
+internal class DefaultArticlesDataSource @Inject constructor(
     private val firestore: FirebaseFirestore,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val normalizeHelper: NormalizeHelper = NormalizeHelper()

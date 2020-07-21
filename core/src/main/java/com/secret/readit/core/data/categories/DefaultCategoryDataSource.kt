@@ -22,7 +22,7 @@ import kotlin.coroutines.resumeWithException
 /**
  * Our CategoryDataSource has one responsibility, interact directly with firestore to get data
  */
-class DefaultCategoryDataSource @Inject constructor(
+internal class DefaultCategoryDataSource @Inject constructor(
     private val firestore: FirebaseFirestore,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : CategoryDataSource {

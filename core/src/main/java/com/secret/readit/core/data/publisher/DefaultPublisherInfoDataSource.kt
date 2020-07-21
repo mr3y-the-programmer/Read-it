@@ -25,7 +25,7 @@ import kotlin.coroutines.resumeWithException
 /**
  * Our publisherInfoDataSource has one responsibility, interact directly with firestore to get/set data
  */
-class DefaultPublisherInfoDataSource @Inject constructor(
+internal class DefaultPublisherInfoDataSource @Inject constructor(
     private val firestore: FirebaseFirestore,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : PublisherInfoDataSource {
