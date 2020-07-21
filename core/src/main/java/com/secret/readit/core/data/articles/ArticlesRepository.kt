@@ -68,7 +68,10 @@ class ArticlesRepository @Inject constructor(
         withMinutesRead: Int = 0,
         mostFollowedPubsId: List<publisherId> = emptyList()
     ): List<Article> {
-        val articlesResult = articlesDataSource.getArticles(limit, appreciateNum, emptyList(), withMinutesRead, mostFollowedPubsId)
+        val categoryIds = mutableListOf<String>()
+        for (category in categories) categoryIds += idHandler.getID(category)
+
+        val articlesResult = articlesDataSource.getArticles(limit, appreciateNum, categoryIds, withMinutesRead, mostFollowedPubsId)
         return formatArticles(articlesResult)
     }
 
