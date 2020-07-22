@@ -46,6 +46,10 @@ class ArticlesRepository @Inject constructor(
         return getNewArticles(limit, categoriesIds = categoriesIds)
     }
 
+    suspend fun getPubArticlesSince(pubId: publisherId, since: Long): List<Article> {
+        return getNewArticles(limit = 0, specificPub = Pair(pubId, since))
+    }
+
     /**
      * move/Encapsulate the boilerplate to this function that is only public for sake of testing,
      * **IMPORTANT NOTE**: Consumers mustn't call this directly, instead Use one of [getMostAppreciatedArticles], [getMostFollowedPublishersArticles]...etc
@@ -59,9 +63,14 @@ class ArticlesRepository @Inject constructor(
         appreciateNum: Int = 0,
         categoriesIds: List<String> = emptyList(),
         withMinutesRead: Int = 999,
-        mostFollowedPubsId: List<publisherId> = emptyList()
+        mostFollowedPubsId: List<publisherId> = emptyList(),
+        specificPub: Pair<publisherId, Long> = Pair("", -1)
     ): List<Article> {
-        val articlesResult = articlesDataSource.getArticles(limit, appreciateNum, categoriesIds, withMinutesRead, mostFollowedPubsId)
+        val articlesResult = if (specificPub.first.isNotEmpty()) {
+            articlesDataSource.getPubArticles(specificPub)
+        } else {
+            articlesDataSource.getArticles(limit, appreciateNum, categoriesIds, withMinutesRead, mostFollowedPubsId)
+        }
         return formatter.formatArticles(articlesResult)
     }
 

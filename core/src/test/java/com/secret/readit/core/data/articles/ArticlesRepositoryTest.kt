@@ -28,7 +28,7 @@ class ArticlesRepositoryTest {
 
     // Object under test
     private lateinit var articlesRepo: ArticlesRepository
-
+    //TODO: refactor
     @Before
     fun setUp() {
         /*
@@ -63,6 +63,35 @@ class ArticlesRepositoryTest {
 
         // When trying to get new results
         val result = articlesRepo.getNewArticles(100)
+
+        // Assert list is empty
+        assertThat(result).isEmpty()
+    }
+
+    @Test
+    fun dataSourceSuccess_ReturnPubArticles() = mainCoroutineRule.runBlockingTest {
+        // When getting last-7-days Articles of publisher
+        val result = articlesRepo.getNewArticles(0, specificPub = Pair(TestData.publisher1.id, 1594764000))
+
+        // Assert it matches our expectations
+        assertThat(result).isNotEmpty()
+        assertThat(result.size).isEqualTo(1)
+        assertThat(result[0].category).isEqualTo(TestData.articles2[0].category)
+        assertThat(result[0].publisher).isEqualTo(TestData.articles2[0].publisher)
+        // And so on ....
+    }
+
+    @Test
+    fun dataSourceFails_ReturnEmptyPubArticles() = mainCoroutineRule.runBlockingTest {
+        // GIVEN a data source that fails to get data
+        val mockedDataSource = mock<FakeArticlesDataSource> {
+            on(it.getPubArticles(Pair(TestData.publisher1.id, 1594764000))).doReturn(Result.Error(Exception()))
+        }
+
+        articlesRepo = articlesRepo.copy(mockedDataSource)
+
+        // When trying to get new results
+        val result = articlesRepo.getNewArticles(0, specificPub = Pair(TestData.publisher1.id, 1594764000))
 
         // Assert list is empty
         assertThat(result).isEmpty()
