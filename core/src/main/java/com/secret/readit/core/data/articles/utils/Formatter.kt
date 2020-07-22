@@ -8,6 +8,7 @@
 package com.secret.readit.core.data.articles.utils
 
 import android.net.Uri
+import com.google.firebase.firestore.DocumentSnapshot
 import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.data.shared.StorageRepository
 import com.secret.readit.core.data.utils.isImageElement
@@ -41,6 +42,24 @@ class Formatter @Inject constructor(
                 dataList.addAll(data as List<Article>)
             }
             for (article in dataList) {
+                var parsedArticle = article
+                val formattedElements = formatContent(article.content)
+                parsedArticle = parsedArticle.copy(content = Content(formattedElements))
+                formattedArticles += parsedArticle
+            }
+        }
+        return formattedArticles
+    }
+
+    /**
+     * format specific Pub articles in expected format for consumers
+     */
+    @Suppress("UNCHECKED_CAST")
+    suspend fun formatPubArticles(result: Result<Pair<List<Article>, DocumentSnapshot>>): MutableList<Article> {
+        val formattedArticles = mutableListOf<Article>()
+        if (result != null && result.succeeded) {
+            val data = (result as Result.Success).data.first
+            for (article in data) {
                 var parsedArticle = article
                 val formattedElements = formatContent(article.content)
                 parsedArticle = parsedArticle.copy(content = Content(formattedElements))

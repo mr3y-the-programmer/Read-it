@@ -8,6 +8,8 @@
 package com.secret.readit.core.data.articles.utils
 
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.firestore.DocumentSnapshot
+import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.MainCoroutineRule
 import com.secret.readit.core.data.shared.DummyStorageRepository
 import com.secret.readit.core.result.Result
@@ -76,5 +78,30 @@ class FormatterTest {
 
         // Assert the result is deFormatted as expected
         assertThat(deFormatResult).isEqualTo(TestData.content1.elements)
+    }
+
+    @Test
+    fun formatPubArticles_succeeded_ReturnFormattedArticles() = mainCoroutineRule.runBlockingTest {
+        //GIVEN a Success Result
+        val result = Result.Success(Pair(TestData.articles1, mock<DocumentSnapshot> {}))
+
+        //When trying to format this result
+        val formatResult = formatter.formatPubArticles(result)
+
+        // assert it matches our expectations
+        assertThat(formatResult.size).isEqualTo(1)
+        assertThat(formatResult[0].content).isEqualTo(TestData.reverseContent1)
+    }
+
+    @Test
+    fun formatPubArticles_failure_ReturnEmpty() = mainCoroutineRule.runBlockingTest {
+        //GIVEN a Loading Result
+        val result = Result.Loading
+
+        //When trying to format this result
+        val formatResult = formatter.formatPubArticles(result)
+
+        // assert we have nothing
+        assertThat(formatResult).isEmpty()
     }
 }
