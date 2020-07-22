@@ -11,10 +11,7 @@ import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.core.domain.FlowUseCase
 import com.secret.readit.model.Article
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.cancellable
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 /**
@@ -27,7 +24,7 @@ class BasedOnYourCategories @Inject constructor(private val pubRepo: PublisherRe
         val categoryFollowedIds = pubRepo.getCurrentUser().publisher.followedCategoriesIds
 
         return articlesRepo.getArticlesWhichHaveCategories(limit, categoryFollowedIds).asFlow()
-            .filter { it.id.isEmpty() || it.timestamp < 0 }
+            .filterNot { it.id.isEmpty() || it.timestamp < 0 }
             .cancellable() // asFlow is unSafeFlow so we need to check the cancellation by using cancellable()
     }
 }
