@@ -7,6 +7,8 @@
 
 package com.secret.readit.core.data.articles
 
+import com.google.firebase.firestore.DocumentSnapshot
+import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.result.Result
 import com.secret.readit.model.Article
 import com.secret.readit.model.articleId
@@ -29,8 +31,9 @@ open class FakeArticlesDataSource : ArticlesDataSource {
         return Result.Success(TestData.article1)
     }
 
-    override suspend fun getPubArticles(info: Pair<publisherId, Long>): Result<List<Article>> {
-        return Result.Success(TestData.articles2)
+    override suspend fun getPubArticles(info: Pair<publisherId, Long>, prevSnapshot: DocumentSnapshot?): Result<Pair<List<Article>, DocumentSnapshot>> {
+        val mockedSnapshot = mock<DocumentSnapshot> {/*no-op*/}
+        return Result.Success(Pair(TestData.articles2, mockedSnapshot))
     }
 
     override suspend fun addArticle(article: Article): Result<Boolean> {
