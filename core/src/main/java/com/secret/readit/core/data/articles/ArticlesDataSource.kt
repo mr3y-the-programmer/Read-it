@@ -7,6 +7,7 @@
 
 package com.secret.readit.core.data.articles
 
+import com.google.firebase.firestore.DocumentSnapshot
 import com.secret.readit.core.result.Result
 import com.secret.readit.model.Article
 import com.secret.readit.model.articleId
@@ -36,8 +37,12 @@ interface ArticlesDataSource {
 
     /**
      * get Articles published by [publisherId] since period [Long]
+     * it also takes [prevSnapshot] as a parameter to get data after the last doc in previous query,
+     * So it avoids getting data that is previously displayed
+     *
+     * **NOTE**: [prevSnapshot] should be null only when it is first time loading articles
      */
-    suspend fun getPubArticles(info: Pair<publisherId, Long>): Result<List<Article>>
+    suspend fun getPubArticles(info: Pair<publisherId, Long>, prevSnapshot: DocumentSnapshot?): Result<Pair<List<Article>, DocumentSnapshot>>
 
     /**
      * add the [article] to firestore
