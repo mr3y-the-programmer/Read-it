@@ -28,7 +28,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @ExperimentalCoroutinesApi
-@FixMethodOrder(MethodSorters.DEFAULT) // Order in this test is IMPORTANT!
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class PublishedArticlesSinceTest {
 
     @get:Rule
