@@ -71,7 +71,7 @@ class ArticlesRepository @Inject constructor(
         specificPub: Pair<publisherId, Long> = Pair("", -1)
     ): List<Article> {
         val articles = mutableListOf<Article>()
-        if (specificPub.first.isNotEmpty()) {
+        if (specificPub.first.isNotEmpty() && specificPub.second > 0) {
             val articlesResult = articlesDataSource.getPubArticles(specificPub, prevSnapshot)
             articles.addAll(formatter.formatPubArticles(articlesResult))
             prevSnapshot = if (articlesResult.succeeded) (articlesResult as Result.Success).data.second else prevSnapshot
