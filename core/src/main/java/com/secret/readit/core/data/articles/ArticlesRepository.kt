@@ -8,6 +8,7 @@
 package com.secret.readit.core.data.articles
 
 import androidx.annotation.VisibleForTesting
+import com.google.firebase.firestore.DocumentSnapshot
 import com.secret.readit.core.data.articles.utils.Formatter
 import com.secret.readit.core.data.utils.CustomIDHandler
 import com.secret.readit.core.result.Result
@@ -49,7 +50,10 @@ class ArticlesRepository @Inject constructor(
     suspend fun getPubArticlesSince(pubId: publisherId, since: Long): List<Article> {
         return getNewArticles(limit = 0, specificPub = Pair(pubId, since))
     }
-
+    //hold last document snapshot in-Memory to be able to get queries after it and avoid leaking resources and money
+    @VisibleForTesting
+    var prevSnapshot: DocumentSnapshot? = null
+        private set
     /**
      * move/Encapsulate the boilerplate to this function that is only public for sake of testing,
      * **IMPORTANT NOTE**: Consumers mustn't call this directly, instead Use one of [getMostAppreciatedArticles], [getMostFollowedPublishersArticles]...etc
@@ -66,12 +70,16 @@ class ArticlesRepository @Inject constructor(
         mostFollowedPubsId: List<publisherId> = emptyList(),
         specificPub: Pair<publisherId, Long> = Pair("", -1)
     ): List<Article> {
-        val articlesResult = if (specificPub.first.isNotEmpty()) {
-            articlesDataSource.getPubArticles(specificPub)
+        val articles = mutableListOf<Article>()
+        if (specificPub.first.isNotEmpty()) {
+            val articlesResult = articlesDataSource.getPubArticles(specificPub, prevSnapshot)
+            articles.addAll(formatter.formatPubArticles(articlesResult))
+            prevSnapshot = if (articlesResult.succeeded) (articlesResult as Result.Success).data.second else prevSnapshot
         } else {
-            articlesDataSource.getArticles(limit, appreciateNum, categoriesIds, withMinutesRead, mostFollowedPubsId)
+            val articlesResult = articlesDataSource.getArticles(limit, appreciateNum, categoriesIds, withMinutesRead, mostFollowedPubsId)
+            articles.addAll(formatter.formatArticles(articlesResult))
         }
-        return formatter.formatArticles(articlesResult)
+        return articles
     }
 
     /**

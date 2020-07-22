@@ -8,6 +8,7 @@
 package com.secret.readit.core.data.articles
 
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.firestore.DocumentSnapshot
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.MainCoroutineRule
@@ -74,6 +75,7 @@ class ArticlesRepositoryTest {
         val result = articlesRepo.getNewArticles(0, specificPub = Pair(TestData.publisher1.id, 1594764000))
 
         // Assert it matches our expectations
+        assertThat(articlesRepo.prevSnapshot).isInstanceOf(DocumentSnapshot::class.java)
         assertThat(result).isNotEmpty()
         assertThat(result.size).isEqualTo(1)
         assertThat(result[0].category).isEqualTo(TestData.articles2[0].category)
@@ -85,7 +87,7 @@ class ArticlesRepositoryTest {
     fun dataSourceFails_ReturnEmptyPubArticles() = mainCoroutineRule.runBlockingTest {
         // GIVEN a data source that fails to get data
         val mockedDataSource = mock<FakeArticlesDataSource> {
-            on(it.getPubArticles(Pair(TestData.publisher1.id, 1594764000))).doReturn(Result.Error(Exception()))
+            on(it.getPubArticles(Pair(TestData.publisher1.id, 1594764000), null)).doReturn(Result.Error(Exception()))
         }
 
         articlesRepo = articlesRepo.copy(mockedDataSource)
@@ -95,6 +97,7 @@ class ArticlesRepositoryTest {
 
         // Assert list is empty
         assertThat(result).isEmpty()
+        assertThat(articlesRepo.prevSnapshot).isNull() //when it is the first time it should be null
     }
 
     @Test
