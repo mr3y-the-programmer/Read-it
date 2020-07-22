@@ -29,6 +29,10 @@ open class FakeArticlesDataSource : ArticlesDataSource {
         return Result.Success(TestData.article1)
     }
 
+    override suspend fun getPubArticles(info: Pair<publisherId, Long>): Result<List<Article>> {
+        return Result.Success(TestData.articles2)
+    }
+
     override suspend fun addArticle(article: Article): Result<Boolean> {
         if (article.id == TestData.article2.id) {
             return Result.Success(true)
