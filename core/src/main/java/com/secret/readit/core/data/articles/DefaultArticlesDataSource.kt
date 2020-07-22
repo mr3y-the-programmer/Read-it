@@ -7,6 +7,7 @@
 
 package com.secret.readit.core.data.articles
 
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
@@ -44,8 +45,8 @@ internal class DefaultArticlesDataSource @Inject constructor(
         return fetchArticle(id)
     }
 
-    override suspend fun getPubArticles(info: Pair<publisherId, Long>): Result<List<Article>> {
-        return fetchArticles(info)
+    override suspend fun getPubArticles(info: Pair<publisherId, Long>, prevSnapshot: DocumentSnapshot?): Result<Pair<List<Article>, DocumentSnapshot>> {
+        return fetchArticles(info, prevSnapshot)
     }
 
     override suspend fun addArticle(article: Article): Result<Boolean> {
@@ -118,21 +119,22 @@ internal class DefaultArticlesDataSource @Inject constructor(
         }
     }
 
-    private suspend fun fetchArticles(pubInfo: Pair<publisherId, Long>): Result<List<Article>> {
+    private suspend fun fetchArticles(pubInfo: Pair<publisherId, Long>, prevSnapshot: DocumentSnapshot?): Result<Pair<List<Article>, DocumentSnapshot>> {
         return wrapInCoroutineCancellable(
             ioDispatcher
         ) { continuation ->
-            firestore.collection(ARTICLES_COLLECTION)
+            var query = firestore.collection(ARTICLES_COLLECTION)
                 .whereEqualTo(PUBLISHER_ID_FILED, pubInfo.first)
                 .whereGreaterThanOrEqualTo(TIMESTAMP_FIELD, pubInfo.second)
-                .get()
+            query = if (prevSnapshot != null) query.startAfter(prevSnapshot) else query
+            query.get()
                 .addOnSuccessListener { articlesSnapshot ->
                     if (continuation.isActive) {
                         Timber.d("fetched articles Successfully: ${articlesSnapshot.documents}")
 
                         val articles = normalizeHelper.getNormalizedArticles(articlesSnapshot)
 
-                        continuation.resume(Result.Success(articles))
+                        continuation.resume(Result.Success(Pair(articles, articlesSnapshot.documents.last())))
                     } else {
                         Timber.d("Exception, continuation is no longer active")
                     }
