@@ -42,49 +42,13 @@ class PublisherRepositoryTest {
     }
 
     @Test
-    fun allOk_ReturnCurrentUserSuccessfully() = mainCoroutineRule.runBlockingTest {
-        // When trying to get CurrentUser
-        val result = publisherRepo.getCurrentUser()
-
-        // Assert all data is ok
-        assertThat(result).isInstanceOf(UiPublisher::class.java)
-        assertThat(result.publisher).isEqualTo(TestData.publisher1)
-        assertThat(result.profileImg).isNotNull()
-    }
+    fun allOk_ReturnCurrentUserSuccessfully() = mainCoroutineRule.runBlockingTest { runUiPublisherTest { publisherRepo.getCurrentUser() } }
 
     @Test
-    fun nullUser_ReturnEmptyPublisher() = mainCoroutineRule.runBlockingTest {
-        // GIVEN no signed-in User
-        mockedAuthRepository = mock {
-            on(it.getId()).doReturn(null)
-        }
-        publisherRepo = PublisherRepository(FakePublisherInfoDataSource(), mockedAuthRepository, DummyStorageRepository())
-
-        // When trying to get CurrentUser
-        val result = publisherRepo.getCurrentUser()
-
-        // Assert We have an empty publisher
-        assertThat(result).isInstanceOf(UiPublisher::class.java)
-        assertThat(result.publisher).isEqualTo(TestData.emptyPublisher)
-        assertThat(result.profileImg).isNull()
-    }
+    fun nullUser_ReturnEmptyPublisher() = mainCoroutineRule.runBlockingTest { runUiPublisherTest(nullUser = true) { publisherRepo.getCurrentUser() } }
 
     @Test
-    fun dataSourceFails_ReturnEmptyPublisher() = mainCoroutineRule.runBlockingTest {
-        // GIVEN failed dataSource
-        val mockedPublisherDataSource = mock<FakePublisherInfoDataSource> {
-            on(it.getPublisher(TestData.publisher1.id)).doReturn(Result.Error(Exception()))
-        }
-        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
-
-        // When trying to get CurrentUser
-        val result = publisherRepo.getCurrentUser()
-
-        // Assert We have an empty publisher
-        assertThat(result).isInstanceOf(UiPublisher::class.java)
-        assertThat(result.publisher).isEqualTo(TestData.emptyPublisher)
-        assertThat(result.profileImg).isNull()
-    }
+    fun dataSourceFails_ReturnEmptyPublisher() = mainCoroutineRule.runBlockingTest { runUiPublisherTest(mockDataSourceFun = true) { publisherRepo.getCurrentUser() } }
 
     @Test
     fun allOk_ReturnPublishersSuccessfully() = mainCoroutineRule.runBlockingTest {
@@ -110,8 +74,12 @@ class PublisherRepositoryTest {
         // Assert We have an empty list
         assertThat(result).isEmpty()
     }
-
     // TODO: refactor the above two tests
+    @Test
+    fun allOk_ReturnPublisherInfoSuccessfully() = mainCoroutineRule.runBlockingTest {runUiPublisherTest{publisherRepo.getPublisherInfo(TestData.publisher1.id)}}
+
+    @Test
+    fun dataSourceFails_ReturnEmptyPublisherInfo() = mainCoroutineRule.runBlockingTest {runUiPublisherTest(mockDataSourceFun = true){publisherRepo.getPublisherInfo(TestData.publisher1.id)}}
 
     @Test
     fun allOk_UpdateUserNameSuccessfully() = mainCoroutineRule.runBlockingTest { runTest { publisherRepo.updateName(TestData.publisher1.name) } }
@@ -213,5 +181,28 @@ class PublisherRepositoryTest {
         val result = publisherRepo.funUnderTest()
         // Assert it all goes as intended
         if (nullUser || mockDataSourceFun || invalidParameter) assertThat(result).isFalse() else assertThat(result).isTrue()
+    }
+
+    /** the same idea as the function above */
+    private suspend fun runUiPublisherTest(nullUser: Boolean = false,
+                                           mockDataSourceFun: Boolean = false,
+                                           invalidParameter: Boolean = false,
+                                           funUnderTest: suspend PublisherRepository.() -> UiPublisher) {
+        if (nullUser) mockedAuthRepository = mock { on(it.getId()).doReturn(null) } // GIVEN no signed-in User
+
+        val mockedPublisherDataSource = if (mockDataSourceFun) DummyPublisherDataSource() else FakePublisherInfoDataSource() // GIVEN failed dataSource
+
+        // Satisfy dependencies based on conditions
+        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
+        val result = publisherRepo.funUnderTest()
+        // Assert it all goes as intended
+        assertThat(result).isInstanceOf(UiPublisher::class.java)
+        if (nullUser || mockDataSourceFun || invalidParameter){
+            assertThat(result.publisher).isEqualTo(TestData.emptyPublisher)
+            assertThat(result.profileImg).isNull()
+        } else {
+            assertThat(result.publisher).isEqualTo(TestData.publisher1)
+            assertThat(result.profileImg).isNotNull()
+        }
     }
 }

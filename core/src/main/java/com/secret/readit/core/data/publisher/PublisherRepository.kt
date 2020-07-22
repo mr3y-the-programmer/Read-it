@@ -41,17 +41,7 @@ class PublisherRepository @Inject constructor(
      */
     suspend fun getCurrentUser(): UiPublisher {
         val id = authRepo.getId() ?: return getEmptyPublisher()
-
-        val result = publisherDataSource.getPublisher(id)
-
-        var publisher = getEmptyPublisher().publisher
-        var profileImg: Bitmap? = null
-        if (result.succeeded) {
-            publisher = (result as Result.Success).data
-            val imgUri = Uri.parse(publisher.profileImgUri)
-            profileImg = storageRepo.downloadImg(imgUri, DEFAULT_PROFILE_IMG_URL)
-        }
-        return UiPublisher(publisher = publisher, profileImg = profileImg)
+        return getPublisherInfo(id)
     }
 
     /**
@@ -109,6 +99,19 @@ class PublisherRepository @Inject constructor(
             publishers.addAll(data)
         }
         return publishers
+    }
+
+    suspend fun getPublisherInfo(id: publisherId): UiPublisher {
+        val result = publisherDataSource.getPublisher(id)
+
+        var publisher = getEmptyPublisher().publisher
+        var profileImg: Bitmap? = null
+        if (result.succeeded) {
+            publisher = (result as Result.Success).data
+            val imgUri = Uri.parse(publisher.profileImgUri)
+            profileImg = storageRepo.downloadImg(imgUri, DEFAULT_PROFILE_IMG_URL)
+        }
+        return UiPublisher(publisher = publisher, profileImg = profileImg)
     }
 
     /**
