@@ -44,6 +44,10 @@ internal class DefaultArticlesDataSource @Inject constructor(
         return fetchArticle(id)
     }
 
+    override suspend fun getPubArticles(info: Pair<publisherId, Long>): Result<List<Article>> {
+        return fetchArticles(info)
+    }
+
     override suspend fun addArticle(article: Article): Result<Boolean> {
         return addNewArticle(article)
     }
@@ -109,6 +113,31 @@ internal class DefaultArticlesDataSource @Inject constructor(
                     }
                 }.addOnFailureListener {
                     Timber.d("Exception in fetching article, Cause: ${it.message}")
+                    continuation.resumeWithException(it)
+                }
+        }
+    }
+
+    private suspend fun fetchArticles(pubInfo: Pair<publisherId, Long>): Result<List<Article>> {
+        return wrapInCoroutineCancellable(
+            ioDispatcher
+        ) { continuation ->
+            firestore.collection(ARTICLES_COLLECTION)
+                .whereEqualTo(PUBLISHER_ID_FILED, pubInfo.first)
+                .whereGreaterThanOrEqualTo(TIMESTAMP_FIELD, pubInfo.second)
+                .get()
+                .addOnSuccessListener { articlesSnapshot ->
+                    if (continuation.isActive) {
+                        Timber.d("fetched articles Successfully: ${articlesSnapshot.documents}")
+
+                        val articles = normalizeHelper.getNormalizedArticles(articlesSnapshot)
+
+                        continuation.resume(Result.Success(articles))
+                    } else {
+                        Timber.d("Exception, continuation is no longer active")
+                    }
+                }.addOnFailureListener {
+                    Timber.d("Exception in fetching pub: ${pubInfo.first} articles, Cause: ${it.message}")
                     continuation.resumeWithException(it)
                 }
         }
