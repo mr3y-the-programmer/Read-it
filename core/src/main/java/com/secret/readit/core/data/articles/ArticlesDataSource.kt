@@ -35,6 +35,11 @@ interface ArticlesDataSource {
     suspend fun getArticle(id: articleId): Result<Article>
 
     /**
+     * get Articles published by [publisherId] since period [Long]
+     */
+    suspend fun getPubArticles(info: Pair<publisherId, Long>): Result<List<Article>>
+
+    /**
      * add the [article] to firestore
      */
     suspend fun addArticle(article: Article): Result<Boolean>
