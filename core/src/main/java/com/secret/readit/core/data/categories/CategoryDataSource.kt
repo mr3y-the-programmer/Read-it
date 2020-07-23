@@ -17,9 +17,11 @@ import com.secret.readit.model.articleId
 interface CategoryDataSource {
 
     /**
-     * get All categories stored in firestore
+     * the main fun to get categories stored in Categories collection,
+     * it takes additional parameters like [ids] to customize query,
+     * if all parameters empty it will return the whole list of categories
      */
-    suspend fun getCategories(): Result<List<Category>>
+    suspend fun getCategories(ids: List<String>): Result<List<Category>>
 
     /**
      * get categories of specified [articleId]
