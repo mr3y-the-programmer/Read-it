@@ -7,6 +7,7 @@
 
 package com.secret.readit.core.data.utils
 
+import com.google.firebase.firestore.Query
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.uimodels.ImageUiElement
 import com.secret.readit.model.BaseElement
@@ -34,6 +35,20 @@ val BaseElement.isTextElement
 
 val BaseElement.isImageElement
     get() = this is ImageUiElement && this.bitmap != null
+
+/**
+ * return query in which each item id equal to one of provided [ids]
+ * [field]: the field to search in for values like: ID_FIELD
+ * [fallback]: the safest Pair to return with query when [ids] is empty or null,
+ * first value of pair is the field to search in, the second is the value to search for
+ */
+fun <T: Any> Query.withIds(ids: List<String>, field: String, fallback: Pair<String, T>): Query {
+    return if (!ids.isNullOrEmpty()) {
+        whereIn(field, ids)
+    } else {
+        whereGreaterThanOrEqualTo(fallback.first, fallback.second) // Safest query to return
+    }
+}
 
 // Refactored thumbnail to be an extension property, it help our model code to be more clean
 val Publisher.thumbnail

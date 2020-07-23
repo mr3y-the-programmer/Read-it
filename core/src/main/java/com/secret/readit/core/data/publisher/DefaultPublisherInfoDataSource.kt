@@ -8,6 +8,7 @@
 package com.secret.readit.core.data.publisher
 
 import com.google.firebase.firestore.*
+import com.secret.readit.core.data.utils.withIds
 import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
 import com.secret.readit.core.di.IoDispatcher
 import com.secret.readit.core.result.Result
@@ -91,7 +92,7 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
             var query = firestore.collection(PUBLISHERS_COLLECTION)
                 .whereGreaterThanOrEqualTo(FOLLOWERS_NUMBER_FIELD, numOfFollowers)
-                .withIds(ids)
+                .withIds(ids, ID_FIELD, Pair(MEMBER_SINCE_FIELD, 1))
                 .limit(limit.toLong())
             query = if (prevSnapshot != null) query.startAfter(prevSnapshot) else query
                 query.get()
@@ -238,14 +239,6 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
         }
     }
 
-    //TODO: Refactor it with the one provided in articles dataSource
-    private fun Query.withIds(ids: List<publisherId>): Query{
-        return if (!ids.isNullOrEmpty()) {
-            whereIn(ID_FIELD, ids)
-        } else {
-            whereGreaterThanOrEqualTo(MEMBER_SINCE_FIELD, 1) // Safest query to return
-        }
-    }
     companion object {
         const val PUBLISHERS_COLLECTION = "publishers"
         const val NAME_FIELD = "name"
