@@ -8,6 +8,7 @@
 package com.secret.readit.core.data.categories
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.secret.readit.core.data.utils.withIds
 import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
 import com.secret.readit.core.di.IoDispatcher
 import com.secret.readit.core.result.Result
@@ -30,11 +31,12 @@ internal class DefaultCategoryDataSource @Inject constructor(
     /**
      * For now, all returned categories guaranteed to be non-null since it only configured/added through server not from the client
      */
-    override suspend fun getCategories(): Result<List<Category>> {
+    override suspend fun getCategories(ids: List<String>): Result<List<Category>> {
         return wrapInCoroutineCancellable(
             ioDispatcher
         ) { continuation ->
             firestore.collection(CATEGORIES_COLLECTION)
+                .withIds(ids, ID_FIELD, Pair(NAME_FIELD, ""))
                 .get()
                 .addOnSuccessListener { categoriesSnapshot ->
                     if (continuation.isActive) {
@@ -81,6 +83,8 @@ internal class DefaultCategoryDataSource @Inject constructor(
     }
 
     companion object {
+        const val ID_FIELD = "id"
+        const val NAME_FIELD = "name"
         const val CATEGORIES_COLLECTION = "categories"
         const val ARTICLE_IDS_FIELD = "articleIds"
     }
