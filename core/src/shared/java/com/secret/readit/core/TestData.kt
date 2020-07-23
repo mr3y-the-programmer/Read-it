@@ -33,9 +33,16 @@ object TestData {
 
     val content2 = Content(listOf(plaintTextElement, bulletPointElementWithoutMarkup, plaintTextElement, codeBlockElementWithoutMarkup))
 
-    val publisher1 = Publisher("1pub", "fake1", "fake1@gamil.com", memberSince = 1280282737737)
-    val publisher2 = publisher1.copy(id = "2pub", name = "fake2", emailAddress = "fake2@gmail.com")
+    val category1 = Category("categ1", "Programming", 0xFF00F3)
+    val category2 = Category("categ2", "Software Engineering", 0x00FFD4)
+    val category3 = Category("categ3", "Design", 0xF0D255)
+    val emptyCategory = Category("", "", 0)
+
+    val publisher2 = Publisher(id = "2pub", name = "fake2", emailAddress = "fake2@gmail.com", memberSince = 45555555557785421)
+    val publisher1 = Publisher("1pub", "fake1", "fake1@gamil.com", memberSince = 1280282737737,
+        followedCategoriesIds = listOf(category1.id, category2.id, category3.id), followedPublishersIds = listOf(publisher2.id))
     val uiPublisher1 = UiPublisher(publisher1, null)
+    val uiPublisher2 = UiPublisher(publisher2, null)
     val mostFollowedIds = listOf(publisher1.id, publisher2.id, "3publo", "8upolia")
 
     val comment0 = Comment("6", publisher2, "I've replied to you", 787542322223, emptyList())
@@ -44,12 +51,8 @@ object TestData {
 
     val comments1 = listOf(comment0, comment1, comment2)
 
-    val category1 = Category("categ1", "Programming", 0xFF00F3)
-    val category2 = Category("categ2", "Software Engineering", 0x00FFD4)
-    val category3 = Category("categ3", "Design", 0xF0D255)
-    val emptyCategory = Category("", "", 0)
-
     val categories = listOf(category1, category2, category3)
+    val categoriesIds = listOf(category1.id, category2.id, category3.id)
     val articleCategories = listOf(category1, category2)
 
     val article1 = Article(
