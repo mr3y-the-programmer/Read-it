@@ -20,7 +20,8 @@ abstract class FlowUseCase<in P, out R> {
      */
     suspend operator fun invoke(parameters: P): Flow<R> {
         return execute(parameters)
-            .catch { e -> Timber.e("Exception happened while executing, cause: ${e.message}"); throw e } // Catch exceptions if there's any
+            // Catch exceptions if there's any, Consumers should handle this like: navigating to Sign-In dialog
+            .catch { e -> Timber.e("Exception happened while executing, cause: ${e.message}"); throw e }
     }
 
     /**
