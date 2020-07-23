@@ -18,7 +18,11 @@ class DummyPublisherDataSource : PublisherInfoDataSource {
 
     override suspend fun getPublisher(id: publisherId): Result<Publisher> = mock { } // no-op
 
-    override suspend fun getPublishersWithFollowers(numOfFollowers: Int, limit: Int): Result<List<Publisher>> = mock { } // no-op
+    override suspend fun getPublishers(
+        ids: List<publisherId>,
+        numOfFollowers: Int,
+        limit: Int
+    ): Result<List<Publisher>> = mock { } // no-op
 
     override suspend fun setDisplayName(newName: String, id: publisherId): Result<Boolean> = mock { } // no-op
 
