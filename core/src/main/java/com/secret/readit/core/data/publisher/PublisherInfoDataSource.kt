@@ -7,6 +7,7 @@
 
 package com.secret.readit.core.data.publisher
 
+import com.google.firebase.firestore.DocumentSnapshot
 import com.secret.readit.core.result.Result
 import com.secret.readit.model.Publisher
 import com.secret.readit.model.articleId
@@ -29,9 +30,14 @@ interface PublisherInfoDataSource {
 
     /**
      * the main function to get a list of publishers stored in publishers collection
-     * it takes additional parameters for customizing query like [limit], [numOfFollowers]
+     * it takes additional parameters for customizing query like [limit], [numOfFollowers], [prevSnapshot]
      */
-    suspend fun getPublishers(ids: List<publisherId>, numOfFollowers: Int, limit: Int): Result<List<Publisher>>
+    suspend fun getPublishers(
+        ids: List<publisherId>,
+        numOfFollowers: Int,
+        limit: Int,
+        prevSnapshot: DocumentSnapshot?
+    ): Result<Pair<List<Publisher>, DocumentSnapshot>>
 
     /**
      * update publisher/user name
