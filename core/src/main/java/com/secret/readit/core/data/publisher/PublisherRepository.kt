@@ -9,6 +9,7 @@ package com.secret.readit.core.data.publisher
 
 import android.graphics.Bitmap
 import android.net.Uri
+import androidx.annotation.VisibleForTesting
 import com.secret.readit.core.data.auth.AuthRepository
 import com.secret.readit.core.data.shared.StorageRepository
 import com.secret.readit.core.data.utils.CustomIDHandler
@@ -86,19 +87,24 @@ class PublisherRepository @Inject constructor(
      */
     suspend fun unFollowPublisher(publisher: UiPublisher): Boolean = updateFollowers(publisher, positive = false)
 
-    /**
-     * get Publishers who have followers more than or equalTo [followersNumber]
-     *
-     * This API maybe changed later to include other attributes like memberSince
-     */
-    suspend fun getPublishersWithNumberOfFollowers(followersNumber: Int, limit: Int): List<Publisher> {
-        val result = publisherDataSource.getPublishersWithFollowers(followersNumber, limit)
-        val publishers = mutableListOf<Publisher>()
-        if (result.succeeded) {
+    /** Exposed APIs For Consumers */
+    suspend fun getPubsWithNumOfFollowers(followersNumber: Int, limit: Int): List<UiPublisher> = getPublishersWithNumberOfFollowers(followersNumber = followersNumber, limit = limit)
+
+    suspend fun getFollowingPubsList(followingIds: List<publisherId>): List<UiPublisher> = getPublishersWithNumberOfFollowers(followingIds)
+
+    /**private fun handles the boilerplate and connecting to dataSource*/
+    @VisibleForTesting
+    suspend fun getPublishersWithNumberOfFollowers(ids: List<publisherId> = emptyList(), followersNumber: Int = 0, limit: Int = 100): List<UiPublisher> {
+        val result = publisherDataSource.getPublishers(ids, followersNumber, limit)
+        val uiPublishers = mutableListOf<UiPublisher>()
+        if (result != null && result.succeeded) {
             val data = (result as Result.Success).data
-            publishers.addAll(data)
+            for (pub in data) {
+                val profileImg = storageRepo.downloadImg(Uri.parse(pub.profileImgUri), DEFAULT_PROFILE_IMG_URL)
+                uiPublishers += UiPublisher(pub, profileImg)
+            }
         }
-        return publishers
+        return uiPublishers
     }
 
     suspend fun getPublisherInfo(id: publisherId): UiPublisher {
