@@ -18,7 +18,11 @@ class FakePublisherInfoDataSource : PublisherInfoDataSource {
 
     override suspend fun getPublisher(id: publisherId): Result<Publisher> = Result.Success(TestData.publisher1)
 
-    override suspend fun getPublishersWithFollowers(numOfFollowers: Int, limit: Int): Result<List<Publisher>> = Result.Success(listOf(TestData.publisher1))
+    override suspend fun getPublishers(
+        ids: List<publisherId>,
+        numOfFollowers: Int,
+        limit: Int
+    ): Result<List<Publisher>> = Result.Success(listOf(TestData.publisher1))
 
     override suspend fun setDisplayName(newName: String, id: publisherId): Result<Boolean> = Result.Success(true)
 
