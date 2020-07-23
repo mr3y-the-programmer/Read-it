@@ -28,9 +28,10 @@ interface PublisherInfoDataSource {
     suspend fun getPublisher(id: publisherId): Result<Publisher>
 
     /**
-     * get publishers with number of followers equal to or more than [numOfFollowers] within specified limit [limit]
+     * the main function to get a list of publishers stored in publishers collection
+     * it takes additional parameters for customizing query like [limit], [numOfFollowers]
      */
-    suspend fun getPublishersWithFollowers(numOfFollowers: Int, limit: Int): Result<List<Publisher>>
+    suspend fun getPublishers(ids: List<publisherId>, numOfFollowers: Int, limit: Int): Result<List<Publisher>>
 
     /**
      * update publisher/user name
