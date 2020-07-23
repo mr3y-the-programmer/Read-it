@@ -7,7 +7,6 @@
 
 package com.secret.readit.core.domain.pubprofile
 
-import com.secret.readit.core.data.publisher.PubImportantInfo
 import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.core.di.CurrentUserProfile
 import com.secret.readit.core.domain.FlowUseCase
@@ -23,10 +22,10 @@ import javax.inject.Inject
  */
 class GetFollowingUseCase @Inject constructor(
     @CurrentUserProfile private val currentUser: UseCase<Unit, UiPublisher>,
-    private val pubRepo: PublisherRepository): FlowUseCase<PubImportantInfo, UiPublisher>() {
+    private val pubRepo: PublisherRepository): FlowUseCase<Unit, UiPublisher>() {
 
-    override suspend fun execute(parameters: PubImportantInfo): Flow<UiPublisher> {
-        val followingIds = currentUser(Unit).publisher.followedPublishersIds //If it throws NullPointerException it will be caught by catch in [FlowUseCase]
+    override suspend fun execute(parameters: Unit): Flow<UiPublisher> {
+        val followingIds = currentUser(parameters).publisher.followedPublishersIds //If it throws NullPointerException it will be caught by catch in [FlowUseCase]
         return pubRepo.getFollowingPubsList(followingIds).asFlow()
             .filterNot { it.publisher.id.isEmpty() || it.publisher.memberSince < 0 }
             .cancellable()
