@@ -12,7 +12,7 @@ import com.secret.readit.model.Category
 import com.secret.readit.model.articleId
 
 open class FakeCategoryDataSource : CategoryDataSource {
-    override suspend fun getCategories(): Result<List<Category>> {
+    override suspend fun getCategories(ids: List<String>): Result<List<Category>> {
         return Result.Success(TestData.categories)
     }
 
