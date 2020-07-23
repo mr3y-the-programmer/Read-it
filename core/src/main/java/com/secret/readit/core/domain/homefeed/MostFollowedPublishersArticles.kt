@@ -25,10 +25,10 @@ class MostFollowedPublishersArticles @Inject constructor(private val pubReposito
      * takes a pair of numberOfFollowers and limit respectively
      */
     override suspend fun execute(parameters: Pair<Int, Int>): List<publisherId> {
-        val publishers = pubRepository.getPublishersWithNumberOfFollowers(parameters.first, parameters.second)
+        val publishers = pubRepository.getPubsWithNumOfFollowers(parameters.first, parameters.second)
         val pubIds = mutableListOf<publisherId>()
-        for (pub in publishers) {
-            pubIds.add(pub.id)
+        for (uiPub in publishers) {
+            pubIds.add(uiPub.publisher.id)
         }
         return pubIds
     }
