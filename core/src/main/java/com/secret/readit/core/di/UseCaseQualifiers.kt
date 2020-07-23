@@ -12,3 +12,7 @@ import javax.inject.Qualifier
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class MostFollowedPublishers
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class CurrentUserProfile
