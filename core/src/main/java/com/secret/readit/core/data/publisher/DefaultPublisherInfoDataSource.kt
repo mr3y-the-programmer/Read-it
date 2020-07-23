@@ -7,10 +7,7 @@
 
 package com.secret.readit.core.data.publisher
 
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.*
 import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
 import com.secret.readit.core.di.IoDispatcher
 import com.secret.readit.core.result.Result
@@ -88,14 +85,16 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
     override suspend fun getPublishers(
         ids: List<publisherId>,
         numOfFollowers: Int,
-        limit: Int
-    ): Result<List<Publisher>> {
+        limit: Int,
+        prevSnapshot: DocumentSnapshot?
+    ): Result<Pair<List<Publisher>, DocumentSnapshot>> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
-            firestore.collection(PUBLISHERS_COLLECTION)
+            var query = firestore.collection(PUBLISHERS_COLLECTION)
                 .whereGreaterThanOrEqualTo(FOLLOWERS_NUMBER_FIELD, numOfFollowers)
                 .withIds(ids)
                 .limit(limit.toLong())
-                .get()
+            query = if (prevSnapshot != null) query.startAfter(prevSnapshot) else query
+                query.get()
                 .addOnSuccessListener { publishersDocs ->
                     if (continuation.isActive) {
                         Timber.d("Returned publishers with NumOfFollowers: $numOfFollowers successfully, docs: ${publishersDocs.documents}")
@@ -103,10 +102,10 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
 
                         if (publishers.isNullOrEmpty()) {
                             Timber.d("Couldn't convert firestore model to publishers model, or publishers isn't exist")
-                            return@addOnSuccessListener continuation.resume(Result.Success(emptyList()))
+                            return@addOnSuccessListener continuation.resume(Result.Success(Pair(emptyList(), publishersDocs.documents.last())))
                         }
 
-                        continuation.resume(Result.Success(publishers))
+                        continuation.resume(Result.Success(Pair(publishers, publishersDocs.documents.last())))
                     } else {
                         Timber.d("continuation is no longer active")
                     }
