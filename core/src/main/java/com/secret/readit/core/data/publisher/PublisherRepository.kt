@@ -10,6 +10,7 @@ package com.secret.readit.core.data.publisher
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.annotation.VisibleForTesting
+import com.google.firebase.firestore.DocumentSnapshot
 import com.secret.readit.core.data.auth.AuthRepository
 import com.secret.readit.core.data.shared.StorageRepository
 import com.secret.readit.core.data.utils.CustomIDHandler
@@ -92,17 +93,22 @@ class PublisherRepository @Inject constructor(
 
     suspend fun getFollowingPubsList(followingIds: List<publisherId>): List<UiPublisher> = getPublishersWithNumberOfFollowers(followingIds)
 
+    //hold last document snapshot in-Memory to be able to get queries after it and avoid leaking resources and money
+    @VisibleForTesting
+    var prevSnapshot: DocumentSnapshot? = null
+        private set
     /**private fun handles the boilerplate and connecting to dataSource*/
     @VisibleForTesting
     suspend fun getPublishersWithNumberOfFollowers(ids: List<publisherId> = emptyList(), followersNumber: Int = 0, limit: Int = 100): List<UiPublisher> {
-        val result = publisherDataSource.getPublishers(ids, followersNumber, limit)
+        val result = publisherDataSource.getPublishers(ids, followersNumber, limit, prevSnapshot)
         val uiPublishers = mutableListOf<UiPublisher>()
         if (result != null && result.succeeded) {
             val data = (result as Result.Success).data
-            for (pub in data) {
+            for (pub in data.first) {
                 val profileImg = storageRepo.downloadImg(Uri.parse(pub.profileImgUri), DEFAULT_PROFILE_IMG_URL)
                 uiPublishers += UiPublisher(pub, profileImg)
             }
+            prevSnapshot = data.second
         }
         return uiPublishers
     }

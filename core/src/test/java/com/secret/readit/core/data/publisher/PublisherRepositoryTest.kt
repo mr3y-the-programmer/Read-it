@@ -8,6 +8,7 @@
 package com.secret.readit.core.data.publisher
 
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.firestore.DocumentSnapshot
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.MainCoroutineRule
@@ -56,6 +57,7 @@ class PublisherRepositoryTest {
         val result = publisherRepo.getPublishersWithNumberOfFollowers(emptyList(), 23, 30)
 
         // Assert all data is ok
+        assertThat(publisherRepo.prevSnapshot).isInstanceOf(DocumentSnapshot::class.java)
         assertThat(result).isNotEmpty()
         assertThat(result.size).isEqualTo(1)
         assertThat(result[0].profileImg).isNotNull()
@@ -66,7 +68,7 @@ class PublisherRepositoryTest {
     fun dataSourceFails_ReturnEmptyPublishers() = mainCoroutineRule.runBlockingTest {
         // GIVEN failed dataSource
         val mockedPublisherDataSource = mock<FakePublisherInfoDataSource> {
-            on(it.getPublishers(listOf(TestData.publisher1.id), 23, 30)).doReturn(Result.Error(Exception()))
+            on(it.getPublishers(listOf(TestData.publisher1.id), 23, 30, null)).doReturn(Result.Error(Exception()))
         }
         publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
 
@@ -74,6 +76,7 @@ class PublisherRepositoryTest {
         val result = publisherRepo.getPublishersWithNumberOfFollowers(emptyList(),23, 30)
 
         // Assert We have an empty list
+        assertThat(publisherRepo.prevSnapshot).isNull()
         assertThat(result).isEmpty()
     }
     // TODO: refactor the above two tests
