@@ -7,6 +7,8 @@
 
 package com.secret.readit.core.data.publisher
 
+import com.google.firebase.firestore.DocumentSnapshot
+import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.result.Result
 import com.secret.readit.model.Publisher
 import com.secret.readit.model.articleId
@@ -21,8 +23,9 @@ class FakePublisherInfoDataSource : PublisherInfoDataSource {
     override suspend fun getPublishers(
         ids: List<publisherId>,
         numOfFollowers: Int,
-        limit: Int
-    ): Result<List<Publisher>> = Result.Success(listOf(TestData.publisher1))
+        limit: Int,
+        prevSnapshot: DocumentSnapshot?
+    ): Result<Pair<List<Publisher>, DocumentSnapshot>> = Result.Success(Pair(listOf(TestData.publisher1), mock {  }))
 
     override suspend fun setDisplayName(newName: String, id: publisherId): Result<Boolean> = Result.Success(true)
 
