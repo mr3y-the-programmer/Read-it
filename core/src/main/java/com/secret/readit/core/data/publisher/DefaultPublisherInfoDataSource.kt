@@ -9,6 +9,7 @@ package com.secret.readit.core.data.publisher
 
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
 import com.secret.readit.core.di.IoDispatcher
@@ -84,10 +85,15 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
         }
     }
 
-    override suspend fun getPublishersWithFollowers(numOfFollowers: Int, limit: Int): Result<List<Publisher>> {
+    override suspend fun getPublishers(
+        ids: List<publisherId>,
+        numOfFollowers: Int,
+        limit: Int
+    ): Result<List<Publisher>> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
             firestore.collection(PUBLISHERS_COLLECTION)
                 .whereGreaterThanOrEqualTo(FOLLOWERS_NUMBER_FIELD, numOfFollowers)
+                .withIds(ids)
                 .limit(limit.toLong())
                 .get()
                 .addOnSuccessListener { publishersDocs ->
@@ -233,9 +239,18 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
         }
     }
 
+    //TODO: Refactor it with the one provided in articles dataSource
+    private fun Query.withIds(ids: List<publisherId>): Query{
+        return if (!ids.isNullOrEmpty()) {
+            whereIn(ID_FIELD, ids)
+        } else {
+            whereGreaterThanOrEqualTo(MEMBER_SINCE_FIELD, 1) // Safest query to return
+        }
+    }
     companion object {
         const val PUBLISHERS_COLLECTION = "publishers"
         const val NAME_FIELD = "name"
+        const val ID_FIELD = "id"
         const val EMAIL_ADDRESS_FIELD = "emailAddress"
         const val MEMBER_SINCE_FIELD = "memberSince"
         const val PUBLISHED_ARTICLES_FIELD = "publishedArticlesIds"
