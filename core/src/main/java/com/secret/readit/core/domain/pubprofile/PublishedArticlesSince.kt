@@ -29,7 +29,7 @@ class PublishedArticlesSince @Inject constructor(private val pubRepo: PublisherR
 
     override suspend fun execute(parameters: Pair<PubImportantInfo, Since>): Flow<Article> {
         val pubInfo = parameters.first
-        val pubId = pubRepo.getPublisherId(pubInfo) ?: return flow{ Timber.e("publisherId not found") }
+        val pubId = pubRepo.getPublisherId(pubInfo) ?: throw NullPointerException() //Will be caught by [FlowUseCase]
         val period = when(parameters.second) {
             Since.LAST_7_DAYS -> ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).minusDays(7).toEpochSecond()
             Since.LAST_MONTH -> ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).minusDays(30).toEpochSecond()
