@@ -31,8 +31,8 @@ class CategoryRepository @Inject constructor(
      * Return Categories from data source or empty if dataSource failed
      */
     // TODO: normalize Int color to Color
-    suspend fun getAllCategories(): List<Category> {
-        val result = categoryDataSource.getCategories()
+    suspend fun getCategories(ids: List<String>): List<Category> {
+        val result = categoryDataSource.getCategories(ids)
         return getCategories(result)
     }
 

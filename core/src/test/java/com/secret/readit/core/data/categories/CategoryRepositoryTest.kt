@@ -35,7 +35,7 @@ class CategoryRepositoryTest {
     @Test
     fun dataSourceSuccess_ReturnAllCategories() = mainCoroutineRule.runBlockingTest {
         // When trying to get a Successful result
-        val result = categoryRepo.getAllCategories()
+        val result = categoryRepo.getCategories(TestData.categoriesIds)
 
         val expected = TestData.categories
 
@@ -47,12 +47,12 @@ class CategoryRepositoryTest {
     fun dataSourceFails_ReturnEmptyResult() = mainCoroutineRule.runBlockingTest {
         // GIVEN data Source that fails to get new result
         val mockedDataSource = mock<FakeCategoryDataSource> {
-            on(it.getCategories()).doReturn(Result.Error(Exception()))
+            on(it.getCategories(emptyList())).doReturn(Result.Error(Exception()))
         }
 
         categoryRepo = categoryRepo.copy(mockedDataSource)
         // When trying to get a result
-        val result = categoryRepo.getAllCategories()
+        val result = categoryRepo.getCategories(TestData.categoriesIds)
 
         // Assert it is empty
         assertThat(result).isEmpty()
