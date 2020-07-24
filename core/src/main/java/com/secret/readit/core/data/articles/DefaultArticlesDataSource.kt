@@ -173,8 +173,7 @@ internal class DefaultArticlesDataSource @Inject constructor(
         } else if (!pubIds.isNullOrEmpty()) {
             whereIn(PUBLISHER_ID_FILED, pubIds)
         } else {
-            // This query is always true with all articles but we must have an else branch here if lists is empty, So this is the safest query to return
-            whereGreaterThanOrEqualTo(TIMESTAMP_FIELD, 1)
+            this // Otherwise return query without additional filters
         }
     }
     companion object {
