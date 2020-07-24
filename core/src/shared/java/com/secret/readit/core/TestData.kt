@@ -45,9 +45,9 @@ object TestData {
     val uiPublisher2 = UiPublisher(publisher2, null)
     val mostFollowedIds = listOf(publisher1.id, publisher2.id, "3publo", "8upolia")
 
-    val comment0 = Comment("6", publisher2, "I've replied to you", 787542322223, emptyList())
-    val comment1 = Comment("1", publisher1, "That's Awesome", 1968764334, emptyList())
-    val comment2 = Comment("2", publisher1, "Fantastic", 788225123294, listOf(comment0))
+    val comment0 = Comment("6", publisher2.id, "I've replied to you", 787542322223, emptyList())
+    val comment1 = Comment("1", publisher1.id, "That's Awesome", 1968764334, emptyList())
+    val comment2 = Comment("2", publisher1.id, "Fantastic", 788225123294, listOf(comment0.id))
 
     val comments1 = listOf(comment0, comment1, comment2)
 
