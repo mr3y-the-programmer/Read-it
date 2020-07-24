@@ -36,7 +36,7 @@ internal class DefaultCategoryDataSource @Inject constructor(
             ioDispatcher
         ) { continuation ->
             firestore.collection(CATEGORIES_COLLECTION)
-                .withIds(ids, ID_FIELD, Pair(NAME_FIELD, ""))
+                .withIds(ids, ID_FIELD)
                 .get()
                 .addOnSuccessListener { categoriesSnapshot ->
                     if (continuation.isActive) {
@@ -84,7 +84,6 @@ internal class DefaultCategoryDataSource @Inject constructor(
 
     companion object {
         const val ID_FIELD = "id"
-        const val NAME_FIELD = "name"
         const val CATEGORIES_COLLECTION = "categories"
         const val ARTICLE_IDS_FIELD = "articleIds"
     }

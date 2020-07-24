@@ -92,7 +92,7 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
             var query = firestore.collection(PUBLISHERS_COLLECTION)
                 .whereGreaterThanOrEqualTo(FOLLOWERS_NUMBER_FIELD, numOfFollowers)
-                .withIds(ids, ID_FIELD, Pair(MEMBER_SINCE_FIELD, 1))
+                .withIds(ids, ID_FIELD)
                 .limit(limit.toLong())
             query = if (prevSnapshot != null) query.startAfter(prevSnapshot) else query
                 query.get()
