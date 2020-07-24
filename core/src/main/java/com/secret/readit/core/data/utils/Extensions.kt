@@ -40,9 +40,7 @@ val BaseElement.isImageElement
  * return query in which each item id equal to one of provided [ids]
  * [field]: the field to search in for values like: ID_FIELD
  */
-fun Query.withIds(ids: List<String>, field: String): Query {
-    return if (!ids.isNullOrEmpty()) whereIn(field, ids) else this // Otherwise return query without additional filters
-}
+fun Query.withIds(ids: List<String>, field: String) = if (!ids.isNullOrEmpty()) whereIn(field, ids) else this // Otherwise return query without additional filters
 
 // Refactored thumbnail to be an extension property, it help our model code to be more clean
 val Publisher.thumbnail
