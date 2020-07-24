@@ -5,9 +5,6 @@
   ~   Written by MR3Y <abdonasr379@gmail.com>, 2020.
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.secret.readit">
-
-    <uses-permission android:name="android.permission.INTERNET"/>
+<manifest package="com.secret.readit">
 
 </manifest>
