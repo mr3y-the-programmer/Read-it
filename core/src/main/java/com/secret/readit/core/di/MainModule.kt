@@ -20,6 +20,10 @@ import com.secret.readit.core.data.articles.ArticlesDataSource
 import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.data.articles.DefaultArticlesDataSource
 import com.secret.readit.core.data.articles.NormalizeHelper
+import com.secret.readit.core.data.articles.comments.CommentDataSource
+import com.secret.readit.core.data.articles.comments.DefaultCommentsDataSource
+import com.secret.readit.core.data.articles.content.ContentDataSource
+import com.secret.readit.core.data.articles.content.DefaultContentDataSource
 import com.secret.readit.core.data.articles.utils.Formatter
 import com.secret.readit.core.data.auth.AuthDataSource
 import com.secret.readit.core.data.auth.AuthRepository
@@ -142,8 +146,8 @@ class MainModule {
     }
 
     @Provides
-    fun provideArticlesFormatter(storageRepo: StorageRepository): Formatter {
-        return Formatter(storageRepo)
+    fun provideArticlesFormatter(storageRepo: StorageRepository, pubRepo: PublisherRepository, categoryRepo: CategoryRepository): Formatter {
+        return Formatter(storageRepo, pubRepo, categoryRepo)
     }
 
     @Provides
@@ -156,6 +160,16 @@ class MainModule {
     @Singleton
     fun provideCategoriesRepository(categoryDataSource: CategoryDataSource): CategoryRepository {
         return CategoryRepository(categoryDataSource)
+    }
+
+    @Provides
+    fun provideContentDataSource(firestore: FirebaseFirestore,@IoDispatcher dispatcher: CoroutineDispatcher): ContentDataSource {
+        return DefaultContentDataSource(firestore, dispatcher)
+    }
+
+    @Provides
+    fun provideCommentsDataSource(firestore: FirebaseFirestore,@IoDispatcher dispatcher: CoroutineDispatcher): CommentDataSource {
+        return DefaultCommentsDataSource(firestore, dispatcher)
     }
     // TODO: make drafts database
 }
