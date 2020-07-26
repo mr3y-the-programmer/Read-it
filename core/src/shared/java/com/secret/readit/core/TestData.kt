@@ -1,3 +1,4 @@
+import com.secret.readit.core.uimodels.UiArticle
 import com.secret.readit.core.uimodels.UiPublisher
 import com.secret.readit.model.*
 
@@ -56,20 +57,23 @@ object TestData {
     val articleCategories = listOf(category1, category2)
 
     val article1 = Article(
-        "43259253-1pub-arti", "article1", content1, publisher1, 2,
-        1214343259253, comments1, category = listOf(category1, category2)
+        "43259253-1pub-arti", "article1", publisher1.id, 2,
+        1214343259253, categoryIds = listOf(category1.id, category2.id)
     )
 
     val article2 = Article(
-        "89479892-2pub-arti", "article2", content2, publisher2, 1,
-        1529889479892, listOf(comment1), category = listOf(category3)
+        "89479892-2pub-arti", "article2", publisher2.id, 1,
+        1529889479892, categoryIds = listOf(category3.id)
     )
 
     val emptyPublisher = Publisher("", "", "", memberSince = -1)
     val emptyUiPublisher = UiPublisher(emptyPublisher, null)
     val emptyArticle = Article(
-        "", "", Content(emptyList()), emptyPublisher, 0, 0, emptyList(), category = emptyList()
+        "", "", emptyPublisher.id, 0, 0, categoryIds = emptyList()
     )
+    val uiArticle1 = UiArticle(article1, uiPublisher1, categories)
+    val uiArticle2 = UiArticle(article2, uiPublisher2, categories)
+    val uiArticles = listOf(uiArticle1, uiArticle2)
 
     val articles1 = listOf(article1)
     val articles2 = listOf(article2)
