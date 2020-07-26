@@ -9,8 +9,11 @@ package com.secret.readit.core.data.articles.utils
 
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.firestore.DocumentSnapshot
+import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.MainCoroutineRule
+import com.secret.readit.core.data.categories.CategoryRepository
+import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.core.data.shared.DummyStorageRepository
 import com.secret.readit.core.result.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,7 +33,13 @@ class FormatterTest {
 
     @Before
     fun setUp() {
-        formatter = Formatter(DummyStorageRepository())
+        val mockedPubRepo = mock<PublisherRepository> {
+            mainCoroutineRule.runBlockingTest { on(it.getPublisherInfo(TestData.publisher1.id)).doReturn(TestData.uiPublisher1) }
+        }
+        val mockedCategoryRepo = mock<CategoryRepository> {
+            mainCoroutineRule.runBlockingTest { on(it.getCategories(TestData.articles1[0].categoryIds)).doReturn(TestData.categories) }
+        }
+        formatter = Formatter(DummyStorageRepository(), mockedPubRepo, mockedCategoryRepo)
     }
 
     @Test
@@ -43,7 +52,8 @@ class FormatterTest {
 
         // assert it matches our expectations
         assertThat(formatResult.size).isEqualTo(1)
-        assertThat(formatResult[0].content).isEqualTo(TestData.reverseContent1)
+        assertThat(formatResult[0].publisher).isEqualTo(TestData.uiPublisher1)
+        assertThat(formatResult[0].category).isEqualTo(TestData.categories)
     }
 
     @Test
@@ -56,7 +66,8 @@ class FormatterTest {
 
         // assert it matches our expectations
         assertThat(formatResult.size).isEqualTo(1)
-        assertThat(formatResult[0].content).isEqualTo(TestData.reverseContent1)
+        assertThat(formatResult[0].publisher).isEqualTo(TestData.uiPublisher1)
+        assertThat(formatResult[0].category).isEqualTo(TestData.categories)
     }
 
     @Test
@@ -90,7 +101,6 @@ class FormatterTest {
 
         // assert it matches our expectations
         assertThat(formatResult.size).isEqualTo(1)
-        assertThat(formatResult[0].content).isEqualTo(TestData.reverseContent1)
     }
 
     @Test

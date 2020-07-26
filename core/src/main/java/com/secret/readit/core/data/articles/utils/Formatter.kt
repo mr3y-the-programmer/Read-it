@@ -10,12 +10,15 @@ package com.secret.readit.core.data.articles.utils
 import android.net.Uri
 import com.google.firebase.firestore.DocumentSnapshot
 import com.secret.readit.core.data.articles.ArticlesRepository
+import com.secret.readit.core.data.categories.CategoryRepository
+import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.core.data.shared.StorageRepository
 import com.secret.readit.core.data.utils.isImageElement
 import com.secret.readit.core.data.utils.isTextElement
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.core.uimodels.ImageUiElement
+import com.secret.readit.core.uimodels.UiArticle
 import com.secret.readit.model.*
 import javax.inject.Inject
 
@@ -24,6 +27,8 @@ import javax.inject.Inject
  */
 class Formatter @Inject constructor(
     private val storageRepo: StorageRepository,
+    private val pubRepo: PublisherRepository,
+    private val categoryRepo: CategoryRepository,
     private val parser: Parser = Parser
 ) {
 
@@ -31,8 +36,8 @@ class Formatter @Inject constructor(
      * format articles in expected format for consumers
      */
     @Suppress("UNCHECKED_CAST")
-    suspend fun <T> formatArticles(result: Result<T>, singleItem: Boolean = false): MutableList<Article> {
-        val formattedArticles = mutableListOf<Article>()
+    suspend fun <T> formatArticles(result: Result<T>, singleItem: Boolean = false): MutableList<UiArticle> {
+        val formattedArticles = mutableListOf<UiArticle>()
         if (result != null && result.succeeded) {
             val data = (result as Result.Success).data
             val dataList = mutableListOf<Article>()
@@ -42,10 +47,9 @@ class Formatter @Inject constructor(
                 dataList.addAll(data as List<Article>)
             }
             for (article in dataList) {
-                var parsedArticle = article
-                val formattedElements = formatContent(article.content)
-                parsedArticle = parsedArticle.copy(content = Content(formattedElements))
-                formattedArticles += parsedArticle
+                val publisher = pubRepo.getPublisherInfo(article.publisherID)
+                val categories = categoryRepo.getCategories(article.categoryIds)
+                formattedArticles += UiArticle(article, publisher = publisher, category = categories)
             }
         }
         return formattedArticles
@@ -55,25 +59,24 @@ class Formatter @Inject constructor(
      * format specific Pub articles in expected format for consumers
      */
     @Suppress("UNCHECKED_CAST")
-    suspend fun formatPubArticles(result: Result<Pair<List<Article>, DocumentSnapshot>>): MutableList<Article> {
-        val formattedArticles = mutableListOf<Article>()
+    suspend fun formatPubArticles(result: Result<Pair<List<Article>, DocumentSnapshot>>): MutableList<UiArticle> {
+        val formattedArticles = mutableListOf<UiArticle>()
         if (result != null && result.succeeded) {
             val data = (result as Result.Success).data.first
             for (article in data) {
-                var parsedArticle = article
-                val formattedElements = formatContent(article.content)
-                parsedArticle = parsedArticle.copy(content = Content(formattedElements))
-                formattedArticles += parsedArticle
+                val publisher = pubRepo.getPublisherInfo(article.publisherID)
+                val categories = categoryRepo.getCategories(article.categoryIds)
+                formattedArticles += UiArticle(article, publisher = publisher, category = categories)
             }
         }
         return formattedArticles
     }
 
-    // Handle formatting content
-    private suspend fun formatContent(content: Content): MutableList<BaseElement> {
+    // Handle formatting elements
+    private suspend fun formatElements(elements: List<Element>): MutableList<BaseElement> {
         val formattedElements = mutableListOf<BaseElement>()
-        for (baseElement in content.elements) {
-            var firestoreElement = (baseElement as Element)
+        for (baseElement in elements) {
+            var firestoreElement = baseElement
             if (firestoreElement.imageUri == null) { // parse text only
                 firestoreElement = parser.parse(baseElement.text!!)
                 formattedElements += firestoreElement // In this case UiElement is the same as firestoreElement
