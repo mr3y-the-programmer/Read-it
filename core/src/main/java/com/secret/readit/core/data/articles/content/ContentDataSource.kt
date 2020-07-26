@@ -18,6 +18,7 @@ interface ContentDataSource {
 
     /**
      * get content stored under article specified with [articleId], it takes additional parameter [limit] to limit the query
+     * **NOTE**: limit of 0 or less return full article Content
      */
     suspend fun getContent(id: articleId, limit: Int): Result<List<Element>>
 
