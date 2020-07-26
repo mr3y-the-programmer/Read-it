@@ -17,9 +17,9 @@ import com.secret.readit.model.articleId
 interface ContentDataSource {
 
     /**
-     * get content stored under article specified with [articleId]
+     * get content stored under article specified with [articleId], it takes additional parameter [limit] to limit the query
      */
-    suspend fun getContent(id: articleId): Result<List<Element>>
+    suspend fun getContent(id: articleId, limit: Int): Result<List<Element>>
 
     /**
      * upload Content to firestore specific for this [articleId]
