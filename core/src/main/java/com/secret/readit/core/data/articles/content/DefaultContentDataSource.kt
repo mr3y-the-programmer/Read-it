@@ -26,10 +26,11 @@ internal class DefaultContentDataSource @Inject constructor(private val firestor
                                                    @IoDispatcher private val ioDispatcher: CoroutineDispatcher): ContentDataSource {
     override suspend fun getContent(id: articleId, limit: Int): Result<List<Element>> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
+            val safeLimit = if (limit <= 0) 9999 else limit
             firestore.collection(ARTICLES_COLLECTION)
                 .document(id)
                 .collection(CONTENT_COLLECTION)
-                .limit(limit.toLong())
+                .limit(safeLimit.toLong())
                 .get()
                 .addOnSuccessListener { contentSnapshot ->
                     if (continuation.isActive) {
