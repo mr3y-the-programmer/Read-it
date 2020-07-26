@@ -24,11 +24,12 @@ import kotlin.coroutines.resumeWithException
  */
 internal class DefaultContentDataSource @Inject constructor(private val firestore: FirebaseFirestore,
                                                    @IoDispatcher private val ioDispatcher: CoroutineDispatcher): ContentDataSource {
-    override suspend fun getContent(id: articleId): Result<List<Element>> {
+    override suspend fun getContent(id: articleId, limit: Int): Result<List<Element>> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
             firestore.collection(ARTICLES_COLLECTION)
                 .document(id)
                 .collection(CONTENT_COLLECTION)
+                .limit(limit.toLong())
                 .get()
                 .addOnSuccessListener { contentSnapshot ->
                     if (continuation.isActive) {
