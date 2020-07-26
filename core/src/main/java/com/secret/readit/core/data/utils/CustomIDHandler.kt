@@ -25,7 +25,7 @@ class CustomIDHandler {
      */
     fun getID(article: Article): String {
         val stringTimestamp = article.timestamp.toString()
-        val pubId = article.publisher.id
+        val pubId = article.publisherID
         val title = article.title
 
         if (title.length < 4 || stringTimestamp.length < 7 || pubId.length < 4) {
