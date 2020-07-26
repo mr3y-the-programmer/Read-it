@@ -74,7 +74,7 @@ object TestData {
     val emptyUiArticle = UiArticle(emptyArticle, emptyUiPublisher, emptyList())
     val uiArticle1 = UiArticle(article1, uiPublisher1, categories)
     val uiArticle2 = UiArticle(article2, uiPublisher2, categories)
-    val uiArticles = listOf(uiArticle1, uiArticle2)
+    val uiArticles = listOf(uiArticle1, uiArticle2, emptyUiArticle)
 
     val articles1 = listOf(article1)
     val articles2 = listOf(article2)

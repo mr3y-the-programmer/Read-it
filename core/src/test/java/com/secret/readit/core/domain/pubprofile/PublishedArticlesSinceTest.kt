@@ -17,7 +17,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.runBlockingTest
 import com.google.common.truth.Truth.assertThat
-import com.secret.readit.model.Article
+import com.secret.readit.core.uimodels.UiArticle
 import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Rule
@@ -43,7 +43,7 @@ class PublishedArticlesSinceTest {
     fun setUp() {
         val period = ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).minusDays(7).toEpochSecond()
         val mockedArticlesRepo = mock<ArticlesRepository> { mainCoroutineRule.runBlockingTest { on(it.getPubArticlesSince(TestData.publisher1.id, period))
-            .doReturn(TestData.articles4) }
+            .doReturn(TestData.uiArticles) }
         }
 
         val mockedPubRepo = mock<PublisherRepository>{ mainCoroutineRule.runBlockingTest { on(it.getPublisherId(testPubInfo)).doReturn(TestData.publisher1.id) }}
@@ -53,28 +53,27 @@ class PublishedArticlesSinceTest {
 
     @Test
     fun allOk_getPublishedSince() = mainCoroutineRule.runBlockingTest {
-        val returnedArticles = mutableListOf<Article>()
+        val returnedArticles = mutableListOf<UiArticle>()
         //When trying to get the published articles last seven days
         pubArticlesSince(Pair(testPubInfo, Since.LAST_7_DAYS)).collect { returnedArticles.add(it) }
 
         //Assert empty articles dropped
-        assertThat(returnedArticles).isEqualTo(TestData.articles3)
+        assertThat(returnedArticles).isEqualTo(TestData.uiArticles.dropLast(1))
     }
 
-    @Test
+    @Test(expected = NullPointerException::class)
     fun failedToGetId_ReturnEmpty() = mainCoroutineRule.runBlockingTest {
         //GIVEN invalid pubId
         val mockedPubRepo = mock<PublisherRepository>{ on(it.getPublisherId(testPubInfo)).doReturn(null) }
         val period = ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).minusDays(7).toEpochSecond()
-        val mockedArticlesRepo = mock<ArticlesRepository> { on(it.getPubArticlesSince(TestData.publisher1.id, period)).doReturn(TestData.articles4) }
+        val mockedArticlesRepo = mock<ArticlesRepository> { on(it.getPubArticlesSince(TestData.publisher1.id, period)).doReturn(TestData.uiArticles) }
 
         pubArticlesSince = PublishedArticlesSince(mockedPubRepo, mockedArticlesRepo)
 
         //When trying to get Articles of this publisher
-        val returnArticles = mutableListOf<Article>()
+        val returnArticles = mutableListOf<UiArticle>()
         pubArticlesSince(Pair(testPubInfo, Since.LAST_7_DAYS)).collect { returnArticles.add(it) }
 
-        //Assert we have nothing
-        assertThat(returnArticles).isEmpty()
+        //Assert it throws an exception
     }
 }
