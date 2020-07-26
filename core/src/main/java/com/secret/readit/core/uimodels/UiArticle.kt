@@ -14,4 +14,7 @@ import com.secret.readit.model.*
  */
 data class UiArticle(val article: Article,
                      val publisher: UiPublisher,
-                     val category: List<Category>)
+                     val initialContent: Content, //Content that displayed as a Summery like: article content on home feed page
+                     val fullContent: Content = Content(emptyList()), //Full Content displayed when clicking on article, displaying the full article
+                     val category: List<Category>/*,
+                     val comments: List<UiComment> = emptyList()*/)
