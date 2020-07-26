@@ -11,9 +11,11 @@ import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.data.publisher.PubImportantInfo
 import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.core.domain.FlowUseCase
-import com.secret.readit.model.Article
-import kotlinx.coroutines.flow.*
-import timber.log.Timber
+import com.secret.readit.core.uimodels.UiArticle
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.cancellable
+import kotlinx.coroutines.flow.filterNot
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -25,9 +27,9 @@ import javax.inject.Inject
  *   -One of enum [Since] values as a parameter to load the corresponding published Articles
  */
 class PublishedArticlesSince @Inject constructor(private val pubRepo: PublisherRepository,
-                                                 private val articlesRepo: ArticlesRepository): FlowUseCase<Pair<PubImportantInfo, Since>, Article>() {
+                                                 private val articlesRepo: ArticlesRepository): FlowUseCase<Pair<PubImportantInfo, Since>, UiArticle>() {
 
-    override suspend fun execute(parameters: Pair<PubImportantInfo, Since>): Flow<Article> {
+    override suspend fun execute(parameters: Pair<PubImportantInfo, Since>): Flow<UiArticle> {
         val pubInfo = parameters.first
         val pubId = pubRepo.getPublisherId(pubInfo) ?: throw NullPointerException() //Will be caught by [FlowUseCase]
         val period = when(parameters.second) {
@@ -36,7 +38,7 @@ class PublishedArticlesSince @Inject constructor(private val pubRepo: PublisherR
             Since.OLDER -> pubInfo.memberSince
         }
         return articlesRepo.getPubArticlesSince(pubId, period).asFlow()
-            .filterNot { it.id.isEmpty() || it.timestamp < 0 }
+            .filterNot { it.article.id.isEmpty() || it.article.timestamp < 0 }
             .cancellable()
     }
 }
