@@ -11,10 +11,10 @@ import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.di.MostFollowedPublishers
 import com.secret.readit.core.domain.FlowUseCase
 import com.secret.readit.core.domain.UseCase
-import com.secret.readit.model.Article
+import com.secret.readit.core.uimodels.UiArticle
 import com.secret.readit.model.publisherId
 import kotlinx.coroutines.flow.*
-import java.util.Random
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -24,9 +24,9 @@ import javax.inject.Inject
 class PickedUpForYou @Inject constructor(
     private val articlesRepo: ArticlesRepository,
     @MostFollowedPublishers private val mostFollowedPubs: UseCase<Pair<Int, Int>, List<publisherId>>
-) : FlowUseCase<Int, Article>() {
+) : FlowUseCase<Int, UiArticle>() {
 
-    override suspend fun execute(parameters: Int): Flow<Article> {
+    override suspend fun execute(parameters: Int): Flow<UiArticle> {
         val limit = parameters.coerceIn(5, 30) // Ensure we don't request big number of articles that user will never read
         val (mostAppreciateLimit, mostFollowedPubLimit, shortArticlesLimit) = getEachPartLimit(limit)
         // First
@@ -45,7 +45,7 @@ class PickedUpForYou @Inject constructor(
             if (Random().nextInt(2) == 0) fromMA else fromMFP
         }.combine(shortAppreciatedArticles) { other, fromSAA ->
             if (Random().nextInt(2) == 0) other else fromSAA
-        }.filterNot { it.id.isEmpty() || it.timestamp < 0 }.cancellable() // cancellable() because asFlow() is unSafeFlow
+        }.filterNot { it.article.id.isEmpty() || it.article.timestamp < 0 }.cancellable() // cancellable() because asFlow() is unSafeFlow
         return articles
     }
 
