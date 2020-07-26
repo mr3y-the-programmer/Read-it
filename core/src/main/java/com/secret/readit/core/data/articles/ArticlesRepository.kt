@@ -13,6 +13,8 @@ import com.secret.readit.core.data.articles.utils.Formatter
 import com.secret.readit.core.data.utils.CustomIDHandler
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
+import com.secret.readit.core.uimodels.UiArticle
+import com.secret.readit.core.uimodels.UiPublisher
 import com.secret.readit.model.*
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
@@ -31,23 +33,23 @@ class ArticlesRepository @Inject constructor(
 ) {
 
     /** Exposed APIs For consumers to get articles based on these attributes */
-    suspend fun getMostAppreciatedArticles(limit: Int, appreciateNum: Int): List<Article> {
+    suspend fun getMostAppreciatedArticles(limit: Int, appreciateNum: Int): List<UiArticle> {
         return getNewArticles(limit, appreciateNum)
     }
 
-    suspend fun getMostFollowedPublishersArticles(limit: Int, pubsIds: List<publisherId>): List<Article> {
+    suspend fun getMostFollowedPublishersArticles(limit: Int, pubsIds: List<publisherId>): List<UiArticle> {
         return getNewArticles(limit, mostFollowedPubsId = pubsIds)
     }
 
-    suspend fun getShortAndAppreciatedArticles(limit: Int, maximumMinutesRead: Int, appreciateNum: Int): List<Article> {
+    suspend fun getShortAndAppreciatedArticles(limit: Int, maximumMinutesRead: Int, appreciateNum: Int): List<UiArticle> {
         return getNewArticles(limit, appreciateNum = appreciateNum, withMinutesRead = maximumMinutesRead)
     }
 
-    suspend fun getArticlesWhichHaveCategories(limit: Int, categoriesIds: List<String>): List<Article> {
+    suspend fun getArticlesWhichHaveCategories(limit: Int, categoriesIds: List<String>): List<UiArticle> {
         return getNewArticles(limit, categoriesIds = categoriesIds)
     }
 
-    suspend fun getPubArticlesSince(pubId: publisherId, since: Long): List<Article> {
+    suspend fun getPubArticlesSince(pubId: publisherId, since: Long): List<UiArticle> {
         return getNewArticles(limit = 0, specificPub = Pair(pubId, since))
     }
     //hold last document snapshot in-Memory to be able to get queries after it and avoid leaking resources and money
@@ -69,8 +71,8 @@ class ArticlesRepository @Inject constructor(
         withMinutesRead: Int = 999,
         mostFollowedPubsId: List<publisherId> = emptyList(),
         specificPub: Pair<publisherId, Long> = Pair("", -1)
-    ): List<Article> {
-        val articles = mutableListOf<Article>()
+    ): List<UiArticle> {
+        val articles = mutableListOf<UiArticle>()
         if (specificPub.first.isNotEmpty() && specificPub.second > 0) {
             val articlesResult = articlesDataSource.getPubArticles(specificPub, prevSnapshot)
             articles.addAll(formatter.formatPubArticles(articlesResult))
@@ -87,7 +89,7 @@ class ArticlesRepository @Inject constructor(
      *
      * @return valid article or empty article if data source failed
      */
-    suspend fun getArticle(id: articleId): Article {
+    suspend fun getArticle(id: articleId): UiArticle {
         val articleResult = articlesDataSource.getArticle(id)
         val formattedArticle = formatter.formatArticles(articleResult, true)
         if (formattedArticle.isNullOrEmpty()) {
@@ -101,25 +103,27 @@ class ArticlesRepository @Inject constructor(
      *
      * @return true on success, false on data source failure like: No Internet connection or adding invalid article
      */
-    suspend fun addArticle(article: Article): Boolean {
+    suspend fun addArticle(uiArticle: UiArticle): Boolean {
         var successful = false
         val id = try {
-            idHandler.getID(article)
+            idHandler.getID(uiArticle.article)
         } catch (ex: IllegalArgumentException) {
             return false
         }
-        val deFormattedElements = formatter.deFormatElements(id, article.content.elements)
-        val result = articlesDataSource.addArticle(article.copy(id = id, content = Content(deFormattedElements)))
+        /*val deFormattedElements = formatter.deFormatElements(id, uiArticle)
+        val firestoreArticle = uiArticle.article.copy(id = id, categoryIds = )
+        val result = articlesDataSource.addArticle(uiArticle.copy(id = id, contentIds = Content(deFormattedElements)))
 
         if (result != null && result.succeeded) {
             successful = (result as Result.Success).data
-        }
+        }*/
         return successful
     }
 
-    private fun getEmptyArticle(): Article {
-        val publisher = Publisher("", "", "", memberSince = -1)
-        return Article("", "", Content(emptyList()), publisher, 0, 0, emptyList(), category = emptyList())
+    private fun getEmptyArticle(): UiArticle {
+        val publisher = UiPublisher(Publisher("", "", "", memberSince = -1), null)
+        val firestoreArticle =  Article("", "", "", 0, 0, categoryIds = emptyList())
+        return UiArticle(firestoreArticle, publisher, emptyList())
     }
 
     companion object {
