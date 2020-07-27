@@ -10,6 +10,7 @@ package com.secret.readit.core.data.articles.utils
 import android.net.Uri
 import com.google.firebase.firestore.DocumentSnapshot
 import com.secret.readit.core.data.articles.ArticlesRepository
+import com.secret.readit.core.data.articles.content.ContentDataSource
 import com.secret.readit.core.data.categories.CategoryRepository
 import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.core.data.shared.StorageRepository
@@ -26,6 +27,7 @@ import javax.inject.Inject
  * Handles Formatting Articles to expected Format and vice-versa, Used mainly by ArticlesRepo
  */
 class Formatter @Inject constructor(
+    private val contentDataSource: ContentDataSource,
     private val storageRepo: StorageRepository,
     private val pubRepo: PublisherRepository,
     private val categoryRepo: CategoryRepository,
@@ -33,45 +35,61 @@ class Formatter @Inject constructor(
 ) {
 
     /**
-     * format articles in expected format for consumers
+     * format articles in expected format for consumers,
+     * parameter [contentLimit] to limit the content loaded from dataSource
      */
-    @Suppress("UNCHECKED_CAST")
-    suspend fun <T> formatArticles(result: Result<T>, singleItem: Boolean = false): MutableList<UiArticle> {
+    suspend fun formatArticles(result: Result<List<Article>>, contentLimit: Int): MutableList<UiArticle> {
         val formattedArticles = mutableListOf<UiArticle>()
         if (result != null && result.succeeded) {
             val data = (result as Result.Success).data
-            val dataList = mutableListOf<Article>()
-            if (singleItem) {
-                dataList.add(data as Article)
-            } else {
-                dataList.addAll(data as List<Article>)
-            }
-            for (article in dataList) {
+            for (article in data) {
                 val publisher = pubRepo.getPublisherInfo(article.publisherID)
+                val initialContent = getExpectedElements(article.id, contentLimit)
                 val categories = categoryRepo.getCategories(article.categoryIds)
-                formattedArticles += UiArticle(article, publisher = publisher, category = categories)
+                formattedArticles += UiArticle(article, publisher = publisher, category = categories, initialContent = Content(initialContent))
             }
         }
         return formattedArticles
     }
 
     /**
+     * Same as [formatArticles] but for Single Article
+     */
+    suspend fun formatArticle(result: Result<Article>): UiArticle? {
+        if (result != null && result.succeeded) {
+            val article = (result as Result.Success).data
+            val publisher = pubRepo.getPublisherInfo(article.publisherID)
+            val fullContent = getExpectedElements(article.id, 0)
+            val categories = categoryRepo.getCategories(article.categoryIds)
+            return UiArticle(
+                article,
+                publisher = publisher,
+                category = categories,
+                initialContent = Content(emptyList()),
+                fullContent = Content(fullContent)
+            )
+        }
+        return null
+    }
+//TODO: refactor
+    /**
      * format specific Pub articles in expected format for consumers
      */
     @Suppress("UNCHECKED_CAST")
-    suspend fun formatPubArticles(result: Result<Pair<List<Article>, DocumentSnapshot>>): MutableList<UiArticle> {
+    suspend fun formatPubArticles(result: Result<Pair<List<Article>, DocumentSnapshot>>, contentLimit: Int): MutableList<UiArticle> {
         val formattedArticles = mutableListOf<UiArticle>()
         if (result != null && result.succeeded) {
             val data = (result as Result.Success).data.first
             for (article in data) {
                 val publisher = pubRepo.getPublisherInfo(article.publisherID)
+                val initialContent = getExpectedElements(article.id, contentLimit)
                 val categories = categoryRepo.getCategories(article.categoryIds)
-                formattedArticles += UiArticle(article, publisher = publisher, category = categories)
+                formattedArticles += UiArticle(article, publisher = publisher, category = categories, initialContent = Content(initialContent))
             }
         }
         return formattedArticles
     }
-
+//TODO: replace MutableList with List
     // Handle formatting elements
     private suspend fun formatElements(elements: List<Element>): MutableList<BaseElement> {
         val formattedElements = mutableListOf<BaseElement>()
@@ -88,6 +106,15 @@ class Formatter @Inject constructor(
             }
         }
         return formattedElements
+    }
+
+    private suspend fun getExpectedElements(id: articleId, limit: Int): List<BaseElement> {
+        val result = contentDataSource.getContent(id, limit)
+        if (result != null && result.succeeded) {
+            val contentElements = (result as Result.Success).data
+            return formatElements(contentElements).toList()
+        }
+        return emptyList()
     }
 
     suspend fun deFormatElements(id: articleId, elements: List<BaseElement>): List<Element> {

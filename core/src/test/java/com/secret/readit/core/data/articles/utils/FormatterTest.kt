@@ -12,6 +12,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.MainCoroutineRule
 import com.secret.readit.core.SharedMocks
+import com.secret.readit.core.data.articles.content.FakeContentDataSource
 import com.secret.readit.core.data.shared.DummyStorageRepository
 import com.secret.readit.core.result.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,7 +33,7 @@ class FormatterTest {
     @Before
     fun setUp() {
         val sharedMocks = SharedMocks(mainCoroutineRule)
-        formatter = Formatter(DummyStorageRepository(), sharedMocks.mockedPubRepo, sharedMocks.mockedCategoryRepo)
+        formatter = Formatter(FakeContentDataSource(), DummyStorageRepository(), sharedMocks.mockedPubRepo, sharedMocks.mockedCategoryRepo)
     }
 
     @Test
@@ -41,12 +42,14 @@ class FormatterTest {
         val result = Result.Success(TestData.articles1)
 
         // When trying to format this list
-        val formatResult = formatter.formatArticles(result)
+        val formatResult = formatter.formatArticles(result, 5)
 
         // assert it matches our expectations
         assertThat(formatResult.size).isEqualTo(1)
         assertThat(formatResult[0].publisher).isEqualTo(TestData.uiPublisher1)
         assertThat(formatResult[0].category).isEqualTo(TestData.categories)
+        assertThat(formatResult[0].initialContent).isEqualTo(TestData.reverseContent1)
+        assertThat(formatResult[0].fullContent.elements).isEmpty()
     }
 
     @Test
@@ -55,12 +58,14 @@ class FormatterTest {
         val result = Result.Success(TestData.article1)
 
         // When trying to format it
-        val formatResult = formatter.formatArticles(result, singleItem = true)
+        val formatResult = formatter.formatArticle(result)
 
         // assert it matches our expectations
-        assertThat(formatResult.size).isEqualTo(1)
-        assertThat(formatResult[0].publisher).isEqualTo(TestData.uiPublisher1)
-        assertThat(formatResult[0].category).isEqualTo(TestData.categories)
+        assertThat(formatResult).isNotNull()
+        assertThat(formatResult?.publisher).isEqualTo(TestData.uiPublisher1)
+        assertThat(formatResult?.category).isEqualTo(TestData.categories)
+        assertThat(formatResult?.initialContent?.elements).isEmpty()
+        assertThat(formatResult?.fullContent).isEqualTo(TestData.reverseContent1)
     }
 
     @Test
@@ -69,7 +74,7 @@ class FormatterTest {
         val result = Result.Loading
 
         // When trying to format
-        val formatResult = formatter.formatArticles(result)
+        val formatResult = formatter.formatArticles(result, 5)
 
         // assert it matches our expectations
         assertThat(formatResult).isEmpty()
@@ -90,10 +95,14 @@ class FormatterTest {
         val result = Result.Success(Pair(TestData.articles1, mock<DocumentSnapshot> {}))
 
         //When trying to format this result
-        val formatResult = formatter.formatPubArticles(result)
+        val formatResult = formatter.formatPubArticles(result, 5)
 
         // assert it matches our expectations
         assertThat(formatResult.size).isEqualTo(1)
+        assertThat(formatResult[0].publisher).isEqualTo(TestData.uiPublisher1)
+        assertThat(formatResult[0].category).isEqualTo(TestData.categories)
+        assertThat(formatResult[0].initialContent).isEqualTo(TestData.reverseContent1)
+        assertThat(formatResult[0].fullContent.elements).isEmpty()
     }
 
     @Test
@@ -102,7 +111,7 @@ class FormatterTest {
         val result = Result.Loading
 
         //When trying to format this result
-        val formatResult = formatter.formatPubArticles(result)
+        val formatResult = formatter.formatPubArticles(result, 5)
 
         // assert we have nothing
         assertThat(formatResult).isEmpty()
