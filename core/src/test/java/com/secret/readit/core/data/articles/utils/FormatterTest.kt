@@ -84,12 +84,19 @@ class FormatterTest {
     }
 
     @Test
-    fun deFormatArticles_ReturnDeFormattedArticles() = mainCoroutineRule.runBlockingTest {
-        // When trying to deFormat content in order to upload
-        val deFormatResult = formatter.deFormatElements(TestData.article1.id, TestData.reverseContent1.elements)
+    fun deFormatUiArticles_allOk_ReturnDeFormattedArticles() = mainCoroutineRule.runBlockingTest {
+        // When trying to deFormat valid article
+        val deFormatResult = formatter.deFormatArticle(TestData.uiArticleToBeDeFormatted)
+        val article = deFormatResult!!.first
+        val elements = deFormatResult.second
 
         // Assert the result is deFormatted as expected
-        assertThat(deFormatResult).isEqualTo(TestData.content1.elements)
+        assertThat(elements).isEqualTo(TestData.fullArticleContent.elements)
+        println(article.numMinutesRead)
+        assertThat(article.numMinutesRead).isAtLeast(0)
+        assertThat(article.numOfAppreciate).isEqualTo(0)
+        assertThat(article.numOfDisagree).isEqualTo(0)
+        assertThat(article.categoryIds).isEqualTo(listOf(TestData.category1.id, TestData.category2.id))
     }
 
     @Test

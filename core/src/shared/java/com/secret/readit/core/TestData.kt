@@ -80,6 +80,8 @@ object TestData {
     val uiArticle1 = UiArticle(article1, uiPublisher1, initialContent = content1, fullContent = content1, category = categories)
     val uiArticle2 = UiArticle(article2, uiPublisher2, initialContent = content1, fullContent = content1, category = categories)
     val uiArticles = listOf(uiArticle1, uiArticle2, emptyUiArticle)
+    val deFormatArticleTest = Article("", "article3", publisher2.id, 0, 0, 0, 0, emptyList())
+    val uiArticleToBeDeFormatted = UiArticle(deFormatArticleTest, uiPublisher2, content1, reverseFullArticleContent, listOf(category1, category2))
 
     val articles1 = listOf(article1)
     val articles2 = listOf(article2)
