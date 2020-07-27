@@ -34,27 +34,10 @@ class Formatter @Inject constructor(
     private val parser: Parser = Parser
 ) {
 
-    /**
-     * format articles in expected format for consumers,
-     * parameter [contentLimit] to limit the content loaded from dataSource
-     */
-    suspend fun formatArticles(result: Result<List<Article>>, contentLimit: Int): MutableList<UiArticle> {
-        val formattedArticles = mutableListOf<UiArticle>()
-        if (result != null && result.succeeded) {
-            val data = (result as Result.Success).data
-            for (article in data) {
-                val publisher = pubRepo.getPublisherInfo(article.publisherID)
-                val initialContent = getExpectedElements(article.id, contentLimit)
-                val categories = categoryRepo.getCategories(article.categoryIds)
-                formattedArticles += UiArticle(article, publisher = publisher, category = categories, initialContent = Content(initialContent))
-            }
-        }
-        return formattedArticles
-    }
+    /** format articles in expected format for consumers, parameter [contentLimit] to limit the content loaded from dataSource */
+    suspend fun formatArticles(result: Result<List<Article>>, contentLimit: Int) = format(result, contentLimit)
 
-    /**
-     * Same as [formatArticles] but for Single Article
-     */
+    /** Same as [formatArticles] but for Single Article */
     suspend fun formatArticle(result: Result<Article>): UiArticle? {
         if (result != null && result.succeeded) {
             val article = (result as Result.Success).data
@@ -71,20 +54,23 @@ class Formatter @Inject constructor(
         }
         return null
     }
-//TODO: refactor
-    /**
-     * format specific Pub articles in expected format for consumers
-     */
+
+    /** format specific Pub articles in expected format for consumers */
+    suspend fun formatPubArticles(result: Result<Pair<List<Article>, DocumentSnapshot>>, contentLimit: Int) = format(result, contentLimit, true)
+
+    //Refactor boilerplate to this private fun
     @Suppress("UNCHECKED_CAST")
-    suspend fun formatPubArticles(result: Result<Pair<List<Article>, DocumentSnapshot>>, contentLimit: Int): MutableList<UiArticle> {
+    private suspend fun <T> format(result: Result<T>, contentLimit: Int, isResultOfPair: Boolean = false): MutableList<UiArticle> {
         val formattedArticles = mutableListOf<UiArticle>()
         if (result != null && result.succeeded) {
-            val data = (result as Result.Success).data.first
-            for (article in data) {
-                val publisher = pubRepo.getPublisherInfo(article.publisherID)
-                val initialContent = getExpectedElements(article.id, contentLimit)
-                val categories = categoryRepo.getCategories(article.categoryIds)
-                formattedArticles += UiArticle(article, publisher = publisher, category = categories, initialContent = Content(initialContent))
+            (result as Result.Success).data.let {
+                val articles = if (isResultOfPair) (it as Pair<List<Article>, *>).first else (it as List<Article>)
+                for (article in articles) {
+                    val publisher = pubRepo.getPublisherInfo(article.publisherID)
+                    val initialContent = getExpectedElements(article.id, contentLimit)
+                    val categories = categoryRepo.getCategories(article.categoryIds)
+                    formattedArticles += UiArticle(article, publisher = publisher, category = categories, initialContent = Content(initialContent))
+                }
             }
         }
         return formattedArticles

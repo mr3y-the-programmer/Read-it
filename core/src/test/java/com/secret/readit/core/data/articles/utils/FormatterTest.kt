@@ -49,7 +49,7 @@ class FormatterTest {
         assertThat(formatResult[0].publisher).isEqualTo(TestData.uiPublisher1)
         assertThat(formatResult[0].category).isEqualTo(TestData.categories)
         assertThat(formatResult[0].initialContent).isEqualTo(TestData.reverseContent1)
-        assertThat(formatResult[0].fullContent.elements).isEmpty()
+        assertThat(formatResult[0].fullContent).isEqualTo(TestData.reverseContent1)
     }
 
     @Test
@@ -102,7 +102,7 @@ class FormatterTest {
         assertThat(formatResult[0].publisher).isEqualTo(TestData.uiPublisher1)
         assertThat(formatResult[0].category).isEqualTo(TestData.categories)
         assertThat(formatResult[0].initialContent).isEqualTo(TestData.reverseContent1)
-        assertThat(formatResult[0].fullContent.elements).isEmpty()
+        assertThat(formatResult[0].fullContent).isEqualTo(TestData.reverseContent1)
     }
 
     @Test
