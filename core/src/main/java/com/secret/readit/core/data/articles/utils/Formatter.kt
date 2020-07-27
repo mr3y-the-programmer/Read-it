@@ -86,7 +86,7 @@ class Formatter @Inject constructor(
         val result = contentDataSource.getContent(id, limit)
         if (result != null && result.succeeded) {
             val contentElements = (result as Result.Success).data
-            return formatElements(contentElements).toList() //TODO: remove toList()
+            return formatElements(contentElements)
         }
         return emptyList()
     }
