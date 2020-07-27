@@ -146,8 +146,8 @@ class MainModule {
     }
 
     @Provides
-    fun provideArticlesFormatter(storageRepo: StorageRepository, pubRepo: PublisherRepository, categoryRepo: CategoryRepository): Formatter {
-        return Formatter(storageRepo, pubRepo, categoryRepo)
+    fun provideArticlesFormatter(contentSource: ContentDataSource, storageRepo: StorageRepository, pubRepo: PublisherRepository, categoryRepo: CategoryRepository): Formatter {
+        return Formatter(contentSource, storageRepo, pubRepo, categoryRepo)
     }
 
     @Provides
