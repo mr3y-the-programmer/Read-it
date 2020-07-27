@@ -10,12 +10,10 @@ package com.secret.readit.core.data.articles
 import androidx.annotation.VisibleForTesting
 import com.google.firebase.firestore.DocumentSnapshot
 import com.secret.readit.core.data.articles.utils.Formatter
-import com.secret.readit.core.data.utils.CustomIDHandler
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.core.uimodels.UiArticle
 import com.secret.readit.model.*
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -27,8 +25,7 @@ import javax.inject.Singleton
 @Singleton
 class ArticlesRepository @Inject constructor(
     private val articlesDataSource: ArticlesDataSource,
-    private val formatter: Formatter,
-    private val idHandler: CustomIDHandler = CustomIDHandler()
+    private val formatter: Formatter
 ) {
 
     /** Exposed APIs For consumers to get articles based on these attributes */
@@ -92,24 +89,20 @@ class ArticlesRepository @Inject constructor(
     /**
      * Publish this article, add it to firestore
      *
-     * @return true on success, false on data source failure like: No Internet connection or adding invalid article
+     * @return true on success, false on data source failure like: No Internet connection or adding invalid article(deFormatting Error)
      */
     suspend fun addArticle(uiArticle: UiArticle): Boolean {
         var successful = false
-        val id = try {
-            idHandler.getID(uiArticle.article)
-        } catch (ex: IllegalArgumentException) {
-            return false
-        }
-        /*val deFormattedElements = formatter.deFormatElements(id, uiArticle)
-        val firestoreArticle = uiArticle.article.copy(id = id, categoryIds = )
-        val result = articlesDataSource.addArticle(uiArticle.copy(id = id, contentIds = Content(deFormattedElements)))
-
+        val deFormattingResult = formatter.deFormatArticle(uiArticle) ?: return false //Couldn't deFormat article
+        val result = articlesDataSource.addArticle(deFormattingResult.first)
         if (result != null && result.succeeded) {
-            successful = (result as Result.Success).data
-        }*/
+            val articleSuccessful = (result as Result.Success).data
+            val contentSuccessful = formatter.uploadElements(deFormattingResult.first.id, deFormattingResult.second) //If article upload succeeded, upload content
+            successful = articleSuccessful && contentSuccessful
+        }
         return successful
     }
+    //TODO: make an update function when appreciating, adding comment...etc
 
     companion object {
         const val CONTENT_DISPLAYED_LIMIT = 5 //TODO: configure it through remote config

@@ -110,21 +110,21 @@ class ArticlesRepositoryTest {
     /* getFullArticles() test Removed because it is no longer contain logic to test */
 
     @Test
-    fun addArticle2_ReturnTrue() = mainCoroutineRule.runBlockingTest {
+    fun addArticle2_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest {
         // When trying to add An article(article2)
-        /*val result = articlesRepo.addArticle(TestData.article2)
+        val result = articlesRepo.addArticle(TestData.uiArticle2)
 
         // Assert it returns true
-        assertThat(result).isTrue()*/
+        assertThat(result).isTrue()
     }
 
     @Test
-    fun addNonValidArticle_ReturnFalse() = mainCoroutineRule.runBlockingTest {
+    fun addNonValidArticle_deFormattingError_ReturnFalse() = mainCoroutineRule.runBlockingTest {
         // When trying to add An invalid article(emptyArticle)
-        /*val result = articlesRepo.addArticle(TestData.emptyArticle)
+        val result = articlesRepo.addArticle(TestData.emptyUiArticle)
 
         // Assert it returns false
-        assertThat(result).isFalse()*/
+        assertThat(result).isFalse()
     }
 
     @Test
@@ -136,10 +136,10 @@ class ArticlesRepositoryTest {
         articlesRepo = articlesRepo.copy(mockedDataSource)
 
         // When trying to add an article
-        /*val result = articlesRepo.addArticle(TestData.article2)
+        val result = articlesRepo.addArticle(TestData.uiArticle2)
 
         // Assert it returns false
-        assertThat(result).isFalse()*/
+        assertThat(result).isFalse()
     }
 
     private fun ArticlesRepository.copy(dataSource: FakeArticlesDataSource): ArticlesRepository {

@@ -37,9 +37,6 @@ open class FakeArticlesDataSource : ArticlesDataSource {
     }
 
     override suspend fun addArticle(article: Article): Result<Boolean> {
-        if (article.id == TestData.article2.id) {
-            return Result.Success(true)
-        }
-        return Result.Success(false)
+        return Result.Success(true)
     }
 }
