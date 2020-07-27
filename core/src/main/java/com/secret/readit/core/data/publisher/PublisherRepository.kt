@@ -16,8 +16,8 @@ import com.secret.readit.core.data.shared.StorageRepository
 import com.secret.readit.core.data.utils.CustomIDHandler
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
+import com.secret.readit.core.uimodels.UiArticle
 import com.secret.readit.core.uimodels.UiPublisher
-import com.secret.readit.model.Article
 import com.secret.readit.model.Category
 import com.secret.readit.model.Publisher
 import com.secret.readit.model.publisherId
@@ -60,13 +60,13 @@ class PublisherRepository @Inject constructor(
      * publish new article,
      * @return true on success, false on failure or no signed-in user
      */
-    suspend fun addNewArticle(article: Article): Boolean = update(article = article)
+    suspend fun addNewArticle(article: UiArticle): Boolean = update(article = article)
 
     /**
      * remove existing article,
      * @return true on success, false on failure or no signed-in user
      */
-    suspend fun removeArticle(article: Article): Boolean = update(article = article, positive = false)
+    suspend fun removeArticle(article: UiArticle): Boolean = update(article = article, positive = false)
 
     /**
      * start following/subscribing new category
@@ -130,10 +130,10 @@ class PublisherRepository @Inject constructor(
      * Callers should only specify one of two params either article or category
      * @param positive when true mean adding, false mean removing
      */
-    private suspend fun update(article: Article? = null, category: Category? = null, positive: Boolean = true): Boolean {
+    private suspend fun update(article: UiArticle? = null, category: Category? = null, positive: Boolean = true): Boolean {
         val id = authRepo.getId() ?: return false
         val objectID = try {
-            if (article != null) idHandler.getID(article) else idHandler.getID(category!!)
+            if (article != null) idHandler.getID(article.article) else idHandler.getID(category!!)
         } catch (ex: IllegalArgumentException) {
             Timber.e("Not Valid Article/Category")
             return false

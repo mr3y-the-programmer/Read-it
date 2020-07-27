@@ -96,28 +96,28 @@ class PublisherRepositoryTest {
     fun dataSourceFails_CannotUpdateUserName() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true) { publisherRepo.updateName(TestData.publisher1.name) } }
 
     @Test
-    fun allOk_AddNewArticleSuccessfully() = mainCoroutineRule.runBlockingTest { runTest { publisherRepo.addNewArticle(TestData.article1) } }
+    fun allOk_AddNewArticleSuccessfully() = mainCoroutineRule.runBlockingTest { runTest { publisherRepo.addNewArticle(TestData.uiArticle1) } }
 
     @Test
-    fun nullUser_CannotAddArticle() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true) { publisherRepo.addNewArticle(TestData.article1) } }
+    fun nullUser_CannotAddArticle() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true) { publisherRepo.addNewArticle(TestData.uiArticle1) } }
 
     @Test
-    fun dataSourceFails_CannotAddArticle() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true) { publisherRepo.addNewArticle(TestData.article1) } }
+    fun dataSourceFails_CannotAddArticle() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true) { publisherRepo.addNewArticle(TestData.uiArticle1) } }
 
     @Test
-    fun invalidArticle_CannotAddNewArticle() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true) { publisherRepo.addNewArticle(TestData.emptyArticle) } }
+    fun invalidArticle_CannotAddNewArticle() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true) { publisherRepo.addNewArticle(TestData.emptyUiArticle) } }
 
     @Test
-    fun allOk_RemoveArticleSuccessfully() = mainCoroutineRule.runBlockingTest { runTest { publisherRepo.removeArticle(TestData.article1) } }
+    fun allOk_RemoveArticleSuccessfully() = mainCoroutineRule.runBlockingTest { runTest { publisherRepo.removeArticle(TestData.uiArticle1) } }
 
     @Test
-    fun nullUser_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true) { publisherRepo.removeArticle(TestData.article1) } }
+    fun nullUser_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest { runTest(nullUser = true) { publisherRepo.removeArticle(TestData.uiArticle1) } }
 
     @Test
-    fun dataSourceFails_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true) { publisherRepo.removeArticle(TestData.article1) } }
+    fun dataSourceFails_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest { runTest(mockDataSourceFun = true) { publisherRepo.removeArticle(TestData.uiArticle1) } }
 
     @Test
-    fun invalidArticle_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true) { publisherRepo.removeArticle(TestData.emptyArticle) } }
+    fun invalidArticle_CannotRemoveArticle() = mainCoroutineRule.runBlockingTest { runTest(invalidParameter = true) { publisherRepo.removeArticle(TestData.emptyUiArticle) } }
 
     @Test
     fun allOk_FollowCategorySuccessfully() = mainCoroutineRule.runBlockingTest { runTest { publisherRepo.followCategory(TestData.category1) } }
