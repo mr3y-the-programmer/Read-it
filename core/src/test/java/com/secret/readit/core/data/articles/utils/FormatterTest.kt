@@ -9,12 +9,14 @@ package com.secret.readit.core.data.articles.utils
 
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.firestore.DocumentSnapshot
+import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.MainCoroutineRule
 import com.secret.readit.core.SharedMocks
 import com.secret.readit.core.data.articles.content.FakeContentDataSource
 import com.secret.readit.core.data.shared.DummyStorageRepository
 import com.secret.readit.core.result.Result
+import com.secret.readit.model.Element
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
@@ -30,9 +32,9 @@ class FormatterTest {
     // Object Under test
     private lateinit var formatter: Formatter
 
+    val sharedMocks = SharedMocks(mainCoroutineRule)
     @Before
     fun setUp() {
-        val sharedMocks = SharedMocks(mainCoroutineRule)
         formatter = Formatter(FakeContentDataSource(), DummyStorageRepository(), sharedMocks.mockedPubRepo, sharedMocks.mockedCategoryRepo)
     }
 
@@ -53,19 +55,20 @@ class FormatterTest {
     }
 
     @Test
-    fun formatSingleArticle_allOk_ReturnFormattedArticle() = mainCoroutineRule.runBlockingTest {
-        // GIVEN a single article to format
-        val result = Result.Success(TestData.article1)
-
-        // When trying to format it
-        val formatResult = formatter.formatArticle(result)
+    @Suppress("UNCHECKED_CAST")
+    fun formatFullArticle_allOk_ReturnFullContent() = mainCoroutineRule.runBlockingTest {
+        val mockedContentSource = mock<FakeContentDataSource> {
+            on(it.getContent(TestData.uiArticle1.article.id, 0)).doReturn(Result.Success(TestData.fullArticleContent.elements as List<Element>))
+        }
+        formatter = Formatter(mockedContentSource, DummyStorageRepository(), sharedMocks.mockedPubRepo, sharedMocks.mockedCategoryRepo)
+        // When trying to format partial article
+        val formatResult = formatter.formatFullArticle(TestData.uiArticle1)
 
         // assert it matches our expectations
-        assertThat(formatResult).isNotNull()
-        assertThat(formatResult?.publisher).isEqualTo(TestData.uiPublisher1)
-        assertThat(formatResult?.category).isEqualTo(TestData.categories)
-        assertThat(formatResult?.initialContent?.elements).isEmpty()
-        assertThat(formatResult?.fullContent).isEqualTo(TestData.reverseContent1)
+        assertThat(formatResult.publisher).isEqualTo(TestData.uiPublisher1)
+        assertThat(formatResult.category).isEqualTo(TestData.categories)
+        assertThat(formatResult.initialContent).isEqualTo(TestData.uiArticle1.initialContent)
+        assertThat(formatResult.fullContent).isEqualTo(TestData.reverseFullArticleContent)
     }
 
     @Test

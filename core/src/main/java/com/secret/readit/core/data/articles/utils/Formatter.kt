@@ -37,22 +37,10 @@ class Formatter @Inject constructor(
     /** format articles in expected format for consumers, parameter [contentLimit] to limit the content loaded from dataSource */
     suspend fun formatArticles(result: Result<List<Article>>, contentLimit: Int) = format(result, contentLimit)
 
-    /** Same as [formatArticles] but for Single Article */
-    suspend fun formatArticle(result: Result<Article>): UiArticle? {
-        if (result != null && result.succeeded) {
-            val article = (result as Result.Success).data
-            val publisher = pubRepo.getPublisherInfo(article.publisherID)
-            val fullContent = getExpectedElements(article.id, 0)
-            val categories = categoryRepo.getCategories(article.categoryIds)
-            return UiArticle(
-                article,
-                publisher = publisher,
-                category = categories,
-                initialContent = Content(emptyList()),
-                fullContent = Content(fullContent)
-            )
-        }
-        return null
+    /** format partial/Summery article into full-content article */
+    suspend fun formatFullArticle(summeryArticle: UiArticle): UiArticle {
+        val fullContent = getExpectedElements(summeryArticle.article.id, 0)
+        return summeryArticle.copy(fullContent = Content(fullContent))
     }
 
     /** format specific Pub articles in expected format for consumers */
@@ -98,7 +86,7 @@ class Formatter @Inject constructor(
         val result = contentDataSource.getContent(id, limit)
         if (result != null && result.succeeded) {
             val contentElements = (result as Result.Success).data
-            return formatElements(contentElements).toList()
+            return formatElements(contentElements).toList() //TODO: remove toList()
         }
         return emptyList()
     }

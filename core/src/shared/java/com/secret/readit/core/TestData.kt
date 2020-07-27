@@ -25,14 +25,19 @@ object TestData {
     val plaintTextElement = Element(text = "This is just a simple text, No more than it", markup = markupText)
 
     val elements1 = listOf(oneLineQuoteElement, codeBlockElement, bulletPointElement, plaintTextElement)
+    val reverseElements1 = listOf(reverseOneLineQuoteElement, reverseCodeBlockElement, reverseBulletPointElement, plaintTextElement)
+    val elements2 = listOf(plaintTextElement, plaintTextElement, plaintTextElement, bulletPointElement, plaintTextElement, codeBlockElement)
+    val reverseElements2 = listOf(plaintTextElement, plaintTextElement, plaintTextElement, reverseBulletPointElement, plaintTextElement, reverseCodeBlockElement)
 
     val content1 = Content(elements1)
-    val reverseContent1 = Content(listOf(reverseOneLineQuoteElement, reverseCodeBlockElement, reverseBulletPointElement, plaintTextElement))
+    val reverseContent1 = Content(reverseElements1)
 
     val bulletPointElementWithoutMarkup = bulletPointElement.copy(text = bulletPointElement.text?.removeSurrounding("~"))
     val codeBlockElementWithoutMarkup = codeBlockElement.copy(text = codeBlockElement.text?.removeSurrounding("`"))
 
     val content2 = Content(listOf(plaintTextElement, bulletPointElementWithoutMarkup, plaintTextElement, codeBlockElementWithoutMarkup))
+    val fullArticleContent = Content(elements1 + elements2)
+    val reverseFullArticleContent = Content(reverseElements1 + reverseElements2)
 
     val category1 = Category("categ1", "Programming", 0xFF00F3)
     val category2 = Category("categ2", "Software Engineering", 0x00FFD4)
