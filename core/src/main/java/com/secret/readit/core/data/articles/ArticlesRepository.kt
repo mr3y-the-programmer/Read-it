@@ -75,28 +75,20 @@ class ArticlesRepository @Inject constructor(
         val articles = mutableListOf<UiArticle>()
         if (specificPub.first.isNotEmpty() && specificPub.second > 0) {
             val articlesResult = articlesDataSource.getPubArticles(specificPub, prevSnapshot)
-            articles.addAll(formatter.formatPubArticles(articlesResult))
+            articles.addAll(formatter.formatPubArticles(articlesResult, CONTENT_DISPLAYED_LIMIT))
             prevSnapshot = if (articlesResult.succeeded) (articlesResult as Result.Success).data.second else prevSnapshot
         } else {
             val articlesResult = articlesDataSource.getArticles(limit, appreciateNum, categoriesIds, withMinutesRead, mostFollowedPubsId)
-            articles.addAll(formatter.formatArticles(articlesResult))
+            articles.addAll(formatter.formatArticles(articlesResult, CONTENT_DISPLAYED_LIMIT))
         }
         return articles
     }
 
     /**
-     * get Article with this specified id
-     *
-     * @return valid article or empty article if data source failed
+     * getFullArticle fun which called to load/format the full article like: clicking on article on homefeed to display its full content
+     * @return the UiArticle with full content formatted
      */
-    suspend fun getArticle(id: articleId): UiArticle {
-        val articleResult = articlesDataSource.getArticle(id)
-        val formattedArticle = formatter.formatArticles(articleResult, true)
-        if (formattedArticle.isNullOrEmpty()) {
-            return getEmptyArticle()
-        }
-        return formattedArticle[0]
-    }
+    suspend fun getFullArticle(partialArticle: UiArticle): UiArticle = formatter.formatFullArticle(partialArticle) //TODO: remove emptyArticle
 
     /**
      * Publish this article, add it to firestore
@@ -123,10 +115,11 @@ class ArticlesRepository @Inject constructor(
     private fun getEmptyArticle(): UiArticle {
         val publisher = UiPublisher(Publisher("", "", "", memberSince = -1), null)
         val firestoreArticle =  Article("", "", "", 0, 0, categoryIds = emptyList())
-        return UiArticle(firestoreArticle, publisher, emptyList())
+        return UiArticle(firestoreArticle, publisher, Content(emptyList()), category = emptyList())
     }
 
     companion object {
+        const val CONTENT_DISPLAYED_LIMIT = 5 //TODO: configure it through remote config
         const val PLACE_HOLDER_URL = "https://firebasestorage.googleapis.com/v0/b/read-it-b9c8b.appspot.com" +
             "/o/articles%2Fplace_holder_image.png?alt=media&token=fd6b444e-0115-4f40-8b8d-f6deaf238179"
     }

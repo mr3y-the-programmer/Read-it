@@ -13,6 +13,7 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.MainCoroutineRule
 import com.secret.readit.core.SharedMocks
+import com.secret.readit.core.data.articles.content.FakeContentDataSource
 import com.secret.readit.core.data.articles.utils.Formatter
 import com.secret.readit.core.data.shared.DummyStorageRepository
 import com.secret.readit.core.result.Result
@@ -32,7 +33,7 @@ class ArticlesRepositoryTest {
     private lateinit var articlesRepo: ArticlesRepository
 
     private val sharedMocks = SharedMocks(mainCoroutineRule)
-    private val formatter = Formatter(DummyStorageRepository(), sharedMocks.mockedPubRepo, sharedMocks.mockedCategoryRepo)
+    private val formatter = Formatter(FakeContentDataSource(), DummyStorageRepository(), sharedMocks.mockedPubRepo, sharedMocks.mockedCategoryRepo)
 
     //TODO: refactor
     @Before
@@ -55,6 +56,7 @@ class ArticlesRepositoryTest {
         assertThat(result.size).isEqualTo(1)
         assertThat(result[0].publisher).isEqualTo(TestData.uiPublisher1)
         assertThat(result[0].category).isEqualTo(TestData.categories)
+        assertThat(result[0].initialContent).isEqualTo(TestData.reverseContent1)
         // And so on ....
     }
 
@@ -77,14 +79,15 @@ class ArticlesRepositoryTest {
     @Test
     fun dataSourceSuccess_ReturnPubArticles() = mainCoroutineRule.runBlockingTest {
         // When getting last-7-days Articles of publisher
-        val result = articlesRepo.getNewArticles(0, specificPub = Pair(TestData.publisher1.id, 1594764000))
+        val result = articlesRepo.getNewArticles(0, specificPub = Pair(TestData.publisher2.id, 1594764000))
 
         // Assert it matches our expectations
         assertThat(articlesRepo.prevSnapshot).isInstanceOf(DocumentSnapshot::class.java)
         assertThat(result).isNotEmpty()
         assertThat(result.size).isEqualTo(1)
-        assertThat(result[0].publisher).isEqualTo(TestData.uiPublisher1)
-        assertThat(result[0].category).isEqualTo(TestData.categories)
+        assertThat(result[0].publisher).isEqualTo(TestData.uiPublisher2)
+        assertThat(result[0].category).isEqualTo(listOf(TestData.category3))
+        assertThat(result[0].initialContent).isEqualTo(TestData.reverseContent1)
         // And so on ....
     }
 
@@ -92,43 +95,19 @@ class ArticlesRepositoryTest {
     fun dataSourceFails_ReturnEmptyPubArticles() = mainCoroutineRule.runBlockingTest {
         // GIVEN a data source that fails to get data
         val mockedDataSource = mock<FakeArticlesDataSource> {
-            on(it.getPubArticles(Pair(TestData.publisher1.id, 1594764000), null)).doReturn(Result.Error(Exception()))
+            on(it.getPubArticles(Pair(TestData.publisher2.id, 1594764000), null)).doReturn(Result.Error(Exception()))
         }
 
         articlesRepo = articlesRepo.copy(mockedDataSource)
 
         // When trying to get new results
-        val result = articlesRepo.getNewArticles(0, specificPub = Pair(TestData.publisher1.id, 1594764000))
+        val result = articlesRepo.getNewArticles(0, specificPub = Pair(TestData.publisher2.id, 1594764000))
 
         // Assert list is empty
         assertThat(result).isEmpty()
         assertThat(articlesRepo.prevSnapshot).isNull() //when it is the first time it should be null
     }
-
-    @Test
-    fun dataSourceSuccess_ReturnFormattedArticle() = mainCoroutineRule.runBlockingTest {
-        // When getting a result of article
-        val result = articlesRepo.getArticle(TestData.article1.id)
-
-        // Assert it matches our expectations
-        assertThat(result).isEqualTo(TestData.uiArticle1)
-    }
-
-    @Test
-    fun dataSourceFails_ReturnEmptyArticle() = mainCoroutineRule.runBlockingTest {
-        // GIVEN a data source that fails to get data
-        val mockedDataSource = mock<FakeArticlesDataSource> {
-            on(it.getArticle(TestData.article1.id)).doReturn(Result.Error(Exception()))
-        }
-
-        articlesRepo = articlesRepo.copy(mockedDataSource)
-
-        // When trying to get new results
-        val result = articlesRepo.getArticle(TestData.article1.id)
-
-        // Assert list is empty
-        assertThat(result).isEqualTo(TestData.emptyUiArticle)
-    }
+    /* getFullArticles() test Removed because it is no longer contain logic to test */
 
     @Test
     fun addArticle2_ReturnTrue() = mainCoroutineRule.runBlockingTest {
