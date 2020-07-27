@@ -14,7 +14,6 @@ import com.secret.readit.core.data.utils.CustomIDHandler
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.core.uimodels.UiArticle
-import com.secret.readit.core.uimodels.UiPublisher
 import com.secret.readit.model.*
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
@@ -88,7 +87,7 @@ class ArticlesRepository @Inject constructor(
      * getFullArticle fun which called to load/format the full article like: clicking on article on homefeed to display its full content
      * @return the UiArticle with full content formatted
      */
-    suspend fun getFullArticle(partialArticle: UiArticle): UiArticle = formatter.formatFullArticle(partialArticle) //TODO: remove emptyArticle
+    suspend fun getFullArticle(partialArticle: UiArticle): UiArticle = formatter.formatFullArticle(partialArticle)
 
     /**
      * Publish this article, add it to firestore
@@ -110,12 +109,6 @@ class ArticlesRepository @Inject constructor(
             successful = (result as Result.Success).data
         }*/
         return successful
-    }
-
-    private fun getEmptyArticle(): UiArticle {
-        val publisher = UiPublisher(Publisher("", "", "", memberSince = -1), null)
-        val firestoreArticle =  Article("", "", "", 0, 0, categoryIds = emptyList())
-        return UiArticle(firestoreArticle, publisher, Content(emptyList()), category = emptyList())
     }
 
     companion object {
