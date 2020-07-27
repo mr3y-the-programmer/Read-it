@@ -61,7 +61,7 @@ class CategoryRepositoryTest {
     @Test
     fun dataSourceSuccess_ReturnArticleCategories() = mainCoroutineRule.runBlockingTest {
         // When trying to get a successful result
-        val result = categoryRepo.getArticleCategories(TestData.article1)
+        val result = categoryRepo.getArticleCategories(TestData.uiArticle1)
 
         val expected = TestData.articleCategories
 
@@ -78,7 +78,7 @@ class CategoryRepositoryTest {
 
         categoryRepo = categoryRepo.copy(mockedDataSource)
         // When trying to get a result
-        val result = categoryRepo.getArticleCategories(TestData.article1)
+        val result = categoryRepo.getArticleCategories(TestData.uiArticle1)
 
         // Assert it is empty
         assertThat(result).isEmpty()

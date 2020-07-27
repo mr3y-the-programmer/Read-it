@@ -10,7 +10,7 @@ package com.secret.readit.core.data.categories
 import com.secret.readit.core.data.utils.CustomIDHandler
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
-import com.secret.readit.model.Article
+import com.secret.readit.core.uimodels.UiArticle
 import com.secret.readit.model.Category
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -39,10 +39,9 @@ class CategoryRepository @Inject constructor(
     /**
      * Return Categories associated with each article, or empty list if any failure happens
      */
-    suspend fun getArticleCategories(article: Article): List<Category> {
-        var id = ""
-        try {
-            id = idHandler.getID(article)
+    suspend fun getArticleCategories(article: UiArticle): List<Category> {
+        val id = try {
+            idHandler.getID(article.article)
         } catch (ex: IllegalArgumentException) {
             return emptyList()
         }
