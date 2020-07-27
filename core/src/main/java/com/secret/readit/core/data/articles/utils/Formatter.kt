@@ -117,7 +117,7 @@ class Formatter @Inject constructor(
         return Pair(article, deFormattedElements)
     }
 
-    //This maybe moved later, also it applies for getExpectedElements()
+    //FIXME: Architecture drift, This should be moved later, also this applies for getExpectedElements()
     suspend fun uploadElements(id: articleId, elements: List<Element>): Boolean {
         val result = contentDataSource.addContent(id, elements)
         if (result != null && result.succeeded) {
