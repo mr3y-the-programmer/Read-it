@@ -60,7 +60,7 @@ class Formatter @Inject constructor(
 
     //Refactor boilerplate to this private fun
     @Suppress("UNCHECKED_CAST")
-    private suspend fun <T> format(result: Result<T>, contentLimit: Int, isResultOfPair: Boolean = false): MutableList<UiArticle> {
+    private suspend fun <T> format(result: Result<T>, contentLimit: Int, isResultOfPair: Boolean = false): List<UiArticle> {
         val formattedArticles = mutableListOf<UiArticle>()
         if (result != null && result.succeeded) {
             (result as Result.Success).data.let {
@@ -75,9 +75,9 @@ class Formatter @Inject constructor(
         }
         return formattedArticles
     }
-//TODO: replace MutableList with List
+
     // Handle formatting elements
-    private suspend fun formatElements(elements: List<Element>): MutableList<BaseElement> {
+    private suspend fun formatElements(elements: List<Element>): List<BaseElement> {
         val formattedElements = mutableListOf<BaseElement>()
         for (baseElement in elements) {
             var firestoreElement = baseElement
