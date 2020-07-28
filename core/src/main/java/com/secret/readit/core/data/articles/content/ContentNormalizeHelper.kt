@@ -12,7 +12,7 @@ import com.secret.readit.model.Element
 import com.secret.readit.model.Markup
 import com.secret.readit.model.MarkupType
 
-class ContentNormalizeHelper {
+internal class ContentNormalizeHelper {
 
     fun normalizeToElements(snapshot: QuerySnapshot): List<Element> {
         val normalizedElements = mutableListOf<Element>()

@@ -10,6 +10,6 @@ package com.secret.readit.core.data.articles.content
 /**
  * This just a temporary(transient) Element model which firestore can store
  */
-data class TransientFirestoreElement(val text: String?,
+internal data class TransientFirestoreElement(val text: String?,
                                      val markup: Map<String, String>?,
                                      val imgUri: String?)

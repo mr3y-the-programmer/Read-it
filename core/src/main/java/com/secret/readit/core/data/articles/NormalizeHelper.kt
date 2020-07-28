@@ -11,7 +11,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import com.secret.readit.model.Article
 
-class NormalizeHelper {
+internal class NormalizeHelper {
 
     /**
      * convert firestore's Article data model to our local model [Article]
