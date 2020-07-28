@@ -41,10 +41,14 @@ open class FakeArticlesDataSource : ArticlesDataSource {
     }
 
     override suspend fun incrementAppreciation(id: articleId): Result<Boolean> {
+        val newArticle = TestData.article1.copy(numOfAppreciate = TestData.article1.numOfAppreciate.plus(1))
+        TestData.uiArticle1 = TestData.uiArticle1.copy(article = newArticle)
         return Result.Success(true)
     }
 
     override suspend fun incrementDisagree(id: articleId): Result<Boolean> {
+        val newArticle = TestData.article1.copy(numOfDisagree = TestData.article1.numOfDisagree.plus(1))
+        TestData.uiArticle1 = TestData.uiArticle1.copy(article = newArticle)
         return Result.Success(true)
     }
 }

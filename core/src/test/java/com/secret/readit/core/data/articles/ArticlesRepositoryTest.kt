@@ -142,6 +142,21 @@ class ArticlesRepositoryTest {
         assertThat(result).isFalse()
     }
 
+    @Test
+    fun appreciate_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest { runUpdateTest({ articlesRepo.appreciate(TestData.uiArticle1)}) }
+
+    @Test
+    fun disagree_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest { runUpdateTest( { articlesRepo.disagree(TestData.uiArticle1)}, false) }
+
+    private suspend fun runUpdateTest(funUnderTest: suspend ArticlesRepository.() -> Boolean, agree: Boolean = true) {
+        val result = articlesRepo.funUnderTest()
+        val field = if (agree) TestData.uiArticle1.article.numOfAppreciate else TestData.uiArticle1.article.numOfDisagree
+
+        //Assert result is true and field updated
+        assertThat(result).isTrue()
+        assertThat(field).isGreaterThan(0)
+    }
+
     private fun ArticlesRepository.copy(dataSource: FakeArticlesDataSource): ArticlesRepository {
         return ArticlesRepository(dataSource, formatter)
     }

@@ -63,7 +63,7 @@ object TestData {
 
     val article1 = Article(
         "43259253-1pub-arti", "article1", publisher1.id, 2,
-        1214343259253, categoryIds = listOf(category1.id, category2.id)
+        1214343259253, categoryIds = listOf(category1.id, category2.id), numOfAppreciate = 0, numOfDisagree = 0
     )
 
     val article2 = Article(
@@ -77,7 +77,7 @@ object TestData {
         "", "", emptyPublisher.id, 0, 0, categoryIds = emptyList()
     )
     val emptyUiArticle = UiArticle(emptyArticle, emptyUiPublisher, initialContent = Content(emptyList()), category = emptyList())
-    val uiArticle1 = UiArticle(article1, uiPublisher1, initialContent = content1, fullContent = content1, category = listOf(category1, category2))
+    var uiArticle1 = UiArticle(article1, uiPublisher1, initialContent = content1, fullContent = content1, category = listOf(category1, category2))
     val uiArticle2 = UiArticle(article2, uiPublisher2, initialContent = content1, fullContent = content1, category = listOf(category3))
     val uiArticles = listOf(uiArticle1, uiArticle2, emptyUiArticle)
     val deFormatArticleTest = Article("", "article3", publisher2.id, 0, 0, 0, 0, emptyList())

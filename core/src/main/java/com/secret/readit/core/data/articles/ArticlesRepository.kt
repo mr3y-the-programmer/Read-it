@@ -48,6 +48,10 @@ class ArticlesRepository @Inject constructor(
     suspend fun getPubArticlesSince(pubId: publisherId, since: Long): List<UiArticle> {
         return getNewArticles(limit = 0, specificPub = Pair(pubId, since))
     }
+
+    suspend fun appreciate(article: UiArticle): Boolean = appreciateOrDisagree(article)
+
+    suspend fun disagree(article: UiArticle): Boolean = appreciateOrDisagree(article, false)
     //hold last document snapshot in-Memory to be able to get queries after it and avoid leaking resources and money
     @VisibleForTesting
     var prevSnapshot: DocumentSnapshot? = null
@@ -102,7 +106,14 @@ class ArticlesRepository @Inject constructor(
         }
         return successful
     }
-    //TODO: make an update function when appreciating, adding comment...etc
+    private suspend fun appreciateOrDisagree(article: UiArticle, appreciate: Boolean = true): Boolean {
+        var successful = false
+        val result = if (appreciate) articlesDataSource.incrementAppreciation(article.article.id) else articlesDataSource.incrementDisagree(article.article.id)
+        if (result != null && result.succeeded) {
+            successful = (result as Result.Success).data
+        }
+        return successful
+    }
 
     companion object {
         const val CONTENT_DISPLAYED_LIMIT = 5 //TODO: configure it through remote config
