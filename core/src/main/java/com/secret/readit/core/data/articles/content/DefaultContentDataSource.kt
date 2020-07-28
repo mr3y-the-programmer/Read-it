@@ -53,10 +53,11 @@ internal class DefaultContentDataSource @Inject constructor(private val firestor
 
     override suspend fun addContent(id: articleId, elements: List<Element>): Result<Boolean> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
+            val deNormalizedElements = normalizer.deNormalizeElements(elements)
             firestore.collection(ARTICLES_COLLECTION)
                 .document(id)
                 .collection(CONTENT_COLLECTION)
-                .add(elements)
+                .add(deNormalizedElements)
                 .addOnSuccessListener {
                     if (continuation.isActive) {
                         Timber.d("Added content of article: $id Successfully")
