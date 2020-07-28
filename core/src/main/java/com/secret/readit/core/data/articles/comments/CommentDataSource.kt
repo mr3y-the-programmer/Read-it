@@ -19,8 +19,9 @@ interface CommentDataSource {
      * get comments of article specified by [articleID],
      * it also takes additional parameters like [limit] to customize query
      * if limit isn't valid or specified it will return the whole comments
+     * [ids] parameter for getting comments with specified ids
      */
-    suspend fun getComments(articleID: articleId, limit: Int): Result<List<Comment>>
+    suspend fun getComments(articleID: articleId, ids: List<String>, limit: Int): Result<List<Comment>>
 
     /**
      * upload Comment to firestore specific for this [articleId]
