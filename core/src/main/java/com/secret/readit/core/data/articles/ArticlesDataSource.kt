@@ -48,4 +48,14 @@ interface ArticlesDataSource {
      * add the [article] to firestore
      */
     suspend fun addArticle(article: Article): Result<Boolean>
+
+    /**
+     * increment [article] appreciate num
+     */
+    suspend fun incrementAppreciation(article: Article): Result<Boolean>
+
+    /**
+     * increment [article] disagree num
+     */
+    suspend fun incrementDisagree(article: Article): Result<Boolean>
 }
