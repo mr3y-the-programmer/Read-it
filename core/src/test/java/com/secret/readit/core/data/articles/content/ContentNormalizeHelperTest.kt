@@ -22,14 +22,14 @@ class ContentNormalizeHelperTest {
     private val element3 = TransientFirestoreElement(null, null, "https://'sxzxvc33434.com/?q/21324354")
     private val transientElements = listOf(element1, element2, element3)
 
+    private val mockedSnapshot = mock<QuerySnapshot> {
+        on(it.toObjects(TransientFirestoreElement::class.java)).doReturn(transientElements)
+    }
     // Object under test
     private val normalizer = ContentNormalizeHelper()
 
     @Test
     fun `allOk normalizeSucceed`(){
-        val mockedSnapshot = mock<QuerySnapshot> {
-            on(it.toObjects(TransientFirestoreElement::class.java)).doReturn(transientElements)
-        }
         val elements = normalizer.normalizeToElements(mockedSnapshot)
 
         assertEquals(elements.size, 3)
@@ -37,5 +37,13 @@ class ContentNormalizeHelperTest {
         assertEquals(elements[0].markup, Markup(MarkupType.QUOTE, 0, 17))
         assertEquals(elements[1].text, "` This is CodeBlock `")
         assertEquals(elements[1].markup, Markup(MarkupType.CODE, 0, 21))
+    }
+
+    @Test
+    fun `allOk deNormalizeSucceed`() {
+        val elements = normalizer.normalizeToElements(mockedSnapshot) //Use a previously tested fun to help us in test data
+
+        val deNormalizedElements = normalizer.deNormalizeElements(elements) //When trying to denormalize
+        assertEquals(deNormalizedElements, transientElements) //assert it succeeds
     }
 }

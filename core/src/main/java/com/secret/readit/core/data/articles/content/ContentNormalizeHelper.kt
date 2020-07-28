@@ -13,6 +13,7 @@ import com.secret.readit.model.Markup
 import com.secret.readit.model.MarkupType
 
 class ContentNormalizeHelper {
+
     fun normalizeToElements(snapshot: QuerySnapshot): List<Element> {
         val normalizedElements = mutableListOf<Element>()
         val firestoreElements = snapshot.toObjects(TransientFirestoreElement::class.java)
@@ -27,6 +28,19 @@ class ContentNormalizeHelper {
             if (ele.imgUri != null) normalizedElements.add(Element(imageUri = ele.imgUri)) //Img element
         }
         return normalizedElements
+    }
+
+    fun deNormalizeElements(elements: List<Element>): List<TransientFirestoreElement> {
+        val deNormalizedElements = mutableListOf<TransientFirestoreElement>()
+        for (e in elements) {
+            if (e.imageUri == null) {
+                val markup = e.markup!!
+                val markupMap = mapOf(TYPE_KEY to markup.type.name, START_KEY to markup.start.toString(), END_KEY to markup.end.toString())
+                deNormalizedElements += TransientFirestoreElement(text = e.text, markup = markupMap, imgUri = null)
+            }
+            if (e.imageUri != null) deNormalizedElements.add(TransientFirestoreElement(imgUri = e.imageUri, text = null, markup = null))
+        }
+        return deNormalizedElements
     }
 
     private fun String.convertToEnumValue(): MarkupType = when(this) {
