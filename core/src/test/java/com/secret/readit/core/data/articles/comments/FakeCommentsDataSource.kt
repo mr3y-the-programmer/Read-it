@@ -15,7 +15,7 @@ class FakeCommentsDataSource: CommentDataSource {
 
     private var newComment = Comment("adssaffsds", TestData.publisher1.id, "This is new comment", 43999999999202, emptyList())
 
-    override suspend fun getComments(articleID: articleId, limit: Int): Result<List<Comment>> = Result.Success(TestData.comments1)
+    override suspend fun getComments(articleID: articleId, ids: List<String>, limit: Int): Result<List<Comment>> = Result.Success(TestData.comments1)
 
     override suspend fun addComment(articleID: articleId, comment: Comment): Result<Boolean> {
         TestData.comments1.add(newComment)
