@@ -73,16 +73,7 @@ class FormatterTest {
     }
 
     @Test
-    fun formatArticles_failure_ReturnEmptyArticles() = mainCoroutineRule.runBlockingTest {
-        // GIVEN a not-Succeeded result
-        val result = Result.Loading
-
-        // When trying to format
-        val formatResult = formatter.formatArticles(result, 5)
-
-        // assert it matches our expectations
-        assertThat(formatResult).isEmpty()
-    }
+    fun formatArticles_failure_ReturnEmptyArticles() = runFailureTest { formatter.formatArticles(Result.Loading, 5) }
 
     @Test
     fun deFormatUiArticles_allOk_ReturnDeFormattedArticles() = mainCoroutineRule.runBlockingTest {
@@ -117,16 +108,7 @@ class FormatterTest {
     }
 
     @Test
-    fun formatPubArticles_failure_ReturnEmpty() = mainCoroutineRule.runBlockingTest {
-        //GIVEN a Loading Result
-        val result = Result.Loading
-
-        //When trying to format this result
-        val formatResult = formatter.formatPubArticles(result, 5)
-
-        // assert we have nothing
-        assertThat(formatResult).isEmpty()
-    }
+    fun formatPubArticles_failure_ReturnEmpty() = runFailureTest { formatter.formatPubArticles(Result.Loading, 5) }
 
     @Test
     fun formatComments_succeeded_ReturnFormattedComments() = mainCoroutineRule.runBlockingTest {
@@ -149,12 +131,11 @@ class FormatterTest {
     }
 
     @Test
-    fun formatComments_failure_ReturnEmpty() = mainCoroutineRule.runBlockingTest {
-        //GIVEN a Loading Result
-        val result = Result.Loading
+    fun formatComments_failure_ReturnEmpty() = runFailureTest { formatter.formatComments(Result.Loading) }
 
-        //When trying to format this result
-        val formatResult = formatter.formatComments(result)
+    private fun runFailureTest(funUnderTest: suspend Formatter.() -> List<*>) = mainCoroutineRule.runBlockingTest {
+        //When trying to format this failure result
+        val formatResult = formatter.funUnderTest()
 
         // assert we have nothing
         assertThat(formatResult).isEmpty()
