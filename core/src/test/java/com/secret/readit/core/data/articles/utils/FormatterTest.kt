@@ -16,6 +16,7 @@ import com.secret.readit.core.SharedMocks
 import com.secret.readit.core.data.articles.content.FakeContentDataSource
 import com.secret.readit.core.data.shared.DummyStorageRepository
 import com.secret.readit.core.result.Result
+import com.secret.readit.core.uimodels.UiComment
 import com.secret.readit.model.Element
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -66,7 +67,7 @@ class FormatterTest {
 
         // assert it matches our expectations
         assertThat(formatResult.publisher).isEqualTo(TestData.uiPublisher1)
-        assertThat(formatResult.category).isEqualTo(TestData.categories)
+        assertThat(formatResult.category).isEqualTo(TestData.articleCategories)
         assertThat(formatResult.initialContent).isEqualTo(TestData.uiArticle1.initialContent)
         assertThat(formatResult.fullContent).isEqualTo(TestData.reverseFullArticleContent)
     }
@@ -122,6 +123,38 @@ class FormatterTest {
 
         //When trying to format this result
         val formatResult = formatter.formatPubArticles(result, 5)
+
+        // assert we have nothing
+        assertThat(formatResult).isEmpty()
+    }
+
+    @Test
+    fun formatComments_succeeded_ReturnFormattedComments() = mainCoroutineRule.runBlockingTest {
+        //GIVEN a Success result
+        val result = Result.Success(TestData.comments1)
+
+        //When trying to format it
+        val comments = formatter.formatComments(result)
+
+        //assert it matches our expectations
+        assertThat(comments.size).isEqualTo(2)
+        assertThat(comments[0].pub).isEqualTo(TestData.uiPublisher1)
+        assertThat(comments[1].replies).isEmpty() //For now we haven't loaded replies yet, So it should be empty for now
+
+        //When trying to format result
+        val commentWithReplies = formatter.formatReplies(Result.Success(TestData.comment2Replies), comments[1])
+
+        assertThat(commentWithReplies.replies).isNotEmpty() //Assert now we have replies tied to comment
+        assertThat(commentWithReplies.replies[0]).isEqualTo(UiComment(TestData.comment0, TestData.uiPublisher2))
+    }
+
+    @Test
+    fun formatComments_failure_ReturnEmpty() = mainCoroutineRule.runBlockingTest {
+        //GIVEN a Loading Result
+        val result = Result.Loading
+
+        //When trying to format this result
+        val formatResult = formatter.formatComments(result)
 
         // assert we have nothing
         assertThat(formatResult).isEmpty()

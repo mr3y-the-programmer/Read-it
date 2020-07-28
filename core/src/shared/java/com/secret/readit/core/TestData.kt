@@ -55,7 +55,8 @@ object TestData {
     val comment1 = Comment("1", publisher1.id, "That's Awesome", 1968764334, emptyList())
     val comment2 = Comment("2", publisher1.id, "Fantastic", 788225123294, listOf(comment0.id))
 
-    val comments1 = mutableListOf(comment0, comment1, comment2)
+    val comments1 = mutableListOf(comment1, comment2)
+    val comment2Replies = mutableListOf(comment0)
 
     val categories = listOf(category1, category2, category3)
     val categoriesIds = listOf(category1.id, category2.id, category3.id)

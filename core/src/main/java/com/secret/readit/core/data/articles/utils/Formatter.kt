@@ -21,6 +21,7 @@ import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.core.uimodels.ImageUiElement
 import com.secret.readit.core.uimodels.UiArticle
+import com.secret.readit.core.uimodels.UiComment
 import com.secret.readit.model.*
 import timber.log.Timber
 import java.lang.IllegalArgumentException
@@ -96,6 +97,23 @@ class Formatter @Inject constructor(
             return formatElements(contentElements)
         }
         return emptyList()
+    }
+
+    suspend fun formatComments(result: Result<List<Comment>>) = formatCommentsOrReplies(result)
+
+    //Return the parent comment but with formatting its replies
+    suspend fun formatReplies(result: Result<List<Comment>>, parentComment: UiComment) = parentComment.copy(replies = formatCommentsOrReplies(result))
+
+    private suspend fun formatCommentsOrReplies(result: Result<List<Comment>>): List<UiComment> {
+        val formattedComments = mutableListOf<UiComment>()
+        if (result != null && result.succeeded) {
+            val comments = (result as Result.Success).data
+            for (comment in comments) {
+                val pub = pubRepo.getPublisherInfo(comment.publisherId)
+                formattedComments += UiComment(comment, pub)
+            }
+        }
+        return formattedComments
     }
 
     //deFormatting section
