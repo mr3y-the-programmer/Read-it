@@ -58,26 +58,18 @@ class ArticlesRepository @Inject constructor(
         val repliesResult = commentsDataSource.getComments(article.article.id, comment.comment.repliesIds, limit)
         return formatter.formatReplies(repliesResult, comment)
     }
-//TODO: refactor
+
     suspend fun comment(article: UiArticle, comment: UiComment): Boolean {
-        var successful = false
         val deFormattedComment = formatter.deFormatComment(comment) ?: return false
         val result = commentsDataSource.addComment(article.article.id, deFormattedComment)
-        if (result != null && result.succeeded) {
-            successful = (result as Result.Success).data
-        }
-        return successful
+        return checkIfSuccessful(result)
     }
 
     suspend fun reply(article: UiArticle, reply: UiComment, parentComment: UiComment): Boolean {
-        var successful = false
         val deFormattedReply = formatter.deFormatComment(reply) ?: return false
         val deFormattedComment = formatter.deFormatComment(parentComment) ?: return false //The parent comment need to be deFormatted in order to have a valid Id
         val result = commentsDataSource.addReply(article.article.id, deFormattedComment.id, deFormattedReply)
-        if (result != null && result.succeeded) {
-            successful = (result as Result.Success).data
-        }
-        return successful
+        return checkIfSuccessful(result)
     }
     //hold last document snapshot in-Memory to be able to get queries after it and avoid leaking resources and money
     @VisibleForTesting
@@ -123,24 +115,19 @@ class ArticlesRepository @Inject constructor(
      * @return true on success, false on data source failure like: No Internet connection or adding invalid article(deFormatting Error)
      */
     suspend fun addArticle(uiArticle: UiArticle): Boolean {
-        var successful = false
         val deFormattingResult = formatter.deFormatArticle(uiArticle) ?: return false //Couldn't deFormat article
         val result = articlesDataSource.addArticle(deFormattingResult.first)
-        if (result != null && result.succeeded) {
-            val articleSuccessful = (result as Result.Success).data
-            val contentSuccessful = formatter.uploadElements(deFormattingResult.first.id, deFormattingResult.second) //If article upload succeeded, upload content
-            successful = articleSuccessful && contentSuccessful
+        if (checkIfSuccessful(result)) {
+            return formatter.uploadElements(deFormattingResult.first.id, deFormattingResult.second) //If article upload succeeded, upload content
         }
-        return successful
+        return false
     }
     private suspend fun appreciateOrDisagree(article: UiArticle, appreciate: Boolean = true): Boolean {
-        var successful = false
         val result = if (appreciate) articlesDataSource.incrementAppreciation(article.article.id) else articlesDataSource.incrementDisagree(article.article.id)
-        if (result != null && result.succeeded) {
-            successful = (result as Result.Success).data
-        }
-        return successful
+        return checkIfSuccessful(result)
     }
+
+    private fun checkIfSuccessful(result: Result<Boolean>) = if (result != null && result.succeeded) (result as Result.Success).data else false
 
     companion object {
         const val CONTENT_DISPLAYED_LIMIT = 5 //TODO: configure it through remote config
