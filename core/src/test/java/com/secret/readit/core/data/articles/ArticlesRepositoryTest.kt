@@ -13,6 +13,7 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.MainCoroutineRule
 import com.secret.readit.core.SharedMocks
+import com.secret.readit.core.data.articles.comments.FakeCommentsDataSource
 import com.secret.readit.core.data.articles.content.FakeContentDataSource
 import com.secret.readit.core.data.articles.utils.Formatter
 import com.secret.readit.core.data.shared.DummyStorageRepository
@@ -43,7 +44,7 @@ class ArticlesRepositoryTest {
         -fast, see: Benchmark results
         -Reliable and well tested, so it cannot fail easily
          */
-        articlesRepo = ArticlesRepository(FakeArticlesDataSource(), formatter)
+        articlesRepo = ArticlesRepository(FakeArticlesDataSource(), FakeCommentsDataSource(), formatter)
     }
 
     @Test
@@ -158,6 +159,6 @@ class ArticlesRepositoryTest {
     }
 
     private fun ArticlesRepository.copy(dataSource: FakeArticlesDataSource): ArticlesRepository {
-        return ArticlesRepository(dataSource, formatter)
+        return ArticlesRepository(dataSource, FakeCommentsDataSource(), formatter)
     }
 }

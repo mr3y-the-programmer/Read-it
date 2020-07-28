@@ -152,8 +152,8 @@ class MainModule {
 
     @Provides
     @Singleton
-    fun provideArticlesRepository(articlesSource: ArticlesDataSource, formatter: Formatter): ArticlesRepository {
-        return ArticlesRepository(articlesSource, formatter)
+    fun provideArticlesRepository(articlesSource: ArticlesDataSource, commentsSource: CommentDataSource, formatter: Formatter): ArticlesRepository {
+        return ArticlesRepository(articlesSource, commentsSource, formatter)
     }
 
     @Provides

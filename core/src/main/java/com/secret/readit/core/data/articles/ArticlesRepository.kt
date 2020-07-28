@@ -9,10 +9,12 @@ package com.secret.readit.core.data.articles
 
 import androidx.annotation.VisibleForTesting
 import com.google.firebase.firestore.DocumentSnapshot
+import com.secret.readit.core.data.articles.comments.CommentDataSource
 import com.secret.readit.core.data.articles.utils.Formatter
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.core.uimodels.UiArticle
+import com.secret.readit.core.uimodels.UiComment
 import com.secret.readit.model.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -25,33 +27,37 @@ import javax.inject.Singleton
 @Singleton
 class ArticlesRepository @Inject constructor(
     private val articlesDataSource: ArticlesDataSource,
+    private val commentsDataSource: CommentDataSource,
     private val formatter: Formatter
 ) {
 
     /** Exposed APIs For consumers to get articles based on these attributes */
-    suspend fun getMostAppreciatedArticles(limit: Int, appreciateNum: Int): List<UiArticle> {
-        return getNewArticles(limit, appreciateNum)
-    }
+    suspend fun getMostAppreciatedArticles(limit: Int, appreciateNum: Int): List<UiArticle> = getNewArticles(limit, appreciateNum)
 
-    suspend fun getMostFollowedPublishersArticles(limit: Int, pubsIds: List<publisherId>): List<UiArticle> {
-        return getNewArticles(limit, mostFollowedPubsId = pubsIds)
-    }
+    suspend fun getMostFollowedPublishersArticles(limit: Int, pubsIds: List<publisherId>): List<UiArticle> = getNewArticles(limit, mostFollowedPubsId = pubsIds)
 
     suspend fun getShortAndAppreciatedArticles(limit: Int, maximumMinutesRead: Int, appreciateNum: Int): List<UiArticle> {
         return getNewArticles(limit, appreciateNum = appreciateNum, withMinutesRead = maximumMinutesRead)
     }
 
-    suspend fun getArticlesWhichHaveCategories(limit: Int, categoriesIds: List<String>): List<UiArticle> {
-        return getNewArticles(limit, categoriesIds = categoriesIds)
-    }
+    suspend fun getArticlesWhichHaveCategories(limit: Int, categoriesIds: List<String>): List<UiArticle> = getNewArticles(limit, categoriesIds = categoriesIds)
 
-    suspend fun getPubArticlesSince(pubId: publisherId, since: Long): List<UiArticle> {
-        return getNewArticles(limit = 0, specificPub = Pair(pubId, since))
-    }
+    suspend fun getPubArticlesSince(pubId: publisherId, since: Long): List<UiArticle> = getNewArticles(limit = 0, specificPub = Pair(pubId, since))
 
     suspend fun appreciate(article: UiArticle): Boolean = appreciateOrDisagree(article)
 
     suspend fun disagree(article: UiArticle): Boolean = appreciateOrDisagree(article, false)
+
+    /* Comments section */
+    suspend fun getComments(article: UiArticle, limit: Int): List<UiComment> {
+        val result = commentsDataSource.getComments(article.article.id, emptyList(), limit)
+        return formatter.formatComments(result)
+    }
+
+    suspend fun showReplies(article: UiArticle, comment: UiComment, limit: Int): UiComment {
+        val repliesResult = commentsDataSource.getComments(article.article.id, comment.comment.repliesIds, limit)
+        return formatter.formatReplies(repliesResult, comment)
+    }
     //hold last document snapshot in-Memory to be able to get queries after it and avoid leaking resources and money
     @VisibleForTesting
     var prevSnapshot: DocumentSnapshot? = null
