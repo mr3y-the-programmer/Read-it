@@ -10,7 +10,7 @@ package com.secret.readit.core.data.utils
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
-import java.lang.IllegalArgumentException
+import kotlin.IllegalArgumentException
 
 class CustomIDHandlerTest {
 
@@ -69,5 +69,19 @@ class CustomIDHandlerTest {
         val result = customIDHandler.getID(TestData.emptyCategory)
 
         // assert it throws an exception
+    }
+
+    @Test
+    fun inputComment1_ReturnValidId() {
+        val result = customIDHandler.getID(TestData.comment1) //When entering valid comment
+
+        assertThat(result).isEqualTo("1pub-64334") //Assert it matches our expectations
+    }
+    //TODO: refactor
+    @Test(expected = IllegalArgumentException::class)
+    fun inputInvalidComment_ThrowsException() {
+        val result = customIDHandler.getID(TestData.emptyComment) //When entering Invalid comment
+
+        //Assert it throws an exception
     }
 }

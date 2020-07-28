@@ -9,11 +9,12 @@ package com.secret.readit.core.data.utils
 
 import com.secret.readit.model.Article
 import com.secret.readit.model.Category
+import com.secret.readit.model.Comment
 import timber.log.Timber
 import kotlin.IllegalArgumentException
 
 /**
- * CustomIDHandler has one responsibility to get(generate) ids of article, category....etc
+ * CustomIDHandler has one responsibility to get(generate) ids of article, category, comment....etc
  */
 class CustomIDHandler {
 
@@ -69,6 +70,25 @@ class CustomIDHandler {
         }
 
         return "$randomPrefix$DASH$name$DASH$randomSuffix"
+    }
+
+    /**
+     * get an Id for each comment
+     *
+     * @throws IllegalArgumentException if (publisherId, timestamp) of comment wasn't valid
+     * @return the id generated
+     */
+    fun getID(comment: Comment): String {
+        val pubID = comment.publisherId
+        val timestamp = comment.timestamp.toString()
+
+        if (timestamp.length < 7 || pubID.length < 4) {
+            Timber.d("Cannot make id for comment: $comment")
+            throw IllegalArgumentException("Cannot make an id for Invalid comment")
+        }
+        val first = pubID.substring(0, 4)
+        val last = timestamp.substring(5, timestamp.length)
+        return "$first$DASH$last"
     }
 
     companion object {
