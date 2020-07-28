@@ -8,6 +8,7 @@
 package com.secret.readit.core.data.articles
 
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
@@ -51,6 +52,14 @@ internal class DefaultArticlesDataSource @Inject constructor(
 
     override suspend fun addArticle(article: Article): Result<Boolean> {
         return addNewArticle(article)
+    }
+
+    override suspend fun incrementAppreciation(article: Article): Result<Boolean> {
+        return update(article)
+    }
+
+    override suspend fun incrementDisagree(article: Article): Result<Boolean> {
+        return update(article, false)
     }
 
     private suspend fun fetchArticles(
@@ -166,6 +175,32 @@ internal class DefaultArticlesDataSource @Inject constructor(
         }
     }
 
+    /**
+     * when [agree] is true means appreciating else disagree
+     */
+    private suspend fun update(article: Article, agree: Boolean = true): Result<Boolean> {
+        return wrapInCoroutineCancellable(
+            ioDispatcher
+        ) { continuation ->
+            val fieldToUpdate = if (agree) NUM_OF_APPRECIATE_FIELD else NUM_OF_DISAGREE_FIELD
+            firestore.collection(ARTICLES_COLLECTION)
+                .document(article.id)
+                .update(fieldToUpdate, FieldValue.increment(1))
+                .addOnSuccessListener {
+                    if (continuation.isActive) {
+                        Timber.d("Updated $fieldToUpdate Successfully")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        Timber.d("Exception, continuation is no longer active")
+                    }
+                }.addOnFailureListener {
+                    Timber.d("Failed to update field $fieldToUpdate, cause: ${it.cause}")
+                    continuation.resumeWithException(it)
+                }
+        }
+    }
+
     // We Cannot get query based on publishers and category at the same query, So we need to choose between them
     private fun Query.categoryOrPublishersQuery(categoriesIds: List<String>, pubIds: List<publisherId>): Query {
         return if (!categoriesIds.isNullOrEmpty()) {
@@ -179,6 +214,7 @@ internal class DefaultArticlesDataSource @Inject constructor(
     companion object {
         const val ARTICLES_COLLECTION = "articles"
         const val NUM_OF_APPRECIATE_FIELD = "numOfAppreciate"
+        const val NUM_OF_DISAGREE_FIELD = "numOfDisagree"
         const val NUM_MINUTES_READ_FIELD = "numMinutesRead"
         const val CATEGORIES_FIELD = "category"
         const val TIMESTAMP_FIELD = "timestamp"
