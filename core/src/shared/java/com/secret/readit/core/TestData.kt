@@ -60,12 +60,14 @@ object TestData {
     val emptyComment = Comment("", "", "", -1, emptyList())
     val comment4 = Comment("", "", "I'm really disagree with you", 0, emptyList())
     var newComment = Comment("adssaffsds", publisher1.id, "This is new comment", 43999999999202, emptyList())
+    val newReply = Comment("repl-iffmc424-665676", publisher2.id, "I've replied to you again", 439999999997656, emptyList())
 
     val comments1 = mutableListOf(comment1, comment2)
     val comment2Replies = mutableListOf(comment0)
     val deFormatTestComment = UiComment(comment4, uiPublisher1, emptyList())
     val newUiComment = UiComment(newComment, uiPublisher1, emptyList())
     val emptyUiComment = UiComment(emptyComment, emptyUiPublisher, emptyList())
+    val newUiReply = UiComment(newReply, uiPublisher2, emptyList())
 
     val categories = listOf(category1, category2, category3)
     val categoriesIds = listOf(category1.id, category2.id, category3.id)

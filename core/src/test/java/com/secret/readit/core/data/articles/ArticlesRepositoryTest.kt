@@ -166,6 +166,25 @@ class ArticlesRepositoryTest {
         assertThat(result).isFalse() //assert it failed
         assertThat(TestData.comments1.size).isEqualTo(2) //then check the comment hasn't been published
     }
+
+    @Test
+    fun reply_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest {
+        assertThat(TestData.newComment.repliesIds.size).isEqualTo(0) //Before replying
+        val result = articlesRepo.reply(TestData.uiArticle1, TestData.newUiReply, TestData.newUiComment) //When trying to reply to comment
+
+        assertThat(result).isTrue() //assert it succeeded first
+        assertThat(TestData.newComment.repliesIds.size).isEqualTo(1) //then check the reply has really been added
+    }
+
+    @Test
+    fun reply_failure_ReturnFalse() = mainCoroutineRule.runBlockingTest {
+        assertThat(TestData.newComment.repliesIds.size).isEqualTo(0) //Before replying
+        val result = articlesRepo.reply(TestData.uiArticle1, TestData.emptyUiComment, TestData.newUiComment) //When trying to reply with Invalid reply on article
+
+        assertThat(result).isFalse() //assert it failed
+        assertThat(TestData.newComment.repliesIds.size).isEqualTo(0) //then check the reply hasn't been published
+    }
+
     private suspend fun runUpdateTest(funUnderTest: suspend ArticlesRepository.() -> Boolean, agree: Boolean = true) {
         val result = articlesRepo.funUnderTest()
         val field = if (agree) TestData.uiArticle1.article.numOfAppreciate else TestData.uiArticle1.article.numOfDisagree

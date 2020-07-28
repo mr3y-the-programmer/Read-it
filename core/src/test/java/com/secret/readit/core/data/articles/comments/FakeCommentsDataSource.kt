@@ -24,8 +24,7 @@ class FakeCommentsDataSource: CommentDataSource {
         commentId: String,
         reply: Comment
     ): Result<Boolean> {
-        val newReply = Comment("repl-iffmc424-665676", TestData.publisher2.id, "I've replied to you again", 439999999997656, emptyList())
-        TestData.newComment = TestData.newComment.copy(repliesIds = listOf(newReply.id))
+        TestData.newComment = TestData.newComment.copy(repliesIds = listOf(TestData.newReply.id))
         return Result.Success(true)
     }
 }

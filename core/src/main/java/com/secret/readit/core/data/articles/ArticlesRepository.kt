@@ -69,6 +69,16 @@ class ArticlesRepository @Inject constructor(
         return successful
     }
 
+    suspend fun reply(article: UiArticle, reply: UiComment, parentComment: UiComment): Boolean {
+        var successful = false
+        val deFormattedReply = formatter.deFormatComment(reply) ?: return false
+        val deFormattedComment = formatter.deFormatComment(parentComment) ?: return false //The parent comment need to be deFormatted in order to have a valid Id
+        val result = commentsDataSource.addReply(article.article.id, deFormattedComment.id, deFormattedReply)
+        if (result != null && result.succeeded) {
+            successful = (result as Result.Success).data
+        }
+        return successful
+    }
     //hold last document snapshot in-Memory to be able to get queries after it and avoid leaking resources and money
     @VisibleForTesting
     var prevSnapshot: DocumentSnapshot? = null
