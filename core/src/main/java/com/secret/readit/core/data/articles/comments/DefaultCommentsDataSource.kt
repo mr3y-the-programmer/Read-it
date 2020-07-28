@@ -10,6 +10,7 @@ package com.secret.readit.core.data.articles.comments
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.secret.readit.core.data.utils.withIds
 import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
 import com.secret.readit.core.di.IoDispatcher
 import com.secret.readit.core.result.Result
@@ -26,12 +27,13 @@ import kotlin.coroutines.resumeWithException
  */
 internal class DefaultCommentsDataSource @Inject constructor(private val firestore: FirebaseFirestore,
                                                     @IoDispatcher private val ioDispatcher: CoroutineDispatcher): CommentDataSource {
-    override suspend fun getComments(articleID: articleId, limit: Int): Result<List<Comment>> {
+    override suspend fun getComments(articleID: articleId, ids: List<String>, limit: Int): Result<List<Comment>> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
             val safeLimit = if (limit <= 0) 999 else limit
             firestore.collection(ARTICLES_COLLECTION)
                 .document(articleID)
                 .collection(COMMENTS_COLLECTION)
+                .withIds(ids, ID_FIELD)
                 .limit(safeLimit.toLong())
                 .get()
                 .addOnSuccessListener { commentsSnapshot ->
@@ -97,6 +99,7 @@ internal class DefaultCommentsDataSource @Inject constructor(private val firesto
 
     companion object {
         const val ARTICLES_COLLECTION = "articles"
+        const val ID_FIELD = "id"
         const val COMMENTS_COLLECTION = "comments"
         const val REPLIES_FIELD = "repliesIds"
     }
