@@ -1,4 +1,5 @@
 import com.secret.readit.core.uimodels.UiArticle
+import com.secret.readit.core.uimodels.UiComment
 import com.secret.readit.core.uimodels.UiPublisher
 import com.secret.readit.model.*
 
@@ -55,9 +56,11 @@ object TestData {
     val comment1 = Comment("1", publisher1.id, "That's Awesome", 1968764334, emptyList())
     val comment2 = Comment("2", publisher1.id, "Fantastic", 788225123294, listOf(comment0.id))
     val emptyComment = Comment("", "", "", -1, emptyList())
+    val comment4 = Comment("", "", "I'm really disagree with you", 0, emptyList())
 
     val comments1 = mutableListOf(comment1, comment2)
     val comment2Replies = mutableListOf(comment0)
+    val deFormatTestComment = UiComment(comment4, uiPublisher1, emptyList())
 
     val categories = listOf(category1, category2, category3)
     val categoriesIds = listOf(category1.id, category2.id, category3.id)

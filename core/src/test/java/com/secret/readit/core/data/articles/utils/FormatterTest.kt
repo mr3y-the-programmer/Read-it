@@ -133,6 +133,19 @@ class FormatterTest {
     @Test
     fun formatComments_failure_ReturnEmpty() = runFailureTest { formatter.formatComments(Result.Loading) }
 
+    @Test
+    fun deFormatComment_succeeded_ReturnFirestoreComment() {
+        //When trying to deFormat valid uiComment
+        val comment = formatter.deFormatComment(TestData.deFormatTestComment)
+
+        //assert it matches our expectations
+        assertThat(comment?.id).isNotEmpty()
+        assertThat(comment?.publisherId).isEqualTo(TestData.publisher1.id)
+        assertThat(comment?.timestamp).isGreaterThan(1000)
+        assertThat(comment?.repliesIds).isEmpty()
+        assertThat(comment?.text).isEqualTo(TestData.comment4.text)
+    }
+
     private fun runFailureTest(funUnderTest: suspend Formatter.() -> List<*>) = mainCoroutineRule.runBlockingTest {
         //When trying to format this failure result
         val formatResult = formatter.funUnderTest()

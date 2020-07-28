@@ -24,9 +24,9 @@ import com.secret.readit.core.uimodels.UiArticle
 import com.secret.readit.core.uimodels.UiComment
 import com.secret.readit.model.*
 import timber.log.Timber
-import java.lang.IllegalArgumentException
 import java.time.Instant
 import javax.inject.Inject
+import kotlin.IllegalArgumentException
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
@@ -182,5 +182,17 @@ class Formatter @Inject constructor(
         val categoryIds = mutableListOf<String>()
         for (cat in categories) categoryIds.add(cat.id)
         return categoryIds
+    }
+
+    fun deFormatComment(comment: UiComment): Comment? {
+        val now = Instant.now().toEpochMilli()
+        val pubID = comment.pub.publisher.id
+        val commentId = try {
+            idHandler.getID(comment.comment.copy(timestamp = now, publisherId = pubID))
+        } catch (ex: IllegalArgumentException) {
+            Timber.d("Cannot get an id for comment: $comment")
+            return null
+        }
+        return comment.comment.copy(id = commentId, publisherId = pubID, timestamp = now, repliesIds = emptyList())
     }
 }
