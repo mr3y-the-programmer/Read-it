@@ -50,12 +50,12 @@ interface ArticlesDataSource {
     suspend fun addArticle(article: Article): Result<Boolean>
 
     /**
-     * increment [article] appreciate num
+     * increment article with [id] appreciate num
      */
-    suspend fun incrementAppreciation(article: Article): Result<Boolean>
+    suspend fun incrementAppreciation(id: articleId): Result<Boolean>
 
     /**
-     * increment [article] disagree num
+     * increment article with [id] disagree num
      */
-    suspend fun incrementDisagree(article: Article): Result<Boolean>
+    suspend fun incrementDisagree(id: articleId): Result<Boolean>
 }

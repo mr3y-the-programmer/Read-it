@@ -40,11 +40,11 @@ open class FakeArticlesDataSource : ArticlesDataSource {
         return Result.Success(true)
     }
 
-    override suspend fun incrementAppreciation(article: Article): Result<Boolean> {
+    override suspend fun incrementAppreciation(id: articleId): Result<Boolean> {
         return Result.Success(true)
     }
 
-    override suspend fun incrementDisagree(article: Article): Result<Boolean> {
+    override suspend fun incrementDisagree(id: articleId): Result<Boolean> {
         return Result.Success(true)
     }
 }

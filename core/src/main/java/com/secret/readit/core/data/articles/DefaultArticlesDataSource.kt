@@ -54,12 +54,12 @@ internal class DefaultArticlesDataSource @Inject constructor(
         return addNewArticle(article)
     }
 
-    override suspend fun incrementAppreciation(article: Article): Result<Boolean> {
-        return update(article)
+    override suspend fun incrementAppreciation(id: articleId): Result<Boolean> {
+        return update(id)
     }
 
-    override suspend fun incrementDisagree(article: Article): Result<Boolean> {
-        return update(article, false)
+    override suspend fun incrementDisagree(id: articleId): Result<Boolean> {
+        return update(id, false)
     }
 
     private suspend fun fetchArticles(
@@ -178,13 +178,13 @@ internal class DefaultArticlesDataSource @Inject constructor(
     /**
      * when [agree] is true means appreciating else disagree
      */
-    private suspend fun update(article: Article, agree: Boolean = true): Result<Boolean> {
+    private suspend fun update(id: articleId, agree: Boolean = true): Result<Boolean> {
         return wrapInCoroutineCancellable(
             ioDispatcher
         ) { continuation ->
             val fieldToUpdate = if (agree) NUM_OF_APPRECIATE_FIELD else NUM_OF_DISAGREE_FIELD
             firestore.collection(ARTICLES_COLLECTION)
-                .document(article.id)
+                .document(id)
                 .update(fieldToUpdate, FieldValue.increment(1))
                 .addOnSuccessListener {
                     if (continuation.isActive) {
