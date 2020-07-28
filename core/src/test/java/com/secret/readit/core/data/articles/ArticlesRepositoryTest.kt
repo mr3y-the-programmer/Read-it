@@ -160,11 +160,11 @@ class ArticlesRepositoryTest {
 
     @Test
     fun comment_failure_ReturnFalse() = mainCoroutineRule.runBlockingTest {
-        assertThat(TestData.comments1.size).isEqualTo(2) //Before commenting
+        assertThat(TestData.comments1.size).isEqualTo(3) //Before commenting
         val result = articlesRepo.comment(TestData.uiArticle1, TestData.emptyUiComment) //When trying to comment Invalid comment on article
 
         assertThat(result).isFalse() //assert it failed
-        assertThat(TestData.comments1.size).isEqualTo(2) //then check the comment hasn't been published
+        assertThat(TestData.comments1.size).isEqualTo(3) //then check the comment hasn't been published
     }
 
     @Test
