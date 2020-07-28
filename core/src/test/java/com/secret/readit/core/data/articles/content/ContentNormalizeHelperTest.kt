@@ -29,7 +29,7 @@ class ContentNormalizeHelperTest {
     private val normalizer = ContentNormalizeHelper()
 
     @Test
-    fun `allOk normalizeSucceed`(){
+    fun `allOk normalizeSucceed`() {
         val elements = normalizer.normalizeToElements(mockedSnapshot)
 
         assertEquals(elements.size, 3)
@@ -41,9 +41,9 @@ class ContentNormalizeHelperTest {
 
     @Test
     fun `allOk deNormalizeSucceed`() {
-        val elements = normalizer.normalizeToElements(mockedSnapshot) //Use a previously tested fun to help us in test data
+        val elements = normalizer.normalizeToElements(mockedSnapshot) // Use a previously tested fun to help us in test data
 
-        val deNormalizedElements = normalizer.deNormalizeElements(elements) //When trying to denormalize
-        assertEquals(deNormalizedElements, transientElements) //assert it succeeds
+        val deNormalizedElements = normalizer.deNormalizeElements(elements) // When trying to denormalize
+        assertEquals(deNormalizedElements, transientElements) // assert it succeeds
     }
 }

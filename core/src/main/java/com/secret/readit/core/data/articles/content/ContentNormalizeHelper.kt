@@ -18,14 +18,14 @@ internal class ContentNormalizeHelper {
         val normalizedElements = mutableListOf<Element>()
         val firestoreElements = snapshot.toObjects(TransientFirestoreElement::class.java)
         for (ele in firestoreElements) {
-            if (ele.imgUri == null && (ele.text != null && ele.markup != null)) { //text element
+            if (ele.imgUri == null && (ele.text != null && ele.markup != null)) { // text element
                 val markup = ele.markup
                 val type = markup.getValue(TYPE_KEY).convertToEnumValue()
                 val start = markup.getValue(START_KEY).toInt()
                 val end = markup.getValue(END_KEY).toInt()
                 normalizedElements += Element(text = ele.text, markup = Markup(type, start, end))
             }
-            if (ele.imgUri != null) normalizedElements.add(Element(imageUri = ele.imgUri)) //Img element
+            if (ele.imgUri != null) normalizedElements.add(Element(imageUri = ele.imgUri)) // Img element
         }
         return normalizedElements
     }
@@ -43,7 +43,7 @@ internal class ContentNormalizeHelper {
         return deNormalizedElements
     }
 
-    private fun String.convertToEnumValue(): MarkupType = when(this) {
+    private fun String.convertToEnumValue(): MarkupType = when (this) {
         "CODE" -> MarkupType.CODE
         "QUOTE" -> MarkupType.QUOTE
         "BulletPoints" -> MarkupType.BulletPoints

@@ -12,9 +12,11 @@ import com.secret.readit.model.*
 /**
  * Article model exposed to domain & presenter layer which hold the expected format for any article
  */
-data class UiArticle(val article: Article,
-                     val publisher: UiPublisher,
-                     val initialContent: Content, //Content that displayed as a Summery like: article content on home feed page
-                     val fullContent: Content = initialContent, //Full Content displayed when clicking on article, displaying the full article
-                     val category: List<Category>,
-                     val comments: List<UiComment> = emptyList())
+data class UiArticle(
+    val article: Article,
+    val publisher: UiPublisher,
+    val initialContent: Content, // Content that displayed as a Summery like: article content on home feed page
+    val fullContent: Content = initialContent, // Full Content displayed when clicking on article, displaying the full article
+    val category: List<Category>,
+    val comments: List<UiComment> = emptyList()
+)

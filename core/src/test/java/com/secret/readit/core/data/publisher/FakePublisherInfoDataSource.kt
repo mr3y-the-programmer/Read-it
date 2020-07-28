@@ -25,7 +25,7 @@ class FakePublisherInfoDataSource : PublisherInfoDataSource {
         numOfFollowers: Int,
         limit: Int,
         prevSnapshot: DocumentSnapshot?
-    ): Result<Pair<List<Publisher>, DocumentSnapshot>> = Result.Success(Pair(listOf(TestData.publisher1), mock {  }))
+    ): Result<Pair<List<Publisher>, DocumentSnapshot>> = Result.Success(Pair(listOf(TestData.publisher1), mock { }))
 
     override suspend fun setDisplayName(newName: String, id: publisherId): Result<Boolean> = Result.Success(true)
 

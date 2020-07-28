@@ -22,10 +22,11 @@ import javax.inject.Inject
  */
 class GetFollowingUseCase @Inject constructor(
     @CurrentUserProfile private val currentUser: UseCase<Unit, UiPublisher>,
-    private val pubRepo: PublisherRepository): FlowUseCase<Unit, UiPublisher>() {
+    private val pubRepo: PublisherRepository
+) : FlowUseCase<Unit, UiPublisher>() {
 
     override suspend fun execute(parameters: Unit): Flow<UiPublisher> {
-        val followingIds = currentUser(parameters).publisher.followedPublishersIds //If it throws NullPointerException it will be caught by catch in [FlowUseCase]
+        val followingIds = currentUser(parameters).publisher.followedPublishersIds // If it throws NullPointerException it will be caught by catch in [FlowUseCase]
         return pubRepo.getFollowingPubsList(followingIds).asFlow()
             .filterNot { it.publisher.id.isEmpty() || it.publisher.memberSince < 0 }
             .cancellable()

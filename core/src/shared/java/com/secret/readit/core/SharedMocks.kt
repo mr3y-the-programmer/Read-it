@@ -17,12 +17,16 @@ import kotlinx.coroutines.test.runBlockingTest
 @ExperimentalCoroutinesApi
 class SharedMocks(private val rule: MainCoroutineRule) {
 
-    val mockedPubRepo = mock<PublisherRepository> { rule.runBlockingTest {
-        on(it.getPublisherInfo(TestData.publisher1.id)).doReturn(TestData.uiPublisher1)
-        on(it.getPublisherInfo(TestData.publisher2.id)).thenReturn(TestData.uiPublisher2)
-    } }
-    val mockedCategoryRepo = mock<CategoryRepository> { rule.runBlockingTest {
-        on(it.getCategories(TestData.articles1[0].categoryIds)).doReturn(TestData.categories)
-        on(it.getCategories(TestData.article2.categoryIds)).thenReturn(listOf(TestData.category3))
-    } }
+    val mockedPubRepo = mock<PublisherRepository> {
+        rule.runBlockingTest {
+            on(it.getPublisherInfo(TestData.publisher1.id)).doReturn(TestData.uiPublisher1)
+            on(it.getPublisherInfo(TestData.publisher2.id)).thenReturn(TestData.uiPublisher2)
+        }
+    }
+    val mockedCategoryRepo = mock<CategoryRepository> {
+        rule.runBlockingTest {
+            on(it.getCategories(TestData.articles1[0].categoryIds)).doReturn(TestData.categories)
+            on(it.getCategories(TestData.article2.categoryIds)).thenReturn(listOf(TestData.category3))
+        }
+    }
 }

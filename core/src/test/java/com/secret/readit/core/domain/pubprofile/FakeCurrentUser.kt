@@ -10,7 +10,7 @@ package com.secret.readit.core.domain.pubprofile
 import com.secret.readit.core.domain.UseCase
 import com.secret.readit.core.uimodels.UiPublisher
 
-class FakeCurrentUser: UseCase<Unit, UiPublisher>(){
+class FakeCurrentUser : UseCase<Unit, UiPublisher>() {
     override suspend fun execute(parameters: Unit): UiPublisher {
         return TestData.uiPublisher1
     }

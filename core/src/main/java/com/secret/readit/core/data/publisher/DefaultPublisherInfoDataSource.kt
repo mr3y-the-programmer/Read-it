@@ -95,7 +95,7 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
                 .withIds(ids, ID_FIELD)
                 .limit(limit.toLong())
             query = if (prevSnapshot != null) query.startAfter(prevSnapshot) else query
-                query.get()
+            query.get()
                 .addOnSuccessListener { publishersDocs ->
                     if (continuation.isActive) {
                         Timber.d("Returned publishers with NumOfFollowers: $numOfFollowers successfully, docs: ${publishersDocs.documents}")

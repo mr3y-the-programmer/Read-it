@@ -10,7 +10,7 @@ package com.secret.readit.core.data.articles.utils
 /**
  * Exception to be thrown if article has very big minutes read number
  */
-class BigMinutesReadException: Exception(){
+class BigMinutesReadException : Exception() {
     override val message: String?
         get() = EXCEPTION_MESSAGE
 

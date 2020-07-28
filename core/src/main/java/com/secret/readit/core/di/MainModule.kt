@@ -163,12 +163,12 @@ class MainModule {
     }
 
     @Provides
-    fun provideContentDataSource(firestore: FirebaseFirestore,@IoDispatcher dispatcher: CoroutineDispatcher): ContentDataSource {
+    fun provideContentDataSource(firestore: FirebaseFirestore, @IoDispatcher dispatcher: CoroutineDispatcher): ContentDataSource {
         return DefaultContentDataSource(firestore, dispatcher)
     }
 
     @Provides
-    fun provideCommentsDataSource(firestore: FirebaseFirestore,@IoDispatcher dispatcher: CoroutineDispatcher): CommentDataSource {
+    fun provideCommentsDataSource(firestore: FirebaseFirestore, @IoDispatcher dispatcher: CoroutineDispatcher): CommentDataSource {
         return DefaultCommentsDataSource(firestore, dispatcher)
     }
     // TODO: make drafts database

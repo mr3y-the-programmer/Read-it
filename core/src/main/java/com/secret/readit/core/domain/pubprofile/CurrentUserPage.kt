@@ -21,11 +21,13 @@ import javax.inject.Inject
  * Consumers of this UseCase should ensure User is signed-in or wrap this UseCase in try/catch
  */
 @ExperimentalCoroutinesApi
-class CurrentUserPage @Inject constructor(private val pubRepo: PublisherRepository,
-                                          private val prefs: SharedPrefs): UseCase<Unit, UiPublisher>(){
+class CurrentUserPage @Inject constructor(
+    private val pubRepo: PublisherRepository,
+    private val prefs: SharedPrefs
+) : UseCase<Unit, UiPublisher>() {
 
     override suspend fun execute(parameters: Unit): UiPublisher {
-        if (!prefs.isUserLoggedIn.value){
+        if (!prefs.isUserLoggedIn.value) {
             Timber.d("No Signed In User, Sign-In First to see Your Profile")
             throw NullPointerException("SIGN-IN First")
         }

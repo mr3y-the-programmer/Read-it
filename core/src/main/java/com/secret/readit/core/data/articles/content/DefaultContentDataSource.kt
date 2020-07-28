@@ -22,10 +22,11 @@ import kotlin.coroutines.resumeWithException
 /**
  * Our ContentDataSource has one responsibility, interact directly with firebase to get/set content of article
  */
-internal class DefaultContentDataSource @Inject constructor(private val firestore: FirebaseFirestore,
-                                                            @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-                                                            private val normalizer: ContentNormalizeHelper = ContentNormalizeHelper()
-): ContentDataSource {
+internal class DefaultContentDataSource @Inject constructor(
+    private val firestore: FirebaseFirestore,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    private val normalizer: ContentNormalizeHelper = ContentNormalizeHelper()
+) : ContentDataSource {
     override suspend fun getContent(id: articleId, limit: Int): Result<List<Element>> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
             val safeLimit = if (limit <= 0) 9999 else limit

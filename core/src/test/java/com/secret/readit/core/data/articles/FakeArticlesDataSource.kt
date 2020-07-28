@@ -32,7 +32,7 @@ open class FakeArticlesDataSource : ArticlesDataSource {
     }
 
     override suspend fun getPubArticles(info: Pair<publisherId, Long>, prevSnapshot: DocumentSnapshot?): Result<Pair<List<Article>, DocumentSnapshot>> {
-        val mockedSnapshot = mock<DocumentSnapshot> {/*no-op*/}
+        val mockedSnapshot = mock<DocumentSnapshot> { /*no-op*/ }
         return Result.Success(Pair(TestData.articles2, mockedSnapshot))
     }
 

@@ -93,10 +93,10 @@ class FormatterTest {
 
     @Test
     fun formatPubArticles_succeeded_ReturnFormattedArticles() = mainCoroutineRule.runBlockingTest {
-        //GIVEN a Success Result
+        // GIVEN a Success Result
         val result = Result.Success(Pair(TestData.articles1, mock<DocumentSnapshot> {}))
 
-        //When trying to format this result
+        // When trying to format this result
         val formatResult = formatter.formatPubArticles(result, 5)
 
         // assert it matches our expectations
@@ -112,21 +112,21 @@ class FormatterTest {
 
     @Test
     fun formatComments_succeeded_ReturnFormattedComments() = mainCoroutineRule.runBlockingTest {
-        //GIVEN a Success result
+        // GIVEN a Success result
         val result = Result.Success(TestData.comments1)
 
-        //When trying to format it
+        // When trying to format it
         val comments = formatter.formatComments(result)
 
-        //assert it matches our expectations
+        // assert it matches our expectations
         assertThat(comments.size).isEqualTo(2)
         assertThat(comments[0].pub).isEqualTo(TestData.uiPublisher1)
-        assertThat(comments[1].replies).isEmpty() //For now we haven't loaded replies yet, So it should be empty for now
+        assertThat(comments[1].replies).isEmpty() // For now we haven't loaded replies yet, So it should be empty for now
 
-        //When trying to format result
+        // When trying to format result
         val commentWithReplies = formatter.formatReplies(Result.Success(TestData.comment2Replies), comments[1])
 
-        assertThat(commentWithReplies.replies).isNotEmpty() //Assert now we have replies tied to comment
+        assertThat(commentWithReplies.replies).isNotEmpty() // Assert now we have replies tied to comment
         assertThat(commentWithReplies.replies[0]).isEqualTo(UiComment(TestData.comment0, TestData.uiPublisher2))
     }
 
@@ -135,10 +135,10 @@ class FormatterTest {
 
     @Test
     fun deFormatComment_succeeded_ReturnFirestoreComment() {
-        //When trying to deFormat valid uiComment
+        // When trying to deFormat valid uiComment
         val comment = formatter.deFormatComment(TestData.deFormatTestComment)
 
-        //assert it matches our expectations
+        // assert it matches our expectations
         assertThat(comment?.id).isNotEmpty()
         assertThat(comment?.publisherId).isEqualTo(TestData.publisher1.id)
         assertThat(comment?.timestamp).isGreaterThan(1000)
@@ -147,7 +147,7 @@ class FormatterTest {
     }
 
     private fun runFailureTest(funUnderTest: suspend Formatter.() -> List<*>) = mainCoroutineRule.runBlockingTest {
-        //When trying to format this failure result
+        // When trying to format this failure result
         val formatResult = formatter.funUnderTest()
 
         // assert we have nothing

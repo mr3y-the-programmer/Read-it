@@ -93,7 +93,7 @@ class PublisherRepository @Inject constructor(
 
     suspend fun getFollowingPubsList(followingIds: List<publisherId>): List<UiPublisher> = getPublishersWithNumberOfFollowers(followingIds)
 
-    //hold last document snapshot in-Memory to be able to get queries after it and avoid leaking resources and money
+    // hold last document snapshot in-Memory to be able to get queries after it and avoid leaking resources and money
     @VisibleForTesting
     var prevSnapshot: DocumentSnapshot? = null
         private set

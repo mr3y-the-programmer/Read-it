@@ -36,7 +36,7 @@ class ArticlesRepositoryTest {
     private val sharedMocks = SharedMocks(mainCoroutineRule)
     private val formatter = Formatter(FakeContentDataSource(), DummyStorageRepository(), sharedMocks.mockedPubRepo, sharedMocks.mockedCategoryRepo)
 
-    //TODO: refactor
+    // TODO: refactor
     @Before
     fun setUp() {
         /*
@@ -106,7 +106,7 @@ class ArticlesRepositoryTest {
 
         // Assert list is empty
         assertThat(result).isEmpty()
-        assertThat(articlesRepo.prevSnapshot).isNull() //when it is the first time it should be null
+        assertThat(articlesRepo.prevSnapshot).isNull() // when it is the first time it should be null
     }
     /* getFullArticles() test Removed because it is no longer contain logic to test */
 
@@ -144,52 +144,52 @@ class ArticlesRepositoryTest {
     }
 
     @Test
-    fun appreciate_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest { runUpdateTest({ articlesRepo.appreciate(TestData.uiArticle1)}) }
+    fun appreciate_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest { runUpdateTest({ articlesRepo.appreciate(TestData.uiArticle1) }) }
 
     @Test
-    fun disagree_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest { runUpdateTest( { articlesRepo.disagree(TestData.uiArticle1)}, false) }
+    fun disagree_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest { runUpdateTest({ articlesRepo.disagree(TestData.uiArticle1) }, false) }
 
     @Test
     fun comment_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest {
-        assertThat(TestData.comments1.size).isEqualTo(2) //Before commenting
-        val result = articlesRepo.comment(TestData.uiArticle1, TestData.newUiComment) //When trying to comment on article
+        assertThat(TestData.comments1.size).isEqualTo(2) // Before commenting
+        val result = articlesRepo.comment(TestData.uiArticle1, TestData.newUiComment) // When trying to comment on article
 
-        assertThat(result).isTrue() //assert it succeeded first
-        assertThat(TestData.comments1.size).isEqualTo(3) //then check the comment has really been added
+        assertThat(result).isTrue() // assert it succeeded first
+        assertThat(TestData.comments1.size).isEqualTo(3) // then check the comment has really been added
     }
 
     @Test
     fun comment_failure_ReturnFalse() = mainCoroutineRule.runBlockingTest {
-        assertThat(TestData.comments1.size).isEqualTo(3) //Before commenting
-        val result = articlesRepo.comment(TestData.uiArticle1, TestData.emptyUiComment) //When trying to comment Invalid comment on article
+        assertThat(TestData.comments1.size).isEqualTo(3) // Before commenting
+        val result = articlesRepo.comment(TestData.uiArticle1, TestData.emptyUiComment) // When trying to comment Invalid comment on article
 
-        assertThat(result).isFalse() //assert it failed
-        assertThat(TestData.comments1.size).isEqualTo(3) //then check the comment hasn't been published
+        assertThat(result).isFalse() // assert it failed
+        assertThat(TestData.comments1.size).isEqualTo(3) // then check the comment hasn't been published
     }
 
     @Test
     fun reply_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest {
-        assertThat(TestData.newComment.repliesIds.size).isEqualTo(0) //Before replying
-        val result = articlesRepo.reply(TestData.uiArticle1, TestData.newUiReply, TestData.newUiComment) //When trying to reply to comment
+        assertThat(TestData.newComment.repliesIds.size).isEqualTo(0) // Before replying
+        val result = articlesRepo.reply(TestData.uiArticle1, TestData.newUiReply, TestData.newUiComment) // When trying to reply to comment
 
-        assertThat(result).isTrue() //assert it succeeded first
-        assertThat(TestData.newComment.repliesIds.size).isEqualTo(1) //then check the reply has really been added
+        assertThat(result).isTrue() // assert it succeeded first
+        assertThat(TestData.newComment.repliesIds.size).isEqualTo(1) // then check the reply has really been added
     }
 
     @Test
     fun reply_failure_ReturnFalse() = mainCoroutineRule.runBlockingTest {
-        assertThat(TestData.newComment.repliesIds.size).isEqualTo(0) //Before replying
-        val result = articlesRepo.reply(TestData.uiArticle1, TestData.emptyUiComment, TestData.newUiComment) //When trying to reply with Invalid reply on article
+        assertThat(TestData.newComment.repliesIds.size).isEqualTo(0) // Before replying
+        val result = articlesRepo.reply(TestData.uiArticle1, TestData.emptyUiComment, TestData.newUiComment) // When trying to reply with Invalid reply on article
 
-        assertThat(result).isFalse() //assert it failed
-        assertThat(TestData.newComment.repliesIds.size).isEqualTo(0) //then check the reply hasn't been published
+        assertThat(result).isFalse() // assert it failed
+        assertThat(TestData.newComment.repliesIds.size).isEqualTo(0) // then check the reply hasn't been published
     }
 
     private suspend fun runUpdateTest(funUnderTest: suspend ArticlesRepository.() -> Boolean, agree: Boolean = true) {
         val result = articlesRepo.funUnderTest()
         val field = if (agree) TestData.uiArticle1.article.numOfAppreciate else TestData.uiArticle1.article.numOfDisagree
 
-        //Assert result is true and field updated
+        // Assert result is true and field updated
         assertThat(result).isTrue()
         assertThat(field).isGreaterThan(0)
     }

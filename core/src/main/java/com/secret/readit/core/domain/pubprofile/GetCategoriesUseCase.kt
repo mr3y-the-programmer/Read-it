@@ -21,12 +21,13 @@ import javax.inject.Inject
  */
 class GetCategoriesUseCase @Inject constructor(
     @CurrentUserProfile private val currentUser: UseCase<Unit, UiPublisher>,
-    private val categoryRepo: CategoryRepository): FlowUseCase<Unit, Category>(){
+    private val categoryRepo: CategoryRepository
+) : FlowUseCase<Unit, Category>() {
 
     override suspend fun execute(parameters: Unit): Flow<Category> {
         val categoriesIds = currentUser(parameters).publisher.followedCategoriesIds
         return categoryRepo.getCategories(categoriesIds).asFlow()
-            .filterNot { it.id.isEmpty() || it.name.isEmpty()}
+            .filterNot { it.id.isEmpty() || it.name.isEmpty() }
             .cancellable()
     }
 }

@@ -23,7 +23,7 @@ class CustomIDHandlerTest {
     }
 
     @Test
-    fun inputArticle2_ReturnValidId() = runSuccessTest({customIDHandler.getID(TestData.article2) }, "89479892-2pub-arti")
+    fun inputArticle2_ReturnValidId() = runSuccessTest({ customIDHandler.getID(TestData.article2) }, "89479892-2pub-arti")
 
     @Test
     fun inputArticle1_ReturnValidId() = runSuccessTest({ customIDHandler.getID(TestData.article1) }, "43259253-1pub-arti")
@@ -44,8 +44,8 @@ class CustomIDHandlerTest {
     fun inputInvalidComment_ThrowsException() { customIDHandler.getID(TestData.emptyComment) /*When entering Invalid comment*/ }
 
     private fun runSuccessTest(funUnderTest: CustomIDHandler.() -> String, expected: String) {
-        val result = customIDHandler.funUnderTest() //When entering valid object
+        val result = customIDHandler.funUnderTest() // When entering valid object
 
-        assertThat(result).isEqualTo(expected) //Assert it matches our expectations
+        assertThat(result).isEqualTo(expected) // Assert it matches our expectations
     }
 }

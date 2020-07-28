@@ -20,8 +20,10 @@ import javax.inject.Inject
 /**
  * Identical to [FromPublishersYouFollow] but for categories
  */
-class BasedOnYourCategories @Inject constructor(private val pubRepo: PublisherRepository,
-                                                private val articlesRepo: ArticlesRepository): FlowUseCase<Int, UiArticle>() {
+class BasedOnYourCategories @Inject constructor(
+    private val pubRepo: PublisherRepository,
+    private val articlesRepo: ArticlesRepository
+) : FlowUseCase<Int, UiArticle>() {
     override suspend fun execute(parameters: Int): Flow<UiArticle> {
         val limit = parameters.coerceIn(5, 30) // Ensure we don't request big number of articles that user will never read
         val categoryFollowedIds = pubRepo.getCurrentUser().publisher.followedCategoriesIds

@@ -54,7 +54,7 @@ class Formatter @Inject constructor(
     /** format specific Pub articles in expected format for consumers */
     suspend fun formatPubArticles(result: Result<Pair<List<Article>, DocumentSnapshot>>, contentLimit: Int) = format(result, contentLimit, true)
 
-    //Refactor boilerplate to this private fun
+    // Refactor boilerplate to this private fun
     @Suppress("UNCHECKED_CAST")
     private suspend fun <T> format(result: Result<T>, contentLimit: Int, isResultOfPair: Boolean = false): List<UiArticle> {
         val formattedArticles = mutableListOf<UiArticle>()
@@ -101,7 +101,7 @@ class Formatter @Inject constructor(
 
     suspend fun formatComments(result: Result<List<Comment>>) = formatCommentsOrReplies(result)
 
-    //Return the parent comment but with formatting its replies
+    // Return the parent comment but with formatting its replies
     suspend fun formatReplies(result: Result<List<Comment>>, parentComment: UiComment) = parentComment.copy(replies = formatCommentsOrReplies(result))
 
     private suspend fun formatCommentsOrReplies(result: Result<List<Comment>>): List<UiComment> {
@@ -116,7 +116,7 @@ class Formatter @Inject constructor(
         return formattedComments
     }
 
-    //deFormatting section
+    // deFormatting section
     suspend fun deFormatArticle(uiArticle: UiArticle): Pair<Article, List<Element>>? {
         val timestamp = Instant.now().toEpochMilli()
         val id = try {
@@ -135,7 +135,7 @@ class Formatter @Inject constructor(
         return Pair(article, deFormattedElements)
     }
 
-    //FIXME: Architecture drift, This should be moved later, also this applies for getExpectedElements()
+    // FIXME: Architecture drift, This should be moved later, also this applies for getExpectedElements()
     suspend fun uploadElements(id: articleId, elements: List<Element>): Boolean {
         val result = contentDataSource.addContent(id, elements)
         if (result != null && result.succeeded) {
@@ -172,13 +172,13 @@ class Formatter @Inject constructor(
             }
             if (element.isImageElement) imagesCount++
         }
-        //As per some statistics, Avg. time of reading 1000 word is 3.3 min
+        // As per some statistics, Avg. time of reading 1000 word is 3.3 min
         val numMinutesRead = elementWords.size.toDouble().div(1000).times(3.3).roundToLong()
-            .also { if (it > 30) throw BigMinutesReadException()}
+            .also { if (it > 30) throw BigMinutesReadException() }
         return numMinutesRead.toInt() + imagesCount.times(0.2).roundToInt()
     }
 
-    private fun getCategoryIDs(categories: List<Category>): List<String>{
+    private fun getCategoryIDs(categories: List<Category>): List<String> {
         val categoryIds = mutableListOf<String>()
         for (cat in categories) categoryIds.add(cat.id)
         return categoryIds

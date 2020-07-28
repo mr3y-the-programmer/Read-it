@@ -26,13 +26,15 @@ import javax.inject.Inject
  *   -[PubImportantInfo] which hold the pub important info to identify his identity
  *   -One of enum [Since] values as a parameter to load the corresponding published Articles
  */
-class PublishedArticlesSince @Inject constructor(private val pubRepo: PublisherRepository,
-                                                 private val articlesRepo: ArticlesRepository): FlowUseCase<Pair<PubImportantInfo, Since>, UiArticle>() {
+class PublishedArticlesSince @Inject constructor(
+    private val pubRepo: PublisherRepository,
+    private val articlesRepo: ArticlesRepository
+) : FlowUseCase<Pair<PubImportantInfo, Since>, UiArticle>() {
 
     override suspend fun execute(parameters: Pair<PubImportantInfo, Since>): Flow<UiArticle> {
         val pubInfo = parameters.first
-        val pubId = pubRepo.getPublisherId(pubInfo) ?: throw NullPointerException() //Will be caught by [FlowUseCase]
-        val period = when(parameters.second) {
+        val pubId = pubRepo.getPublisherId(pubInfo) ?: throw NullPointerException() // Will be caught by [FlowUseCase]
+        val period = when (parameters.second) {
             Since.LAST_7_DAYS -> ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).minusDays(7).toEpochSecond()
             Since.LAST_MONTH -> ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).minusDays(30).toEpochSecond()
             Since.OLDER -> pubInfo.memberSince

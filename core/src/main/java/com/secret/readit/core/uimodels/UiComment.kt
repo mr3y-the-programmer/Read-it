@@ -12,6 +12,8 @@ import com.secret.readit.model.Comment
 /**
  * the comment model exposed to domain & presenter layer which contain the expected format for comment
  */
-data class UiComment(val comment: Comment,
-                     val pub: UiPublisher,
-                     val replies: List<UiComment> = emptyList())
+data class UiComment(
+    val comment: Comment,
+    val pub: UiPublisher,
+    val replies: List<UiComment> = emptyList()
+)

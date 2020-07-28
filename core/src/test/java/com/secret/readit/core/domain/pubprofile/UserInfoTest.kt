@@ -7,6 +7,7 @@
 
 package com.secret.readit.core.domain.pubprofile
 
+import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.MainCoroutineRule
@@ -22,7 +23,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import com.google.common.truth.Truth.assertThat
 
 /**
  * Parametrized test for [GetFollowingUseCase], [GetCategoriesUseCase]
@@ -30,12 +30,14 @@ import com.google.common.truth.Truth.assertThat
  */
 @RunWith(Parameterized::class)
 @ExperimentalCoroutinesApi
-class UserInfoTest(private val followingUseCase:  FlowUseCase<Unit, UiPublisher>,
-                   private val categoryUseCase: FlowUseCase<Unit, Category>) {
+class UserInfoTest(
+    private val followingUseCase: FlowUseCase<Unit, UiPublisher>,
+    private val categoryUseCase: FlowUseCase<Unit, Category>
+) {
 
     companion object {
         val mainCoroutineRule = MainCoroutineRule()
-        private val mockedPubRepo = mock<PublisherRepository>{
+        private val mockedPubRepo = mock<PublisherRepository> {
             mainCoroutineRule.runBlockingTest { on(it.getFollowingPubsList(TestData.publisher1.followedPublishersIds)).doReturn(listOf(TestData.uiPublisher2)) }
         }
         private val mockedCategoryRepo = mock<CategoryRepository> {
@@ -57,11 +59,11 @@ class UserInfoTest(private val followingUseCase:  FlowUseCase<Unit, UiPublisher>
     fun allOk_ReturnExpectedResult() = mainCoroutineRule.runBlockingTest {
         val followingList = mutableListOf<UiPublisher>()
         val categoriesList = mutableListOf<Category>()
-        //When trying to collect the result
+        // When trying to collect the result
         followingUseCase(Unit).collect { followingList.add(it) }
         categoryUseCase(Unit).collect { categoriesList.add(it) }
 
-        //Assert it all goes as intended
+        // Assert it all goes as intended
         assertThat(followingList).isNotEmpty()
         assertThat(categoriesList).isNotEmpty()
         assertThat(followingList).isEqualTo(listOf(TestData.uiPublisher2))

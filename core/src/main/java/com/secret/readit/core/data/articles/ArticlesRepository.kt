@@ -67,11 +67,11 @@ class ArticlesRepository @Inject constructor(
 
     suspend fun reply(article: UiArticle, reply: UiComment, parentComment: UiComment): Boolean {
         val deFormattedReply = formatter.deFormatComment(reply) ?: return false
-        val deFormattedComment = formatter.deFormatComment(parentComment) ?: return false //The parent comment need to be deFormatted in order to have a valid Id
+        val deFormattedComment = formatter.deFormatComment(parentComment) ?: return false // The parent comment need to be deFormatted in order to have a valid Id
         val result = commentsDataSource.addReply(article.article.id, deFormattedComment.id, deFormattedReply)
         return checkIfSuccessful(result)
     }
-    //hold last document snapshot in-Memory to be able to get queries after it and avoid leaking resources and money
+    // hold last document snapshot in-Memory to be able to get queries after it and avoid leaking resources and money
     @VisibleForTesting
     var prevSnapshot: DocumentSnapshot? = null
         private set
@@ -115,10 +115,10 @@ class ArticlesRepository @Inject constructor(
      * @return true on success, false on data source failure like: No Internet connection or adding invalid article(deFormatting Error)
      */
     suspend fun addArticle(uiArticle: UiArticle): Boolean {
-        val deFormattingResult = formatter.deFormatArticle(uiArticle) ?: return false //Couldn't deFormat article
+        val deFormattingResult = formatter.deFormatArticle(uiArticle) ?: return false // Couldn't deFormat article
         val result = articlesDataSource.addArticle(deFormattingResult.first)
         if (checkIfSuccessful(result)) {
-            return formatter.uploadElements(deFormattingResult.first.id, deFormattingResult.second) //If article upload succeeded, upload content
+            return formatter.uploadElements(deFormattingResult.first.id, deFormattingResult.second) // If article upload succeeded, upload content
         }
         return false
     }
@@ -130,7 +130,7 @@ class ArticlesRepository @Inject constructor(
     private fun checkIfSuccessful(result: Result<Boolean>) = if (result != null && result.succeeded) (result as Result.Success).data else false
 
     companion object {
-        const val CONTENT_DISPLAYED_LIMIT = 5 //TODO: configure it through remote config
+        const val CONTENT_DISPLAYED_LIMIT = 5 // TODO: configure it through remote config
         const val PLACE_HOLDER_URL = "https://firebasestorage.googleapis.com/v0/b/read-it-b9c8b.appspot.com" +
             "/o/articles%2Fplace_holder_image.png?alt=media&token=fd6b444e-0115-4f40-8b8d-f6deaf238179"
     }

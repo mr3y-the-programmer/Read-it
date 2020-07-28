@@ -25,8 +25,10 @@ import kotlin.coroutines.resumeWithException
 /**
  * Our CommentsDataSource has one responsibility, interact directly with firebase to get/set comments on each article
  */
-internal class DefaultCommentsDataSource @Inject constructor(private val firestore: FirebaseFirestore,
-                                                    @IoDispatcher private val ioDispatcher: CoroutineDispatcher): CommentDataSource {
+internal class DefaultCommentsDataSource @Inject constructor(
+    private val firestore: FirebaseFirestore,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+) : CommentDataSource {
     override suspend fun getComments(articleID: articleId, ids: List<String>, limit: Int): Result<List<Comment>> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
             val safeLimit = if (limit <= 0) 999 else limit

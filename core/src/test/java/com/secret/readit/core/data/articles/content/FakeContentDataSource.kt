@@ -11,7 +11,7 @@ import com.secret.readit.core.result.Result
 import com.secret.readit.model.Element
 import com.secret.readit.model.articleId
 
-class FakeContentDataSource: ContentDataSource {
+class FakeContentDataSource : ContentDataSource {
     @Suppress("UNCHECKED_CAST")
     override suspend fun getContent(id: articleId, limit: Int): Result<List<Element>> {
         return Result.Success(TestData.content1.elements as List<Element>)
