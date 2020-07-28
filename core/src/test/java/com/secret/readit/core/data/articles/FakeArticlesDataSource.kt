@@ -39,4 +39,12 @@ open class FakeArticlesDataSource : ArticlesDataSource {
     override suspend fun addArticle(article: Article): Result<Boolean> {
         return Result.Success(true)
     }
+
+    override suspend fun incrementAppreciation(article: Article): Result<Boolean> {
+        return Result.Success(true)
+    }
+
+    override suspend fun incrementDisagree(article: Article): Result<Boolean> {
+        return Result.Success(true)
+    }
 }
