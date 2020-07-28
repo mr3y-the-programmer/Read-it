@@ -23,7 +23,9 @@ import kotlin.coroutines.resumeWithException
  * Our ContentDataSource has one responsibility, interact directly with firebase to get/set content of article
  */
 internal class DefaultContentDataSource @Inject constructor(private val firestore: FirebaseFirestore,
-                                                   @IoDispatcher private val ioDispatcher: CoroutineDispatcher): ContentDataSource {
+                                                            @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+                                                            private val normalizer: ContentNormalizeHelper = ContentNormalizeHelper()
+): ContentDataSource {
     override suspend fun getContent(id: articleId, limit: Int): Result<List<Element>> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
             val safeLimit = if (limit <= 0) 9999 else limit
@@ -36,7 +38,7 @@ internal class DefaultContentDataSource @Inject constructor(private val firestor
                     if (continuation.isActive) {
                         Timber.d("fetched content of article: $id Successfully, content: ${contentSnapshot.documents}")
 
-                        val content = contentSnapshot.toObjects(Element::class.java)
+                        val content = normalizer.normalizeToElements(contentSnapshot)
 
                         continuation.resume(Result.Success(content))
                     } else {
