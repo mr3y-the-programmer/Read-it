@@ -23,65 +23,29 @@ class CustomIDHandlerTest {
     }
 
     @Test
-    fun inputArticle2_ReturnValidId() {
-        // When entering valid article
-        val result = customIDHandler.getID(TestData.article2)
-
-        val expected = "89479892-2pub-arti"
-
-        // assert it matches our expectations
-        assertThat(result).isEqualTo(expected)
-    }
+    fun inputArticle2_ReturnValidId() = runSuccessTest({customIDHandler.getID(TestData.article2) }, "89479892-2pub-arti")
 
     @Test
-    fun inputArticle1_ReturnValidId() {
-        // When entering valid article
-        val result = customIDHandler.getID(TestData.article1)
-
-        val expected = "43259253-1pub-arti"
-
-        // assert it matches our expectations
-        assertThat(result).isEqualTo(expected)
-    }
+    fun inputArticle1_ReturnValidId() = runSuccessTest({ customIDHandler.getID(TestData.article1) }, "43259253-1pub-arti")
 
     @Test(expected = IllegalArgumentException::class)
-    fun inputInvalidArticle_ThrowsException() {
-        // When entering Invalid article
-        val result = customIDHandler.getID(TestData.emptyArticle)
-
-        // assert it throws an exception
-    }
+    fun inputInvalidArticle_ThrowsException() { customIDHandler.getID(TestData.emptyArticle) /* When entering Invalid article */ }
 
     @Test
-    fun inputCategory1_ReturnValidId() {
-        // When entering valid category
-        val result = customIDHandler.getID(TestData.category1)
-
-        val expected = "pPt-Programming-ego"
-
-        // assert it matches our expectations
-        assertThat(result).isEqualTo(expected)
-    }
+    fun inputCategory1_ReturnValidId() = runSuccessTest({ customIDHandler.getID(TestData.category1) }, "pPt-Programming-ego")
 
     @Test(expected = IllegalArgumentException::class)
-    fun inputInvalidCategory_ThrowsException() {
-        // When entering Invalid category
-        val result = customIDHandler.getID(TestData.emptyCategory)
-
-        // assert it throws an exception
-    }
+    fun inputInvalidCategory_ThrowsException() { customIDHandler.getID(TestData.emptyCategory) /* When entering Invalid category */ }
 
     @Test
-    fun inputComment1_ReturnValidId() {
-        val result = customIDHandler.getID(TestData.comment1) //When entering valid comment
+    fun inputComment1_ReturnValidId() = runSuccessTest({ customIDHandler.getID(TestData.comment1) }, "1pub-64334")
 
-        assertThat(result).isEqualTo("1pub-64334") //Assert it matches our expectations
-    }
-    //TODO: refactor
     @Test(expected = IllegalArgumentException::class)
-    fun inputInvalidComment_ThrowsException() {
-        val result = customIDHandler.getID(TestData.emptyComment) //When entering Invalid comment
+    fun inputInvalidComment_ThrowsException() { customIDHandler.getID(TestData.emptyComment) /*When entering Invalid comment*/ }
 
-        //Assert it throws an exception
+    private fun runSuccessTest(funUnderTest: CustomIDHandler.() -> String, expected: String) {
+        val result = customIDHandler.funUnderTest() //When entering valid object
+
+        assertThat(result).isEqualTo(expected) //Assert it matches our expectations
     }
 }
