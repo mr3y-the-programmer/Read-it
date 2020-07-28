@@ -14,4 +14,4 @@ import com.secret.readit.model.Comment
  */
 data class UiComment(val comment: Comment,
                      val pub: UiPublisher,
-                     val replies: List<UiComment>)
+                     val replies: List<UiComment> = emptyList())
