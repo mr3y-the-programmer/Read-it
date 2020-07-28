@@ -28,10 +28,11 @@ internal class DefaultCommentsDataSource @Inject constructor(private val firesto
                                                     @IoDispatcher private val ioDispatcher: CoroutineDispatcher): CommentDataSource {
     override suspend fun getComments(articleID: articleId, limit: Int): Result<List<Comment>> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
+            val safeLimit = if (limit <= 0) 999 else limit
             firestore.collection(ARTICLES_COLLECTION)
                 .document(articleID)
                 .collection(COMMENTS_COLLECTION)
-                .limit(limit.toLong())
+                .limit(safeLimit.toLong())
                 .get()
                 .addOnSuccessListener { commentsSnapshot ->
                     if (continuation.isActive) {
