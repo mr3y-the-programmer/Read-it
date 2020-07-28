@@ -69,7 +69,7 @@ android {
 }
 
 dependencies {
-    api project(":model")
+    implementation project(":model")
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.core:core-ktx:$core_ktx"
