@@ -12,13 +12,10 @@ import com.secret.readit.model.Comment
 import com.secret.readit.model.articleId
 
 class FakeCommentsDataSource: CommentDataSource {
-
-    private var newComment = Comment("adssaffsds", TestData.publisher1.id, "This is new comment", 43999999999202, emptyList())
-
     override suspend fun getComments(articleID: articleId, ids: List<String>, limit: Int): Result<List<Comment>> = Result.Success(TestData.comments1)
 
     override suspend fun addComment(articleID: articleId, comment: Comment): Result<Boolean> {
-        TestData.comments1.add(newComment)
+        TestData.comments1.add(TestData.newComment)
         return Result.Success(true)
     }
 
@@ -28,7 +25,7 @@ class FakeCommentsDataSource: CommentDataSource {
         reply: Comment
     ): Result<Boolean> {
         val newReply = Comment("repl-iffmc424-665676", TestData.publisher2.id, "I've replied to you again", 439999999997656, emptyList())
-        newComment = newComment.copy(repliesIds = listOf(newReply.id))
+        TestData.newComment = TestData.newComment.copy(repliesIds = listOf(newReply.id))
         return Result.Success(true)
     }
 }

@@ -149,6 +149,23 @@ class ArticlesRepositoryTest {
     @Test
     fun disagree_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest { runUpdateTest( { articlesRepo.disagree(TestData.uiArticle1)}, false) }
 
+    @Test
+    fun comment_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest {
+        assertThat(TestData.comments1.size).isEqualTo(2) //Before commenting
+        val result = articlesRepo.comment(TestData.uiArticle1, TestData.newUiComment) //When trying to comment on article
+
+        assertThat(result).isTrue() //assert it succeeded first
+        assertThat(TestData.comments1.size).isEqualTo(3) //then check the comment has really been added
+    }
+
+    @Test
+    fun comment_failure_ReturnFalse() = mainCoroutineRule.runBlockingTest {
+        assertThat(TestData.comments1.size).isEqualTo(2) //Before commenting
+        val result = articlesRepo.comment(TestData.uiArticle1, TestData.emptyUiComment) //When trying to comment Invalid comment on article
+
+        assertThat(result).isFalse() //assert it failed
+        assertThat(TestData.comments1.size).isEqualTo(2) //then check the comment hasn't been published
+    }
     private suspend fun runUpdateTest(funUnderTest: suspend ArticlesRepository.() -> Boolean, agree: Boolean = true) {
         val result = articlesRepo.funUnderTest()
         val field = if (agree) TestData.uiArticle1.article.numOfAppreciate else TestData.uiArticle1.article.numOfDisagree

@@ -50,6 +50,8 @@ object TestData {
         followedCategoriesIds = listOf(category1.id, category2.id, category3.id), followedPublishersIds = listOf(publisher2.id))
     val uiPublisher1 = UiPublisher(publisher1, null)
     val uiPublisher2 = UiPublisher(publisher2, null)
+    val emptyPublisher = Publisher("", "", "", memberSince = -1)
+    val emptyUiPublisher = UiPublisher(emptyPublisher, null)
     val mostFollowedIds = listOf(publisher1.id, publisher2.id, "3publo", "8upolia")
 
     val comment0 = Comment("6", publisher2.id, "I've replied to you", 787542322223, emptyList())
@@ -57,10 +59,13 @@ object TestData {
     val comment2 = Comment("2", publisher1.id, "Fantastic", 788225123294, listOf(comment0.id))
     val emptyComment = Comment("", "", "", -1, emptyList())
     val comment4 = Comment("", "", "I'm really disagree with you", 0, emptyList())
+    var newComment = Comment("adssaffsds", publisher1.id, "This is new comment", 43999999999202, emptyList())
 
     val comments1 = mutableListOf(comment1, comment2)
     val comment2Replies = mutableListOf(comment0)
     val deFormatTestComment = UiComment(comment4, uiPublisher1, emptyList())
+    val newUiComment = UiComment(newComment, uiPublisher1, emptyList())
+    val emptyUiComment = UiComment(emptyComment, emptyUiPublisher, emptyList())
 
     val categories = listOf(category1, category2, category3)
     val categoriesIds = listOf(category1.id, category2.id, category3.id)
@@ -76,8 +81,6 @@ object TestData {
         1529889479892, categoryIds = listOf(category3.id)
     )
 
-    val emptyPublisher = Publisher("", "", "", memberSince = -1)
-    val emptyUiPublisher = UiPublisher(emptyPublisher, null)
     val emptyArticle = Article(
         "", "", emptyPublisher.id, 0, 0, categoryIds = emptyList()
     )

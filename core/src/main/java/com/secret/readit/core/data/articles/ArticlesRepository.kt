@@ -58,6 +58,17 @@ class ArticlesRepository @Inject constructor(
         val repliesResult = commentsDataSource.getComments(article.article.id, comment.comment.repliesIds, limit)
         return formatter.formatReplies(repliesResult, comment)
     }
+//TODO: refactor
+    suspend fun comment(article: UiArticle, comment: UiComment): Boolean {
+        var successful = false
+        val deFormattedComment = formatter.deFormatComment(comment) ?: return false
+        val result = commentsDataSource.addComment(article.article.id, deFormattedComment)
+        if (result != null && result.succeeded) {
+            successful = (result as Result.Success).data
+        }
+        return successful
+    }
+
     //hold last document snapshot in-Memory to be able to get queries after it and avoid leaking resources and money
     @VisibleForTesting
     var prevSnapshot: DocumentSnapshot? = null
