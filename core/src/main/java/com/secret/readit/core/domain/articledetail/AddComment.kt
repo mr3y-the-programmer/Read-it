@@ -22,7 +22,7 @@ import javax.inject.Inject
  * it takes the comment [UiComment] as a parameter and
  * @return true(on Success) or false so you can handle the ui based on these values
  *
- * **NOTE**: the only needed attribute from Ui in param [UiComment] is actual text of comment,UI consumers don't need to care about other attributes
+ * **NOTE**: the only needed attribute from Ui in param [UiComment] is actual text of comment,UI consumers don't have to care about other attributes
  */
 class AddComment @Inject constructor(private val articlesRepo: ArticlesRepository,
                                      @CurrentUserProfile private val currentUser: UseCase<Unit, UiPublisher>): FlowUseCase<UiComment, Boolean>() {
