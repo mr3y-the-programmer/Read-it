@@ -75,6 +75,10 @@ class ArticlesRepository @Inject constructor(
     @VisibleForTesting
     var prevSnapshot: DocumentSnapshot? = null
         private set
+
+    //also hold the current displayed Article Id,
+    internal var currentArticleID: articleId? = null
+        private set
     /**
      * move/Encapsulate the boilerplate to this function that is only public for sake of testing,
      * **IMPORTANT NOTE**: Consumers mustn't call this directly, instead Use one of [getMostAppreciatedArticles], [getMostFollowedPublishersArticles]...etc
@@ -107,7 +111,7 @@ class ArticlesRepository @Inject constructor(
      * getFullArticle fun which called to load/format the full article like: clicking on article on homefeed to display its full content
      * @return the UiArticle with full content formatted
      */
-    suspend fun getFullArticle(partialArticle: UiArticle): UiArticle = formatter.formatFullArticle(partialArticle)
+    suspend fun getFullArticle(partialArticle: UiArticle): UiArticle = formatter.formatFullArticle(partialArticle).also { currentArticleID = it.article.id }
 
     /**
      * Publish this article, add it to firestore
