@@ -49,26 +49,26 @@ class ArticlesRepository @Inject constructor(
     suspend fun disagree(article: UiArticle): Boolean = appreciateOrDisagree(article, false)
 
     /* Comments section */
-    suspend fun getComments(article: UiArticle, limit: Int): List<UiComment> {
-        val result = commentsDataSource.getComments(article.article.id, emptyList(), limit)
+    suspend fun getComments(articleID: articleId, limit: Int): List<UiComment> {
+        val result = commentsDataSource.getComments(articleID, emptyList(), limit)
         return formatter.formatComments(result)
     }
 
-    suspend fun showReplies(article: UiArticle, comment: UiComment, limit: Int): UiComment {
-        val repliesResult = commentsDataSource.getComments(article.article.id, comment.comment.repliesIds, limit)
+    suspend fun showReplies(articleID: articleId, comment: UiComment, limit: Int): UiComment {
+        val repliesResult = commentsDataSource.getComments(articleID, comment.comment.repliesIds, limit)
         return formatter.formatReplies(repliesResult, comment)
     }
 
-    suspend fun comment(article: UiArticle, comment: UiComment): Boolean {
+    suspend fun comment(articleID: articleId, comment: UiComment): Boolean {
         val deFormattedComment = formatter.deFormatComment(comment) ?: return false
-        val result = commentsDataSource.addComment(article.article.id, deFormattedComment)
+        val result = commentsDataSource.addComment(articleID, deFormattedComment)
         return checkIfSuccessful(result)
     }
 
-    suspend fun reply(article: UiArticle, reply: UiComment, parentComment: UiComment): Boolean {
+    suspend fun reply(articleID: articleId, reply: UiComment, parentComment: UiComment): Boolean {
         val deFormattedReply = formatter.deFormatComment(reply) ?: return false
         val deFormattedComment = formatter.deFormatComment(parentComment) ?: return false // The parent comment need to be deFormatted in order to have a valid Id
-        val result = commentsDataSource.addReply(article.article.id, deFormattedComment.id, deFormattedReply)
+        val result = commentsDataSource.addReply(articleID, deFormattedComment.id, deFormattedReply)
         return checkIfSuccessful(result)
     }
     // hold last document snapshot in-Memory to be able to get queries after it and avoid leaking resources and money
