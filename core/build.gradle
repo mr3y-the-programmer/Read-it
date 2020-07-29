@@ -28,10 +28,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments += ["room.schemaLocation": "$projectDir/schemas".toString(),  //Export schema file location
-                              "room.incremental": "true",
-                              "room.expandProjection": "true",
-                              "dagger.gradle.incremental": "true"] //dagger
+
             }
         }
     }
@@ -95,11 +92,11 @@ dependencies {
     implementation "com.jakewharton.timber:timber:$timber_version"
 
     //Room
-    implementation "androidx.room:room-runtime:$room_version"
+    /*implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     //Room Test
-    testImplementation "androidx.room:room-testing:$room_version"
+    testImplementation "androidx.room:room-testing:$room_version"*/
 
     //test
     testImplementation "junit:junit:$junit_version"
