@@ -25,7 +25,11 @@ import javax.inject.Inject
 class GetComments @Inject constructor(private val articlesRepo: ArticlesRepository): FlowUseCase<Pair<UiArticle, Int>, UiComment>(){
 
     override suspend fun execute(parameters: Pair<UiArticle, Int>): Flow<UiComment> {
-        return articlesRepo.getComments(parameters.first, parameters.second).asFlow()
+        return articlesRepo.getComments(parameters.first, parameters.second)
+            .sortedWith(compareByDescending<UiComment> { it.comment.repliesIds.size }
+                .thenByDescending { it.pub.publisher.numOfFollowers }
+                .thenByDescending { it.comment.timestamp })
+            .asFlow()
             .filterNot { it.comment.publisherId.isEmpty() || it.comment.id.isEmpty()}
             .cancellable()
     }
