@@ -7,6 +7,7 @@
 
 package com.secret.readit.core.domain.articledetail
 
+import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.uimodels.UiComment
 
 fun List<UiComment>.sort(): List<UiComment>{
@@ -14,3 +15,5 @@ fun List<UiComment>.sort(): List<UiComment>{
         .thenByDescending { it.pub.publisher.numOfFollowers }
         .thenByDescending { it.comment.timestamp })
 }
+
+fun currentArtID(instance: ArticlesRepository) = instance.currentArticleID ?: throw NullPointerException()

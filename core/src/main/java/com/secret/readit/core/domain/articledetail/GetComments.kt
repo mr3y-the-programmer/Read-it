@@ -22,8 +22,7 @@ import javax.inject.Inject
 class GetComments @Inject constructor(private val articlesRepo: ArticlesRepository): FlowUseCase<Int, UiComment>(){
 
     override suspend fun execute(parameters: Int): Flow<UiComment> {
-        val currentArticleId = articlesRepo.currentArticleID ?: throw NullPointerException()
-        return articlesRepo.getComments(currentArticleId, parameters)
+        return articlesRepo.getComments(currentArtID(articlesRepo), parameters)
             .sort()
             .asFlow()
             .filterNot { it.comment.publisherId.isEmpty() || it.comment.id.isEmpty()}

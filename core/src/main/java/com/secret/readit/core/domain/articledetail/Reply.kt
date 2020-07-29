@@ -25,8 +25,7 @@ import javax.inject.Inject
 class Reply @Inject constructor(private val articlesRepo: ArticlesRepository,
                                 @CurrentUserProfile private val currentUser: UseCase<Unit, UiPublisher>): FlowUseCase<Pair<UiComment, UiComment>, Boolean>(){
     override suspend fun execute(parameters: Pair<UiComment, UiComment>): Flow<Boolean> {
-        val currentArticleID = articlesRepo.currentArticleID ?: throw NullPointerException()
         val reply = parameters.first.copy(pub = currentUser(Unit))
-        return flow { emit(articlesRepo.reply(currentArticleID, reply = reply, parentComment = parameters.second)) }
+        return flow { emit(articlesRepo.reply(currentArtID(articlesRepo), reply = reply, parentComment = parameters.second)) }
     }
 }

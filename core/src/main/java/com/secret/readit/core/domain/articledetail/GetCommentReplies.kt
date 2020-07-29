@@ -22,8 +22,7 @@ import javax.inject.Inject
  */
 class GetCommentReplies @Inject constructor(private val articlesRepo: ArticlesRepository): FlowUseCase<UiComment, UiComment>(){
     override suspend fun execute(parameters: UiComment): Flow<UiComment> {
-        val currentArticleId = articlesRepo.currentArticleID ?: throw NullPointerException()
-        return articlesRepo.showReplies(currentArticleId, parameters, 0 /*For now there's no limit*/).replies
+        return articlesRepo.showReplies(currentArtID(articlesRepo), parameters, 0 /*For now there's no limit*/).replies
             .sort()
             .asFlow()
             .filterNot { it.comment.publisherId.isEmpty() || it.comment.id.isEmpty()}

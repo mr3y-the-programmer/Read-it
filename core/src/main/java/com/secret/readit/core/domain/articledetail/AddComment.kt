@@ -27,8 +27,7 @@ import javax.inject.Inject
 class AddComment @Inject constructor(private val articlesRepo: ArticlesRepository,
                                      @CurrentUserProfile private val currentUser: UseCase<Unit, UiPublisher>): FlowUseCase<UiComment, Boolean>() {
     override suspend fun execute(parameters: UiComment): Flow<Boolean> {
-        val currentArticleId = articlesRepo.currentArticleID ?: throw NullPointerException()
         val comment = parameters.copy(pub = currentUser(Unit))
-        return flow { emit(articlesRepo.comment(currentArticleId, comment)) }
+        return flow { emit(articlesRepo.comment(currentArtID(articlesRepo), comment)) }
     }
 }
