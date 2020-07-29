@@ -16,16 +16,15 @@ import javax.inject.Inject
 
 /**
  * A Use Case for loading comments for specific article,
- * it takes a pair of:
- * -article that has comments
- * -limit to limit the comments number, if this limit is 0 or negative the whole comments will be loaded
+ * it takes an Int param to limit the comments number, if this limit is 0 or negative the whole comments will be loaded
  *
  * @return flow of comments
  */
-class GetComments @Inject constructor(private val articlesRepo: ArticlesRepository): FlowUseCase<Pair<UiArticle, Int>, UiComment>(){
+class GetComments @Inject constructor(private val articlesRepo: ArticlesRepository): FlowUseCase<Int, UiComment>(){
 
-    override suspend fun execute(parameters: Pair<UiArticle, Int>): Flow<UiComment> {
-        return articlesRepo.getComments(parameters.first, parameters.second)
+    override suspend fun execute(parameters: Int): Flow<UiComment> {
+        val currentArticleId = articlesRepo.currentArticleID ?: throw NullPointerException()
+        return articlesRepo.getComments(currentArticleId, parameters)
             .sortedWith(compareByDescending<UiComment> { it.comment.repliesIds.size }
                 .thenByDescending { it.pub.publisher.numOfFollowers }
                 .thenByDescending { it.comment.timestamp })
