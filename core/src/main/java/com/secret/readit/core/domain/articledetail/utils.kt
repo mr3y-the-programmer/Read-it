@@ -16,4 +16,4 @@ fun List<UiComment>.sort(): List<UiComment>{
         .thenByDescending { it.comment.timestamp })
 }
 
-fun currentArtID(instance: ArticlesRepository) = instance.currentArticleID ?: throw NullPointerException()
+internal fun currentArtID(instance: ArticlesRepository) = instance.currentArticleID ?: throw NullPointerException()
