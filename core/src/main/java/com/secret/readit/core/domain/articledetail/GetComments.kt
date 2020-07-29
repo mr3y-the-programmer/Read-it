@@ -9,7 +9,6 @@ package com.secret.readit.core.domain.articledetail
 
 import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.domain.FlowUseCase
-import com.secret.readit.core.uimodels.UiArticle
 import com.secret.readit.core.uimodels.UiComment
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -25,9 +24,7 @@ class GetComments @Inject constructor(private val articlesRepo: ArticlesReposito
     override suspend fun execute(parameters: Int): Flow<UiComment> {
         val currentArticleId = articlesRepo.currentArticleID ?: throw NullPointerException()
         return articlesRepo.getComments(currentArticleId, parameters)
-            .sortedWith(compareByDescending<UiComment> { it.comment.repliesIds.size }
-                .thenByDescending { it.pub.publisher.numOfFollowers }
-                .thenByDescending { it.comment.timestamp })
+            .sort()
             .asFlow()
             .filterNot { it.comment.publisherId.isEmpty() || it.comment.id.isEmpty()}
             .cancellable()
