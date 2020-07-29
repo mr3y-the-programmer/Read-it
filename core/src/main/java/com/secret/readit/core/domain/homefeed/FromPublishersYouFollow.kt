@@ -9,8 +9,11 @@ package com.secret.readit.core.domain.homefeed
 
 import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.data.publisher.PublisherRepository
+import com.secret.readit.core.di.CurrentUserProfile
 import com.secret.readit.core.domain.FlowUseCase
+import com.secret.readit.core.domain.UseCase
 import com.secret.readit.core.uimodels.UiArticle
+import com.secret.readit.core.uimodels.UiPublisher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.cancellable
@@ -22,13 +25,13 @@ import javax.inject.Inject
  * and return Flow of articles
  */
 class FromPublishersYouFollow @Inject constructor(
-    private val pubRepo: PublisherRepository,
+    @CurrentUserProfile private val currentUser: UseCase<Unit, UiPublisher>,
     private val articlesRepo: ArticlesRepository
 ) : FlowUseCase<Int, UiArticle>() {
 
     override suspend fun execute(parameters: Int): Flow<UiArticle> {
         val limit = parameters.coerceIn(5, 30) // Ensure we don't request big number of articles that user will never read
-        val followingIds = pubRepo.getCurrentUser().publisher.followedPublishersIds
+        val followingIds = currentUser(Unit).publisher.followedPublishersIds
 
         // asFlow is unSafeFlow so we need to check the cancellation by using cancellable()
         return articlesRepo.getMostFollowedPublishersArticles(limit, followingIds).asFlow()
