@@ -7,8 +7,7 @@
 
 package com.secret.readit.core.domain
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.*
 import timber.log.Timber
 
 /**
@@ -19,9 +18,14 @@ abstract class FlowUseCase<in P, out R> {
      * Executes the FlowUseCase asynchronously
      */
     suspend operator fun invoke(parameters: P): Flow<R> {
-        return execute(parameters)
-            // Catch exceptions if there's any, Consumers should handle this like: navigating to Sign-In dialog
-            .catch { e -> Timber.e("Exception happened while executing, cause: ${e.message}"); throw e }
+        // Catch exceptions if there's any, and in this case return emptyFlow()
+        // So, Consumers can handle this as they need like: opening a Sign-In dialog...etc
+        return try {
+            execute(parameters)
+        } catch (ex: Exception) {
+            Timber.e("Exception happened while executing, cause: ${ex.message}");
+            emptyFlow()
+        } /* **NOTE** This is a temporary solution until we can use Flow.catch() operator again*/
     }
 
     /**
