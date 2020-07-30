@@ -17,6 +17,7 @@ import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.core.uimodels.UiArticle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.toCollection
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.FixMethodOrder
@@ -64,7 +65,7 @@ class PublishedArticlesSinceTest {
         assertThat(returnedArticles).isEqualTo(TestData.uiArticles.dropLast(1))
     }
 
-    @Test(expected = NullPointerException::class)
+    @Test
     fun failedToGetId_ReturnEmpty() = mainCoroutineRule.runBlockingTest {
         // GIVEN invalid pubId
         val mockedPubRepo = mock<PublisherRepository> { on(it.getPublisherId(testPubInfo)).doReturn(null) }
@@ -75,8 +76,9 @@ class PublishedArticlesSinceTest {
 
         // When trying to get Articles of this publisher
         val returnArticles = mutableListOf<UiArticle>()
-        pubArticlesSince(Pair(testPubInfo, Since.LAST_7_DAYS)).collect { returnArticles.add(it) }
+        pubArticlesSince(Pair(testPubInfo, Since.LAST_7_DAYS)).toCollection(returnArticles)
 
-        // Assert it throws an exception
+        // Assert the list is empty since there's exception happened
+        assertThat(returnArticles).isEmpty()
     }
 }
