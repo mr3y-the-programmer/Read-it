@@ -20,12 +20,12 @@ import javax.inject.Inject
  * UseCase that loads replies of comment, it takes a comment [UiComment] as a parameter
  * @return the replies of this comment
  */
-class GetCommentReplies @Inject constructor(private val articlesRepo: ArticlesRepository): FlowUseCase<UiComment, UiComment>(){
+class GetCommentReplies @Inject constructor(private val articlesRepo: ArticlesRepository) : FlowUseCase<UiComment, UiComment>() {
     override suspend fun execute(parameters: UiComment): Flow<UiComment> {
         return articlesRepo.showReplies(currentArtID(articlesRepo), parameters, 0 /*For now there's no limit*/).replies
             .sort()
             .asFlow()
-            .filterNot { it.comment.publisherId.isEmpty() || it.comment.id.isEmpty()}
+            .filterNot { it.comment.publisherId.isEmpty() || it.comment.id.isEmpty() }
             .cancellable()
     }
 }

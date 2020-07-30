@@ -16,6 +16,6 @@ import javax.inject.Inject
  * When clicking on article, This Use Case'll display the Full Article content
  * it takes the [UiArticle] we want to download its full content and return it
  */
-class GetFullArticle @Inject constructor(private val articlesRepo: ArticlesRepository): UseCase<UiArticle, UiArticle>() {
+class GetFullArticle @Inject constructor(private val articlesRepo: ArticlesRepository) : UseCase<UiArticle, UiArticle>() {
     override suspend fun execute(parameters: UiArticle): UiArticle = articlesRepo.getFullArticle(partialArticle = parameters)
 }

@@ -23,7 +23,7 @@ abstract class FlowUseCase<in P, out R> {
         return try {
             execute(parameters)
         } catch (ex: Exception) {
-            Timber.e("Exception happened while executing, cause: ${ex.message}");
+            Timber.e("Exception happened while executing, cause: ${ex.message}")
             emptyFlow()
         } /* **NOTE** This is a temporary solution until we can use Flow.catch() operator again*/
     }

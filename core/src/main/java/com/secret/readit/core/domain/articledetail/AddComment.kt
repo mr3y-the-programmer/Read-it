@@ -24,8 +24,10 @@ import javax.inject.Inject
  *
  * **NOTE**: the only needed attribute from Ui in param [UiComment] is actual text of comment,UI consumers don't have to care about other attributes
  */
-class AddComment @Inject constructor(private val articlesRepo: ArticlesRepository,
-                                     @CurrentUserProfile private val currentUser: UseCase<Unit, UiPublisher>): FlowUseCase<UiComment, Boolean>() {
+class AddComment @Inject constructor(
+    private val articlesRepo: ArticlesRepository,
+    @CurrentUserProfile private val currentUser: UseCase<Unit, UiPublisher>
+) : FlowUseCase<UiComment, Boolean>() {
     override suspend fun execute(parameters: UiComment): Flow<Boolean> {
         val comment = parameters.copy(pub = currentUser(Unit))
         return flow { emit(articlesRepo.comment(currentArtID(articlesRepo), comment)) }

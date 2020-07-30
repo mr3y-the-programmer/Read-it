@@ -22,10 +22,10 @@ import javax.inject.Inject
  *
  * **NOTE**: (Commenting or replying doesn't belong to this UseCase), see [AddComment], [Reply] instead
  */
-class React @Inject constructor(private val articlesRepo: ArticlesRepository) : FlowUseCase<Pair<UiArticle, Reaction>, Boolean>(){
+class React @Inject constructor(private val articlesRepo: ArticlesRepository) : FlowUseCase<Pair<UiArticle, Reaction>, Boolean>() {
     override suspend fun execute(parameters: Pair<UiArticle, Reaction>): Flow<Boolean> {
         return flow {
-            when(parameters.second) {
+            when (parameters.second) {
                 Reaction.APPRECIATE -> emit(articlesRepo.appreciate(parameters.first))
                 Reaction.DISAGREE -> emit(articlesRepo.disagree(parameters.first))
             }

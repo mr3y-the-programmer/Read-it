@@ -24,5 +24,6 @@ import org.junit.runners.Suite
     AuthRepositoryTest::class,
     CategoryRepositoryTest::class,
     PublisherRepositoryTest::class,
-    StorageRepositoryTest::class)
+    StorageRepositoryTest::class
+)
 class ReposTestsSuite

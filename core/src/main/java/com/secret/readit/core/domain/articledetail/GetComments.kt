@@ -19,13 +19,13 @@ import javax.inject.Inject
  *
  * @return flow of comments
  */
-class GetComments @Inject constructor(private val articlesRepo: ArticlesRepository): FlowUseCase<Int, UiComment>(){
+class GetComments @Inject constructor(private val articlesRepo: ArticlesRepository) : FlowUseCase<Int, UiComment>() {
 
     override suspend fun execute(parameters: Int): Flow<UiComment> {
         return articlesRepo.getComments(currentArtID(articlesRepo), parameters)
             .sort()
             .asFlow()
-            .filterNot { it.comment.publisherId.isEmpty() || it.comment.id.isEmpty()}
+            .filterNot { it.comment.publisherId.isEmpty() || it.comment.id.isEmpty() }
             .cancellable()
     }
 }

@@ -10,10 +10,12 @@ package com.secret.readit.core.domain.articledetail
 import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.uimodels.UiComment
 
-fun List<UiComment>.sort(): List<UiComment>{
-    return sortedWith(compareByDescending<UiComment> { it.comment.repliesIds.size }
-        .thenByDescending { it.pub.publisher.numOfFollowers }
-        .thenByDescending { it.comment.timestamp })
+fun List<UiComment>.sort(): List<UiComment> {
+    return sortedWith(
+        compareByDescending<UiComment> { it.comment.repliesIds.size }
+            .thenByDescending { it.pub.publisher.numOfFollowers }
+            .thenByDescending { it.comment.timestamp }
+    )
 }
 
 internal fun currentArtID(instance: ArticlesRepository) = instance.currentArticleID ?: throw NullPointerException()

@@ -76,7 +76,7 @@ class ArticlesRepository @Inject constructor(
     var prevSnapshot: DocumentSnapshot? = null
         private set
 
-    //also hold the current displayed Article Id,
+    // also hold the current displayed Article Id,
     internal var currentArticleID: articleId? = null
         private set
     /**

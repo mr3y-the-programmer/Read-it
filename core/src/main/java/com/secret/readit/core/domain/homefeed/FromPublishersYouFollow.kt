@@ -8,7 +8,6 @@
 package com.secret.readit.core.domain.homefeed
 
 import com.secret.readit.core.data.articles.ArticlesRepository
-import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.core.di.CurrentUserProfile
 import com.secret.readit.core.domain.FlowUseCase
 import com.secret.readit.core.domain.UseCase
