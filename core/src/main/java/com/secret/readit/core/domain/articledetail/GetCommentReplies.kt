@@ -25,7 +25,7 @@ class GetCommentReplies @Inject constructor(private val articlesRepo: ArticlesRe
         return articlesRepo.showReplies(currentArtID(articlesRepo), parameters, 0 /*For now there's no limit*/).replies
             .sort()
             .asFlow()
-            .filterNot { it.comment.publisherId.isEmpty() || it.comment.id.isEmpty() }
+            .filterNot { it.comment.publisherID.isEmpty() || it.comment.id.isEmpty() }
             .cancellable()
     }
 }

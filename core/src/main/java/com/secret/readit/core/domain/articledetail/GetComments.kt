@@ -25,7 +25,7 @@ class GetComments @Inject constructor(private val articlesRepo: ArticlesReposito
         return articlesRepo.getComments(currentArtID(articlesRepo), parameters)
             .sort()
             .asFlow()
-            .filterNot { it.comment.publisherId.isEmpty() || it.comment.id.isEmpty() }
+            .filterNot { it.comment.publisherID.isEmpty() || it.comment.id.isEmpty() }
             .cancellable()
     }
 }

@@ -8,7 +8,7 @@
 package com.secret.readit.model
 
 data class Comment(val id: String,
-                   val publisherId: publisherId,
+                   val publisherID: publisherId,
                    val text: String,
                    val timestamp: Long,
                    val repliesIds: List<String>)

@@ -140,7 +140,7 @@ class FormatterTest {
 
         // assert it matches our expectations
         assertThat(comment?.id).isNotEmpty()
-        assertThat(comment?.publisherId).isEqualTo(TestData.publisher1.id)
+        assertThat(comment?.publisherID).isEqualTo(TestData.publisher1.id)
         assertThat(comment?.timestamp).isGreaterThan(1000)
         assertThat(comment?.repliesIds).isEmpty()
         assertThat(comment?.text).isEqualTo(TestData.comment4.text)

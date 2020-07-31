@@ -79,7 +79,7 @@ class CustomIDHandler {
      * @return the id generated
      */
     fun getID(comment: Comment): String {
-        val pubID = comment.publisherId
+        val pubID = comment.publisherID
         val timestamp = comment.timestamp.toString()
 
         if (timestamp.length < 7 || pubID.length < 4) {

@@ -109,7 +109,7 @@ class Formatter @Inject constructor(
         if (result != null && result.succeeded) {
             val comments = (result as Result.Success).data
             for (comment in comments) {
-                val pub = pubRepo.getPublisherInfo(comment.publisherId)
+                val pub = pubRepo.getPublisherInfo(comment.publisherID)
                 formattedComments += UiComment(comment, pub)
             }
         }
@@ -188,11 +188,11 @@ class Formatter @Inject constructor(
         val now = Instant.now().toEpochMilli()
         val pubID = comment.pub.publisher.id
         val commentId = try {
-            idHandler.getID(comment.comment.copy(timestamp = now, publisherId = pubID))
+            idHandler.getID(comment.comment.copy(timestamp = now, publisherID = pubID))
         } catch (ex: IllegalArgumentException) {
             Timber.d("Cannot get an id for comment: $comment")
             return null
         }
-        return comment.comment.copy(id = commentId, publisherId = pubID, timestamp = now, repliesIds = emptyList())
+        return comment.comment.copy(id = commentId, publisherID = pubID, timestamp = now, repliesIds = emptyList())
     }
 }
