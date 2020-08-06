@@ -22,6 +22,7 @@ abstract class FlowUseCase<in P, out R> {
         // So, Consumers can handle this as they need like: opening a Sign-In dialog...etc
         return try {
             execute(parameters)
+                .cancellable() //Most of use-cases use the asFlow() extension which is unSafeFlow
         } catch (ex: Exception) {
             Timber.e("Exception happened while executing, cause: ${ex.message}")
             emptyFlow()

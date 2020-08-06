@@ -32,6 +32,5 @@ class BasedOnYourCategories @Inject constructor(
 
         return articlesRepo.getArticlesWhichHaveCategories(limit, categoryFollowedIds).asFlow()
             .filterNot { it.article.id.isEmpty() || it.article.timestamp < 0 }
-            .cancellable() // asFlow is unSafeFlow so we need to check the cancellation by using cancellable()
     }
 }

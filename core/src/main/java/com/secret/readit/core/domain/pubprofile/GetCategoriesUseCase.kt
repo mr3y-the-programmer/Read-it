@@ -28,6 +28,5 @@ class GetCategoriesUseCase @Inject constructor(
         val categoriesIds = currentUser(parameters).publisher.followedCategoriesIds
         return categoryRepo.getCategories(categoriesIds).asFlow()
             .filterNot { it.id.isEmpty() || it.name.isEmpty() }
-            .cancellable()
     }
 }

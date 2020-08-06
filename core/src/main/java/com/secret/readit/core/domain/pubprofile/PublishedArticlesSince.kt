@@ -41,7 +41,6 @@ class PublishedArticlesSince @Inject constructor(
         }
         return articlesRepo.getPubArticlesSince(pubId, period).asFlow()
             .filterNot { it.article.id.isEmpty() || it.article.timestamp < 0 }
-            .cancellable()
     }
 }
 

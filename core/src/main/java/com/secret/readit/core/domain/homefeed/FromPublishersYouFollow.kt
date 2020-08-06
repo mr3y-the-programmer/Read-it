@@ -32,9 +32,7 @@ class FromPublishersYouFollow @Inject constructor(
         val limit = parameters.coerceIn(5, 30) // Ensure we don't request big number of articles that user will never read
         val followingIds = currentUser(Unit).publisher.followedPublishersIds
 
-        // asFlow is unSafeFlow so we need to check the cancellation by using cancellable()
         return articlesRepo.getMostFollowedPublishersArticles(limit, followingIds).asFlow()
             .filterNot { it.article.id.isEmpty() || it.article.timestamp < 0 }
-            .cancellable()
     }
 }

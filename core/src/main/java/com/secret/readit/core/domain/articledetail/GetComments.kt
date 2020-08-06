@@ -26,6 +26,5 @@ class GetComments @Inject constructor(private val articlesRepo: ArticlesReposito
             .sort()
             .asFlow()
             .filterNot { it.comment.publisherID.isEmpty() || it.comment.id.isEmpty() }
-            .cancellable()
     }
 }

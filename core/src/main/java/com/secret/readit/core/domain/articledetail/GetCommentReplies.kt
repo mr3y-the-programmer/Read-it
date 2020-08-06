@@ -26,6 +26,5 @@ class GetCommentReplies @Inject constructor(private val articlesRepo: ArticlesRe
             .sort()
             .asFlow()
             .filterNot { it.comment.publisherID.isEmpty() || it.comment.id.isEmpty() }
-            .cancellable()
     }
 }

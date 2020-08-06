@@ -29,6 +29,5 @@ class GetFollowingUseCase @Inject constructor(
         val followingIds = currentUser(parameters).publisher.followedPublishersIds // If it throws NullPointerException it will be caught by catch in [FlowUseCase]
         return pubRepo.getFollowingPubsList(followingIds).asFlow()
             .filterNot { it.publisher.id.isEmpty() || it.publisher.memberSince < 0 }
-            .cancellable()
     }
 }

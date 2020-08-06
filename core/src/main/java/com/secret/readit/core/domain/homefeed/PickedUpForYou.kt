@@ -45,7 +45,7 @@ class PickedUpForYou @Inject constructor(
             if (Random().nextInt(2) == 0) fromMA else fromMFP
         }.combine(shortAppreciatedArticles) { other, fromSAA ->
             if (Random().nextInt(2) == 0) other else fromSAA
-        }.filterNot { it.article.id.isEmpty() || it.article.timestamp < 0 }.cancellable() // cancellable() because asFlow() is unSafeFlow
+        }.filterNot { it.article.id.isEmpty() || it.article.timestamp < 0 }
         return articles
     }
 
