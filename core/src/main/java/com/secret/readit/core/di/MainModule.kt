@@ -8,6 +8,9 @@
 package com.secret.readit.core.di
 
 import android.content.Context
+import com.algolia.search.client.ClientSearch
+import com.algolia.search.model.APIKey
+import com.algolia.search.model.ApplicationID
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -170,6 +173,12 @@ class MainModule {
     @Provides
     fun provideCommentsDataSource(firestore: FirebaseFirestore, @IoDispatcher dispatcher: CoroutineDispatcher): CommentDataSource {
         return DefaultCommentsDataSource(firestore, dispatcher)
+    }
+
+    @Provides
+    @Singleton
+    fun provideClientSearch(appId: String, searchApiKey: String): ClientSearch { //TODO: make a qualifier for params and fetch them with RemoteConfig
+        return ClientSearch(ApplicationID(appId), APIKey(searchApiKey))
     }
     // TODO: make drafts database
 }
