@@ -98,6 +98,10 @@ dependencies {
     //Room Test
     testImplementation "androidx.room:room-testing:$room_version"*/
 
+    //Algolia
+    implementation "com.algolia:algoliasearch-client-kotlin-android:$kt_client_version"
+    implementation "io.ktor:ktor-client-android:$ktor_version" //it also uses ktor
+
     //test
     testImplementation "junit:junit:$junit_version"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$nhaarman_version"
