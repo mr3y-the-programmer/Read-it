@@ -98,10 +98,6 @@ dependencies {
     //Room Test
     testImplementation "androidx.room:room-testing:$room_version"*/
 
-    //Algolia
-    implementation "com.algolia:algoliasearch-client-kotlin-android:$kt_client_version"
-    implementation "io.ktor:ktor-client-android:$ktor_version" //it also uses ktor
-
     //test
     testImplementation "junit:junit:$junit_version"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$nhaarman_version"
@@ -110,11 +106,6 @@ dependencies {
     testImplementation "org.robolectric:robolectric:$robolectric_version"
     testImplementation "androidx.test:core-ktx:$androidXTestCoreVersion"
     testImplementation "androidx.test.ext:junit:$androidXTestExtKotlinRunnerVersion"
-
-    androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core_version"
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
-
 }
 
 apply plugin: 'com.google.gms.google-services'
