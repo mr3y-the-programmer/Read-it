@@ -27,7 +27,7 @@ import javax.inject.Inject
  * SearchArticle UseCase which takes [SearchArticleParams] as param and
  * return the Flow of Articles that match this search
  */
-class SearchArticle @Inject constructor(private val searchClient: ClientSearch): FlowUseCase<SearchArticleParams, Article>(){
+class SearchArticle @Inject constructor(private val searchClient: ClientSearch) : FlowUseCase<SearchArticleParams, Article>() {
 
     override suspend fun execute(parameters: SearchArticleParams): Flow<Article> {
         val consumedResult = mutableListOf<Article>()
@@ -35,8 +35,8 @@ class SearchArticle @Inject constructor(private val searchClient: ClientSearch):
         val query = query(parameters.query) { hitsPerPage = 50 }
         articleIndex.search(query).hits.forEach {
             val title = it.highlightResult.content["value"]!!.content
-            val content = it.snippetResult.content["value"]!!.content //Snippet includes also highlighting
-            val publisherName = it["pubName"]!!.content //display the pub of article
+            val content = it.snippetResult.content["value"]!!.content // Snippet includes also highlighting
+            val publisherName = it["pubName"]!!.content // display the pub of article
             val timestamp = ZonedDateTime.ofInstant(Instant.ofEpochMilli(it["timestamp"]!!.long), ZoneId.systemDefault()).year
             consumedResult.add(Article(title, content, publisherName, timestamp))
         }
@@ -44,23 +44,23 @@ class SearchArticle @Inject constructor(private val searchClient: ClientSearch):
     }
 
     private suspend fun configureIndex(parameters: SearchArticleParams): Index {
-        //This should be moved to cloud function we create but with ADMIN_API
+        // This should be moved to cloud function we create but with ADMIN_API
         return searchClient.initIndex(indexName).apply {
-            val settings = settings { //IndexTime
+            val settings = settings { // IndexTime
                 searchableAttributes {
-                    +Unordered("title") //Because title can contain words like: "the"..etc in first so it is better to make it Unordered
+                    +Unordered("title") // Because title can contain words like: "the"..etc in first so it is better to make it Unordered
                     +"content"
                 }
                 attributesForFaceting {
-                    if (parameters.categories.isNotEmpty()) +Searchable("categoryIds") //benefit from search_for_facet_value feature
+                    if (parameters.categories.isNotEmpty()) +Searchable("categoryIds") // benefit from search_for_facet_value feature
                     if (parameters.since.isAfter(ZonedDateTime.parse(FIRST_ARTICLE_CREATED))) +"timestamp"
                 }
-                highlightPreTag = "<b>" //Bolden the highlighted found text
+                highlightPreTag = "<b>" // Bolden the highlighted found text
                 highlightPostTag = "</b>"
                 attributesToSnippet {
-                    +"content" //snippet content with max engine default "10"
+                    +"content" // snippet content with max engine default "10"
                 }
-                restrictHighlightAndSnippetArrays = true //Without this, all words regardless matched query or not will be highlighted and snippet
+                restrictHighlightAndSnippetArrays = true // Without this, all words regardless matched query or not will be highlighted and snippet
                 ranking {
                     +Desc("numOfAppreciate")
                     +Asc("numOfDisagree")
@@ -71,15 +71,17 @@ class SearchArticle @Inject constructor(private val searchClient: ClientSearch):
     }
 
     companion object {
-        //TODO: configure those properly or fetch them from RemoteConfig
+        // TODO: configure those properly or fetch them from RemoteConfig
         val indexName = IndexName("articles")
         const val FIRST_ARTICLE_CREATED = "2020-09-15T0:0:0.00+02:00[Africa/Cairo]"
     }
 }
-//TODO: remove articleIds field from category model
+// TODO: remove articleIds field from category model
 /**
  * takes User's parameters to make a search request , can filter User search by [categories] or [since]
  */
-data class SearchArticleParams(val query: String, //This is the only required field to make a search request
-                               val categories: List<Category> = emptyList(),
-                               val since: ZonedDateTime = ZonedDateTime.parse(SearchArticle.FIRST_ARTICLE_CREATED))
+data class SearchArticleParams(
+    val query: String, // This is the only required field to make a search request
+    val categories: List<Category> = emptyList(),
+    val since: ZonedDateTime = ZonedDateTime.parse(SearchArticle.FIRST_ARTICLE_CREATED)
+)

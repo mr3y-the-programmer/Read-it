@@ -14,7 +14,8 @@ import com.secret.readit.model.articleId
 
 class FakeCommentsDataSource : CommentDataSource {
     override suspend fun getComments(articleID: articleId, ids: List<String>, limit: Int): Result<List<Comment>> = Result.Success(
-        TestData.comments1)
+        TestData.comments1
+    )
 
     override suspend fun addComment(articleID: articleId, comment: Comment): Result<Boolean> {
         TestData.comments1.add(TestData.newComment)

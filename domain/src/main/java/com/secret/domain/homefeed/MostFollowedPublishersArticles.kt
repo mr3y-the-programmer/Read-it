@@ -7,8 +7,8 @@
 
 package com.secret.domain.homefeed
 
-import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.domain.UseCase
+import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.model.publisherId
 import javax.inject.Inject
 

@@ -25,7 +25,7 @@ import javax.inject.Inject
 /**
  * Identical to [SearchArticle] but for publishers
  */
-class SearchPublisher @Inject constructor(private val searchClient: ClientSearch): FlowUseCase<SearchPublisherParams, Publisher>(){
+class SearchPublisher @Inject constructor(private val searchClient: ClientSearch) : FlowUseCase<SearchPublisherParams, Publisher>() {
 
     override suspend fun execute(parameters: SearchPublisherParams): Flow<Publisher> {
         val consumedResult = mutableListOf<Publisher>()
@@ -35,7 +35,7 @@ class SearchPublisher @Inject constructor(private val searchClient: ClientSearch
             val name = it.highlightResult.content["value"]!!.content
             val email = it.snippetResult.content["value"]!!.content
             val sinceYear = ZonedDateTime.ofInstant(Instant.ofEpochMilli(it["memberSince"]!!.long), ZoneId.systemDefault()).year
-            //With Algolia's provided widgets and glide we can use this url directly as Img, See: https://discourse.algolia.com/t/how-do-i-add-an-image-to-an-object-in-algolia/8398
+            // With Algolia's provided widgets and glide we can use this url directly as Img, See: https://discourse.algolia.com/t/how-do-i-add-an-image-to-an-object-in-algolia/8398
             val profileImg = it["profileImgUri"]!!.content
             consumedResult.add(Publisher(name, email, sinceYear, profileImg))
         }
@@ -43,9 +43,9 @@ class SearchPublisher @Inject constructor(private val searchClient: ClientSearch
     }
 
     private suspend fun configureIndex(parameters: SearchPublisherParams): Index {
-        //This should be moved to cloud function we create but with ADMIN_API
+        // This should be moved to cloud function we create but with ADMIN_API
         return searchClient.initIndex(index).apply {
-            val settings = settings { //IndexTime
+            val settings = settings { // IndexTime
                 searchableAttributes {
                     +Unordered("name")
                     +"emailAddress"
@@ -53,12 +53,12 @@ class SearchPublisher @Inject constructor(private val searchClient: ClientSearch
                 attributesForFaceting {
                     if (parameters.since.isAfter(FIRST_ACCOUNT_CREATED)) +"memberSince"
                 }
-                highlightPreTag = "<b>" //Bolden the highlighted found text
+                highlightPreTag = "<b>" // Bolden the highlighted found text
                 highlightPostTag = "</b>"
                 attributesToSnippet {
-                    +"emailAddress"  //snippet emailAddress with max engine default "10"
+                    +"emailAddress" // snippet emailAddress with max engine default "10"
                 }
-                restrictHighlightAndSnippetArrays = true //Without this, all words regardless matched query or not will be highlighted and snippet
+                restrictHighlightAndSnippetArrays = true // Without this, all words regardless matched query or not will be highlighted and snippet
                 ranking {
                     +Desc("numOfFollowers")
                 }
@@ -76,6 +76,7 @@ class SearchPublisher @Inject constructor(private val searchClient: ClientSearch
 /**
  * Similar to [SearchArticleParams]
  */
-data class SearchPublisherParams(val query: String, //The only required field to make a search request
-                                 val since: ZonedDateTime = SearchPublisher.FIRST_ACCOUNT_CREATED
+data class SearchPublisherParams(
+    val query: String, // The only required field to make a search request
+    val since: ZonedDateTime = SearchPublisher.FIRST_ACCOUNT_CREATED
 )

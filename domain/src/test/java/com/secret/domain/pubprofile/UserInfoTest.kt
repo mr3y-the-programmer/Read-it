@@ -10,11 +10,11 @@ package com.secret.domain.pubprofile
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
+import com.secret.domain.FlowUseCase
 import com.secret.readit.core.MainCoroutineRule
+import com.secret.readit.core.TestData
 import com.secret.readit.core.data.categories.CategoryRepository
 import com.secret.readit.core.data.publisher.PublisherRepository
-import com.secret.domain.FlowUseCase
-import com.secret.readit.core.TestData
 import com.secret.readit.core.uimodels.UiPublisher
 import com.secret.readit.model.Category
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -39,23 +39,37 @@ class UserInfoTest(
     companion object {
         val mainCoroutineRule = MainCoroutineRule()
         private val mockedPubRepo = mock<PublisherRepository> {
-            mainCoroutineRule.runBlockingTest { on(it.getFollowingPubsList(TestData.publisher1.followedPublishersIds)).doReturn(listOf(
-                TestData.uiPublisher2)) }
+            mainCoroutineRule.runBlockingTest {
+                on(it.getFollowingPubsList(TestData.publisher1.followedPublishersIds)).doReturn(
+                    listOf(
+                        TestData.uiPublisher2
+                    )
+                )
+            }
         }
         private val mockedCategoryRepo = mock<CategoryRepository> {
-            mainCoroutineRule.runBlockingTest { on(it.getCategories(TestData.publisher1.followedCategoriesIds)).doReturn(
-                TestData.categories) }
+            mainCoroutineRule.runBlockingTest {
+                on(it.getCategories(TestData.publisher1.followedCategoriesIds)).doReturn(
+                    TestData.categories
+                )
+            }
         }
         // Objects under the test
         @JvmStatic
         @Parameterized.Parameters
         fun testUseCases() = listOf(
-            arrayOf(GetFollowingUseCase(FakeCurrentUser(), mockedPubRepo), GetCategoriesUseCase(
-                FakeCurrentUser(), mockedCategoryRepo
-            )),
-            arrayOf(GetFollowingUseCase(FakeCurrentUser(), mockedPubRepo), GetCategoriesUseCase(
-                FakeCurrentUser(), mockedCategoryRepo
-            ))
+            arrayOf(
+                GetFollowingUseCase(FakeCurrentUser(), mockedPubRepo),
+                GetCategoriesUseCase(
+                    FakeCurrentUser(), mockedCategoryRepo
+                )
+            ),
+            arrayOf(
+                GetFollowingUseCase(FakeCurrentUser(), mockedPubRepo),
+                GetCategoriesUseCase(
+                    FakeCurrentUser(), mockedCategoryRepo
+                )
+            )
         )
     }
 

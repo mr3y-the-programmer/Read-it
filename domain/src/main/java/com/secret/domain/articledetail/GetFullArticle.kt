@@ -7,8 +7,8 @@
 
 package com.secret.domain.articledetail
 
-import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.domain.UseCase
+import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.uimodels.UiArticle
 import javax.inject.Inject
 

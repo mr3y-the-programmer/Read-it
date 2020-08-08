@@ -18,7 +18,7 @@ import javax.inject.Singleton
 class DomainModule {
     @Provides
     @Singleton
-    fun provideClientSearch(appId: String, searchApiKey: String): ClientSearch { //TODO: make a qualifier for params and fetch them with RemoteConfig
+    fun provideClientSearch(appId: String, searchApiKey: String): ClientSearch { // TODO: make a qualifier for params and fetch them with RemoteConfig
         return ClientSearch(ApplicationID(appId), APIKey(searchApiKey))
     }
 }

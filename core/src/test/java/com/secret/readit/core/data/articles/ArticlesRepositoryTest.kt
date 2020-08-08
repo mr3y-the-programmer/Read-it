@@ -145,12 +145,25 @@ class ArticlesRepositoryTest {
     }
 
     @Test
-    fun appreciate_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest { runUpdateTest({ articlesRepo.appreciate(
-        TestData.uiArticle1) }) }
+    fun appreciate_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest {
+        runUpdateTest({
+            articlesRepo.appreciate(
+                TestData.uiArticle1
+            )
+        })
+    }
 
     @Test
-    fun disagree_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest { runUpdateTest({ articlesRepo.disagree(
-        TestData.uiArticle1) }, false) }
+    fun disagree_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest {
+        runUpdateTest(
+            {
+                articlesRepo.disagree(
+                    TestData.uiArticle1
+                )
+            },
+            false
+        )
+    }
 
     @Test
     fun comment_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest {

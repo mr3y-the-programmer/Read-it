@@ -7,10 +7,10 @@
 
 package com.secret.domain.articledetail
 
-import com.secret.readit.core.data.articles.ArticlesRepository
-import com.secret.domain.di.CurrentUserProfile
 import com.secret.domain.FlowUseCase
 import com.secret.domain.UseCase
+import com.secret.domain.di.CurrentUserProfile
+import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.uimodels.UiComment
 import com.secret.readit.core.uimodels.UiPublisher
 import kotlinx.coroutines.flow.Flow

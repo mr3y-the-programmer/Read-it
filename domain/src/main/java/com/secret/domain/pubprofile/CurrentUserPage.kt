@@ -7,8 +7,8 @@
 
 package com.secret.domain.pubprofile
 
-import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.domain.UseCase
+import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.core.prefs.SharedPrefs
 import com.secret.readit.core.uimodels.UiPublisher
 import kotlinx.coroutines.ExperimentalCoroutinesApi

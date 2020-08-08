@@ -7,10 +7,10 @@
 
 package com.secret.domain.pubprofile
 
-import com.secret.readit.core.data.publisher.PublisherRepository
-import com.secret.domain.di.CurrentUserProfile
 import com.secret.domain.FlowUseCase
 import com.secret.domain.UseCase
+import com.secret.domain.di.CurrentUserProfile
+import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.core.uimodels.UiPublisher
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject

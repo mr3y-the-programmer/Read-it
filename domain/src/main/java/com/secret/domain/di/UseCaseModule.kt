@@ -7,10 +7,10 @@
 
 package com.secret.domain.di
 
-import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.domain.UseCase
 import com.secret.domain.homefeed.MostFollowedPublishersArticles
 import com.secret.domain.pubprofile.CurrentUserPage
+import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.core.prefs.SharedPrefs
 import com.secret.readit.core.uimodels.UiPublisher
 import com.secret.readit.model.publisherId

@@ -51,8 +51,13 @@ class PublishedArticlesSinceTest {
             }
         }
 
-        val mockedPubRepo = mock<PublisherRepository> { mainCoroutineRule.runBlockingTest { on(it.getPublisherId(testPubInfo)).doReturn(
-            TestData.publisher1.id) } }
+        val mockedPubRepo = mock<PublisherRepository> {
+            mainCoroutineRule.runBlockingTest {
+                on(it.getPublisherId(testPubInfo)).doReturn(
+                    TestData.publisher1.id
+                )
+            }
+        }
 
         pubArticlesSince = PublishedArticlesSince(mockedPubRepo, mockedArticlesRepo)
     }
@@ -72,8 +77,11 @@ class PublishedArticlesSinceTest {
         // GIVEN invalid pubId
         val mockedPubRepo = mock<PublisherRepository> { on(it.getPublisherId(testPubInfo)).doReturn(null) }
         val period = ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).minusDays(7).toEpochSecond()
-        val mockedArticlesRepo = mock<ArticlesRepository> { on(it.getPubArticlesSince(TestData.publisher1.id, period)).doReturn(
-            TestData.uiArticles) }
+        val mockedArticlesRepo = mock<ArticlesRepository> {
+            on(it.getPubArticlesSince(TestData.publisher1.id, period)).doReturn(
+                TestData.uiArticles
+            )
+        }
 
         pubArticlesSince = PublishedArticlesSince(mockedPubRepo, mockedArticlesRepo)
 

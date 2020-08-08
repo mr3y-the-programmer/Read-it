@@ -18,7 +18,8 @@ import com.secret.readit.model.publisherId
 class FakePublisherInfoDataSource : PublisherInfoDataSource {
 
     override suspend fun getPublisherId(publisher: PubImportantInfo): Result<publisherId> = Result.Success(
-        TestData.publisher1.id)
+        TestData.publisher1.id
+    )
 
     override suspend fun getPublisher(id: publisherId): Result<Publisher> = Result.Success(TestData.publisher1)
 

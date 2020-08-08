@@ -7,9 +7,9 @@
 
 package com.secret.domain.publisharticle
 
+import com.secret.domain.FlowUseCase
 import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.data.publisher.PublisherRepository
-import com.secret.domain.FlowUseCase
 import com.secret.readit.core.uimodels.UiArticle
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -19,8 +19,10 @@ import javax.inject.Inject
  * Publish Article UseCase which called to publish article to public
  * it returns true(On success) or false which can be observed by UI consumers to change Ui state like displaying progressbar
  */
-class Publish @Inject constructor(private val articlesRepo: ArticlesRepository,
-                                  private val pubRepo: PublisherRepository): FlowUseCase<UiArticle, Boolean>() {
+class Publish @Inject constructor(
+    private val articlesRepo: ArticlesRepository,
+    private val pubRepo: PublisherRepository
+) : FlowUseCase<UiArticle, Boolean>() {
     override suspend fun execute(parameters: UiArticle): Flow<Boolean> {
         return flow {
             val addArticle = articlesRepo.addArticle(parameters)
