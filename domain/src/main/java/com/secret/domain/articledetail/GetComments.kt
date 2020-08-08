@@ -10,18 +10,19 @@ package com.secret.readit.core.domain.articledetail
 import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.domain.FlowUseCase
 import com.secret.readit.core.uimodels.UiComment
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 /**
- * UseCase that loads replies of comment, it takes a comment [UiComment] as a parameter
- * @return the replies of this comment
+ * A Use Case for loading comments for specific article,
+ * it takes an Int param to limit the comments number, if this limit is 0 or negative the whole comments will be loaded
+ *
+ * @return flow of comments
  */
-class GetCommentReplies @Inject constructor(private val articlesRepo: ArticlesRepository) : FlowUseCase<UiComment, UiComment>() {
-    override suspend fun execute(parameters: UiComment): Flow<UiComment> {
-        return articlesRepo.showReplies(currentArtID(articlesRepo), parameters, 0 /*For now there's no limit*/).replies
+class GetComments @Inject constructor(private val articlesRepo: ArticlesRepository) : FlowUseCase<Int, UiComment>() {
+
+    override suspend fun execute(parameters: Int): Flow<UiComment> {
+        return articlesRepo.getComments(currentArtID(articlesRepo), parameters)
             .sort()
             .asFlow()
             .filterNot { it.comment.publisherID.isEmpty() || it.comment.id.isEmpty() }
