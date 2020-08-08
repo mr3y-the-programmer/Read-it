@@ -8,6 +8,7 @@
 package com.secret.readit.core.data.articles.utils
 
 import com.google.common.truth.Truth.assertThat
+import com.secret.readit.core.TestData
 import com.secret.readit.model.MarkupType
 import org.junit.Test
 

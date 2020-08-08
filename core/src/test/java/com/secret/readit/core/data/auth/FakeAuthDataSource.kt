@@ -8,6 +8,7 @@
 package com.secret.readit.core.data.auth
 
 import android.net.Uri
+import com.secret.readit.core.TestData
 
 class FakeAuthDataSource : AuthDataSource {
     override fun isUserSignedIn(): Boolean {

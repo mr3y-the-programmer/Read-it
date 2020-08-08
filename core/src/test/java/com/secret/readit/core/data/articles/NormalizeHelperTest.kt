@@ -10,6 +10,7 @@ package com.secret.readit.core.data.articles
 import com.google.firebase.firestore.QuerySnapshot
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
+import com.secret.readit.core.TestData
 import com.secret.readit.model.Article
 import org.junit.Assert.assertEquals
 import org.junit.Test

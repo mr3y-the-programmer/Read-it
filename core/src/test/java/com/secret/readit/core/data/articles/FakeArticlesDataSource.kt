@@ -9,6 +9,7 @@ package com.secret.readit.core.data.articles
 
 import com.google.firebase.firestore.DocumentSnapshot
 import com.nhaarman.mockitokotlin2.mock
+import com.secret.readit.core.TestData
 import com.secret.readit.core.result.Result
 import com.secret.readit.model.Article
 import com.secret.readit.model.articleId

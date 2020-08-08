@@ -13,6 +13,7 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.MainCoroutineRule
 import com.secret.readit.core.SharedMocks
+import com.secret.readit.core.TestData
 import com.secret.readit.core.data.articles.comments.FakeCommentsDataSource
 import com.secret.readit.core.data.articles.content.FakeContentDataSource
 import com.secret.readit.core.data.articles.utils.Formatter
@@ -144,10 +145,12 @@ class ArticlesRepositoryTest {
     }
 
     @Test
-    fun appreciate_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest { runUpdateTest({ articlesRepo.appreciate(TestData.uiArticle1) }) }
+    fun appreciate_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest { runUpdateTest({ articlesRepo.appreciate(
+        TestData.uiArticle1) }) }
 
     @Test
-    fun disagree_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest { runUpdateTest({ articlesRepo.disagree(TestData.uiArticle1) }, false) }
+    fun disagree_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest { runUpdateTest({ articlesRepo.disagree(
+        TestData.uiArticle1) }, false) }
 
     @Test
     fun comment_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest {

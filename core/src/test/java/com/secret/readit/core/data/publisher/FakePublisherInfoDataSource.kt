@@ -9,6 +9,7 @@ package com.secret.readit.core.data.publisher
 
 import com.google.firebase.firestore.DocumentSnapshot
 import com.nhaarman.mockitokotlin2.mock
+import com.secret.readit.core.TestData
 import com.secret.readit.core.result.Result
 import com.secret.readit.model.Publisher
 import com.secret.readit.model.articleId
@@ -16,7 +17,8 @@ import com.secret.readit.model.publisherId
 
 class FakePublisherInfoDataSource : PublisherInfoDataSource {
 
-    override suspend fun getPublisherId(publisher: PubImportantInfo): Result<publisherId> = Result.Success(TestData.publisher1.id)
+    override suspend fun getPublisherId(publisher: PubImportantInfo): Result<publisherId> = Result.Success(
+        TestData.publisher1.id)
 
     override suspend fun getPublisher(id: publisherId): Result<Publisher> = Result.Success(TestData.publisher1)
 

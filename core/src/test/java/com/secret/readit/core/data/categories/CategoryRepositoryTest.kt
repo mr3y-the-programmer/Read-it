@@ -11,6 +11,7 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.MainCoroutineRule
+import com.secret.readit.core.TestData
 import com.secret.readit.core.result.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest

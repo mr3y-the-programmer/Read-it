@@ -8,6 +8,7 @@
 package com.secret.readit.core.data.utils
 
 import com.google.common.truth.Truth.assertThat
+import com.secret.readit.core.TestData
 import org.junit.Before
 import org.junit.Test
 import kotlin.IllegalArgumentException

@@ -13,6 +13,7 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.MainCoroutineRule
 import com.secret.readit.core.SharedMocks
+import com.secret.readit.core.TestData
 import com.secret.readit.core.data.articles.content.FakeContentDataSource
 import com.secret.readit.core.data.shared.DummyStorageRepository
 import com.secret.readit.core.result.Result
