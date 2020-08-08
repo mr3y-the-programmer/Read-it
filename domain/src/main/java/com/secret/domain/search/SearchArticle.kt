@@ -5,14 +5,14 @@
  *   Written by MR3Y <abdonasr379@gmail.com>, 2020.
  */
 
-package com.secret.readit.core.domain.search
+package com.secret.domain.search
 
 import com.algolia.search.client.ClientSearch
 import com.algolia.search.client.Index
 import com.algolia.search.dsl.*
 import com.algolia.search.model.IndexName
-import com.secret.readit.core.domain.FlowUseCase
-import com.secret.readit.core.domain.search.Searchable.Article
+import com.secret.domain.FlowUseCase
+import com.secret.domain.search.Searchable.Article
 import com.secret.readit.model.Category
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow

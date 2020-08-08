@@ -5,14 +5,14 @@
  *   Written by MR3Y <abdonasr379@gmail.com>, 2020.
  */
 
-package com.secret.readit.core.domain.search
+package com.secret.domain.search
 
 import com.algolia.search.client.ClientSearch
 import com.algolia.search.client.Index
 import com.algolia.search.dsl.*
 import com.algolia.search.model.IndexName
-import com.secret.readit.core.domain.FlowUseCase
-import com.secret.readit.core.domain.search.Searchable.Publisher
+import com.secret.domain.FlowUseCase
+import com.secret.domain.search.Searchable.Publisher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.serialization.json.content
@@ -77,4 +77,5 @@ class SearchPublisher @Inject constructor(private val searchClient: ClientSearch
  * Similar to [SearchArticleParams]
  */
 data class SearchPublisherParams(val query: String, //The only required field to make a search request
-                                 val since: ZonedDateTime = SearchPublisher.FIRST_ACCOUNT_CREATED)
+                                 val since: ZonedDateTime = SearchPublisher.FIRST_ACCOUNT_CREATED
+)

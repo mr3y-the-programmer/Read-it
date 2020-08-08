@@ -5,7 +5,7 @@
  *   Written by MR3Y <abdonasr379@gmail.com>, 2020.
  */
 
-package com.secret.readit.core.di
+package com.secret.domain.di
 
 import javax.inject.Qualifier
 

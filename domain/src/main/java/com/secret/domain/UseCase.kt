@@ -5,7 +5,7 @@
  *   Written by MR3Y <abdonasr379@gmail.com>, 2020.
  */
 
-package com.secret.readit.core.domain
+package com.secret.domain
 
 /**
  * Using UseCase technique is powerful in domain layer to separate business logic from presenter,

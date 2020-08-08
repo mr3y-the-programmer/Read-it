@@ -5,7 +5,7 @@
  *   Written by MR3Y <abdonasr379@gmail.com>, 2020.
  */
 
-package com.secret.readit.core.domain.articledetail
+package com.secret.domain.articledetail
 
 import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.uimodels.UiComment

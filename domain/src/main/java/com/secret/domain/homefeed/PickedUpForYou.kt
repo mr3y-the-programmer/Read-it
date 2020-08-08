@@ -5,12 +5,12 @@
  *   Written by MR3Y <abdonasr379@gmail.com>, 2020.
  */
 
-package com.secret.readit.core.domain.homefeed
+package com.secret.domain.homefeed
 
 import com.secret.readit.core.data.articles.ArticlesRepository
-import com.secret.readit.core.di.MostFollowedPublishers
-import com.secret.readit.core.domain.FlowUseCase
-import com.secret.readit.core.domain.UseCase
+import com.secret.domain.di.MostFollowedPublishers
+import com.secret.domain.FlowUseCase
+import com.secret.domain.UseCase
 import com.secret.readit.core.uimodels.UiArticle
 import com.secret.readit.model.publisherId
 import kotlinx.coroutines.flow.*

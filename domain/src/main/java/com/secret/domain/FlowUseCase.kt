@@ -5,7 +5,7 @@
  *   Written by MR3Y <abdonasr379@gmail.com>, 2020.
  */
 
-package com.secret.readit.core.domain
+package com.secret.domain
 
 import kotlinx.coroutines.flow.*
 import timber.log.Timber

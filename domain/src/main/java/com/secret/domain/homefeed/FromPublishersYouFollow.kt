@@ -5,17 +5,16 @@
  *   Written by MR3Y <abdonasr379@gmail.com>, 2020.
  */
 
-package com.secret.readit.core.domain.homefeed
+package com.secret.domain.homefeed
 
 import com.secret.readit.core.data.articles.ArticlesRepository
-import com.secret.readit.core.di.CurrentUserProfile
-import com.secret.readit.core.domain.FlowUseCase
-import com.secret.readit.core.domain.UseCase
+import com.secret.domain.di.CurrentUserProfile
+import com.secret.domain.FlowUseCase
+import com.secret.domain.UseCase
 import com.secret.readit.core.uimodels.UiArticle
 import com.secret.readit.core.uimodels.UiPublisher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.filterNot
 import javax.inject.Inject
 

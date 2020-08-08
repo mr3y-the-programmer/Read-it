@@ -5,7 +5,7 @@
  *   Written by MR3Y <abdonasr379@gmail.com>, 2020.
  */
 
-package com.secret.readit.core.domain.search
+package com.secret.domain.search
 
 /**
  * Result search models Exposed to Ui when entering string query

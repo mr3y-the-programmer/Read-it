@@ -7,6 +7,9 @@
 
 package com.secret.domain.di
 
+import com.algolia.search.client.ClientSearch
+import com.algolia.search.model.APIKey
+import com.algolia.search.model.ApplicationID
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

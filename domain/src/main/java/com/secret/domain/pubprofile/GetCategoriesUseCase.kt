@@ -5,12 +5,12 @@
  *   Written by MR3Y <abdonasr379@gmail.com>, 2020.
  */
 
-package com.secret.readit.core.domain.pubprofile
+package com.secret.domain.pubprofile
 
 import com.secret.readit.core.data.categories.CategoryRepository
-import com.secret.readit.core.di.CurrentUserProfile
-import com.secret.readit.core.domain.FlowUseCase
-import com.secret.readit.core.domain.UseCase
+import com.secret.domain.di.CurrentUserProfile
+import com.secret.domain.FlowUseCase
+import com.secret.domain.UseCase
 import com.secret.readit.core.uimodels.UiPublisher
 import com.secret.readit.model.Category
 import kotlinx.coroutines.flow.*

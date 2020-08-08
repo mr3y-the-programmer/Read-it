@@ -5,10 +5,10 @@
  *   Written by MR3Y <abdonasr379@gmail.com>, 2020.
  */
 
-package com.secret.readit.core.domain.articledetail
+package com.secret.domain.articledetail
 
 import com.secret.readit.core.data.articles.ArticlesRepository
-import com.secret.readit.core.domain.UseCase
+import com.secret.domain.UseCase
 import com.secret.readit.core.uimodels.UiArticle
 import javax.inject.Inject
 

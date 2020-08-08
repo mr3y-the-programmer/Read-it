@@ -5,10 +5,10 @@
  *   Written by MR3Y <abdonasr379@gmail.com>, 2020.
  */
 
-package com.secret.readit.core.domain.pubprofile
+package com.secret.domain.pubprofile
 
 import com.secret.readit.core.data.publisher.PublisherRepository
-import com.secret.readit.core.domain.FlowUseCase
+import com.secret.domain.FlowUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
