@@ -8,7 +8,7 @@
 package com.secret.domain.homefeed
 
 import com.secret.domain.UseCase
-import com.secret.domain.shared.TestData
+import com.secret.readit.core.TestData
 import com.secret.readit.model.publisherId
 
 class FakeMostFollowedPublishers : UseCase<Pair<Int, Int>, List<publisherId>>() {

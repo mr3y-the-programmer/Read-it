@@ -10,11 +10,11 @@ package com.secret.domain.pubprofile
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
-import com.secret.domain.shared.MainCoroutineRule
+import com.secret.readit.core.MainCoroutineRule
 import com.secret.readit.core.data.categories.CategoryRepository
 import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.domain.FlowUseCase
-import com.secret.domain.shared.TestData
+import com.secret.readit.core.TestData
 import com.secret.readit.core.uimodels.UiPublisher
 import com.secret.readit.model.Category
 import kotlinx.coroutines.ExperimentalCoroutinesApi
