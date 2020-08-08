@@ -77,7 +77,7 @@ class ArticlesRepository @Inject constructor(
         private set
 
     // also hold the current displayed Article Id,
-    internal var currentArticleID: articleId? = null
+    var currentArticleID: articleId? = null
         private set
     /**
      * move/Encapsulate the boilerplate to this function that is only public for sake of testing,
