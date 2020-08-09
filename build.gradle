@@ -49,6 +49,32 @@ buildscript {
         espresso_core_version = "3.2.0"
         ext_junit_version = "1.1.1"
     }
+    ext.depenedcies = [ //Shared dependencies should go here
+        //Miscellaneous
+        file_tree: fileTree(dir: 'libs', include: ['*.jar']),
+        kt_standard_lib: "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
+        android_core_ktx: "androidx.core:core-ktx:$core_ktx",
+        appcompat_lib: "androidx.appcompat:appcompat:$appcompat_version",
+        //desugar
+        core_desugar_lib: "com.android.tools:desugar_jdk_libs:$desugar_version",
+        //firebase
+        auth: "com.firebaseui:firebase-ui-auth:$firebase_ui_version",
+        analytics: "com.google.firebase:firebase-analytics:$analytics_version",
+        //coroutines
+        coroutines_core: "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_core_version",
+        //dagger
+        dagger_android: "com.google.dagger:dagger-android:$dagger_version",
+        dagger_android_support: "com.google.dagger:dagger-android-support:$dagger_version",
+        dagger_compiler: "com.google.dagger:dagger-compiler:$dagger_version",
+        dagger_android_annotation:"com.google.dagger:dagger-android-processor:$dagger_version",
+        //timber
+        timber: "com.jakewharton.timber:timber:$timber_version",
+        //test
+        junit: "junit:junit:$junit_version",
+        mockito_ktx: "com.nhaarman.mockitokotlin2:mockito-kotlin:$nhaarman_version",
+        coroutines_core_test: "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version",
+        truth: "com.google.truth:truth:$truth_version",
+    ]
     repositories {
         google()
         jcenter()

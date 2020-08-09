@@ -49,31 +49,31 @@ android {
 dependencies {
     implementation project(":core")
     implementation project(":model")
-    implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "androidx.core:core-ktx:$core_ktx"
-    implementation "androidx.appcompat:appcompat:$appcompat_version"
-    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$desugar_version"
+    implementation depenedcies.file_tree
+    implementation depenedcies.kt_standard_lib
+    implementation depenedcies.android_core_ktx
+    implementation depenedcies.appcompat_lib
+    coreLibraryDesugaring depenedcies.core_desugar_lib
 
     //coroutines
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_core_version"
+    implementation depenedcies.coroutines_core
 
     // Dagger
-    implementation "com.google.dagger:dagger-android:$dagger_version"
-    implementation "com.google.dagger:dagger-android-support:$dagger_version"
-    kapt "com.google.dagger:dagger-compiler:$dagger_version"
-    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+    implementation depenedcies.dagger_android
+    implementation depenedcies.dagger_android_support
+    kapt depenedcies.dagger_compiler
+    kapt depenedcies.dagger_android_annotation
 
     //Timber
-    implementation "com.jakewharton.timber:timber:$timber_version"
+    implementation depenedcies.timber
 
     //Algolia
     implementation "com.algolia:algoliasearch-client-kotlin-android:$kt_client_version"
     implementation "io.ktor:ktor-client-android:$ktor_version" //it also uses ktor
 
     //Test
-    testImplementation "junit:junit:$junit_version"
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$nhaarman_version"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
-    testImplementation "com.google.truth:truth:$truth_version"
+    testImplementation depenedcies.junit
+    testImplementation depenedcies.mockito_ktx
+    testImplementation depenedcies.coroutines_core_test
+    testImplementation depenedcies.truth
 }

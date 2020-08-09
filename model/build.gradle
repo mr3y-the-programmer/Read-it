@@ -9,8 +9,8 @@ apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation depenedcies.file_tree
+    implementation depenedcies.kt_standard_lib
 }
 
 sourceCompatibility = "1.8"
