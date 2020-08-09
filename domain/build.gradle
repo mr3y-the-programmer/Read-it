@@ -15,13 +15,13 @@ apply plugin: "org.jlleitschuh.gradle.ktlint"
 
 android {
     compileSdkVersion rootProject.compile_sdk_version
-    buildToolsVersion "29.0.3"
+    buildToolsVersion rootProject.build_tools_version
 
     defaultConfig {
         minSdkVersion rootProject.min_sdk_version
         targetSdkVersion rootProject.target_sdk_version
-        versionCode 1
-        versionName "1.0"
+        versionCode rootProject.versionCode
+        versionName rootProject.versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
