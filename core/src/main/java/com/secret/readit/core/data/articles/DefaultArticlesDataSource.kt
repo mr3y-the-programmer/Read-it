@@ -37,9 +37,10 @@ internal class DefaultArticlesDataSource @Inject constructor(
         numOfAppreciation: Int,
         containCategories: List<String>,
         numOfMinutesRead: Int,
-        pubIds: List<publisherId>
-    ): Result<List<Article>> {
-        return fetchArticles(limit, numOfAppreciation, containCategories, numOfMinutesRead, pubIds)
+        pubIds: List<publisherId>,
+        prevSnapshot: DocumentSnapshot?
+    ): Result<Pair<List<Article>, DocumentSnapshot>> {
+        return fetchArticles(limit, numOfAppreciation, containCategories, numOfMinutesRead, pubIds, prevSnapshot)
     }
 
     override suspend fun getArticle(id: articleId): Result<Article> {
@@ -67,26 +68,28 @@ internal class DefaultArticlesDataSource @Inject constructor(
         numOfAppreciation: Int,
         categoriesIds: List<String>,
         numOfMinutesRead: Int,
-        pubIds: List<publisherId>
-    ): Result<List<Article>> {
+        pubIds: List<publisherId>,
+        prevSnapshot: DocumentSnapshot?
+    ): Result<Pair<List<Article>, DocumentSnapshot>> {
         return wrapInCoroutineCancellable(
             ioDispatcher
         ) { continuation ->
             // TODO:try configure the number of limit with Remote config
             // or try some pagination to avoid wasting resources
-            firestore.collection(ARTICLES_COLLECTION)
+            var query = firestore.collection(ARTICLES_COLLECTION)
                 .whereGreaterThanOrEqualTo(NUM_OF_APPRECIATE_FIELD, numOfAppreciation)
                 .whereLessThanOrEqualTo(NUM_MINUTES_READ_FIELD, numOfMinutesRead)
                 .categoryOrPublishersQuery(categoriesIds, pubIds)
                 .limit(limit.toLong())
-                .get()
+            query = if (prevSnapshot != null) query.startAfter(prevSnapshot) else query
+            query.get()
                 .addOnSuccessListener { articlesSnapshot ->
                     if (continuation.isActive) {
                         Timber.d("fetched articles Successfully: ${articlesSnapshot.documents}")
 
                         val articles = normalizeHelper.getNormalizedArticles(articlesSnapshot)
 
-                        continuation.resume(Result.Success(articles))
+                        continuation.resume(Result.Success(Pair(articles, articlesSnapshot.documents.last())))
                     } else {
                         Timber.d("Exception, continuation is no longer active")
                     }
