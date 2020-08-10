@@ -20,15 +20,18 @@ interface ArticlesDataSource {
 
     /**
      * the main function to get articles from articles collection,
-     * it takes many parameters the only one needed is [limit] to avoid fetching unNeeded articles
+     * it takes many parameters the only one needed is [limit] to avoid fetching unNeeded articles,
+     * it also takes [prevSnapshot] to support pagination and avoid wasting money and resources
+     * **Note**: [prevSnapshot] should be null only when it is the first time to load
      */
     suspend fun getArticles(
         limit: Int,
         numOfAppreciation: Int,
         containCategories: List<String>,
         numOfMinutesRead: Int,
-        pubIds: List<publisherId>
-    ): Result<List<Article>>
+        pubIds: List<publisherId>,
+        prevSnapshot: DocumentSnapshot?
+    ): Result<Pair<List<Article>, DocumentSnapshot>>
 
     /**
      * get specific article by [id]
