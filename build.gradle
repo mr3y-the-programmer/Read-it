@@ -72,7 +72,6 @@ buildscript {
         dagger_android_annotation:"com.google.dagger:dagger-android-processor:$dagger_version",
         //Paging 3
         paging_runtime: "androidx.paging:paging-runtime:$paging_version",
-        paging_test: "androidx.paging:paging-common:$paging_version",
         //timber
         timber: "com.jakewharton.timber:timber:$timber_version",
         //test
