@@ -8,6 +8,7 @@
 package com.secret.readit.core.data.articles
 
 import com.google.firebase.firestore.DocumentSnapshot
+import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.TestData
 import com.secret.readit.core.result.Result
@@ -18,6 +19,33 @@ import com.secret.readit.model.publisherId
 // The class need to be opened, so it can be mocked
 // Another Solution by using Mockito2 and make extensions file on Resources
 open class FakeArticlesDataSource : ArticlesDataSource {
+
+    private val data1 = mapOf("id" to "4045494-4pub-A Ne",
+        "title" to "A New Orleans",
+        "publisherID" to "4pubtypoowa0392",
+        "numMinutesRead" to 3,
+        "timestamp" to 124687893210,
+        "numOfAppreciate" to 12,
+        "numOfDisagree" to 2,
+        "categoryIds" to TestData.categoriesIds)
+
+    val mockedSnapshot1 = mock<DocumentSnapshot> {
+        on(it.data).doReturn(data1)
+    }
+
+    private val data2 = mapOf("id" to "4045494-6pub-What",
+        "title" to "What a Wonderful White",
+        "publisherID" to "6pubty5456owa0392",
+        "numMinutesRead" to 4,
+        "timestamp" to 345447893210,
+        "numOfAppreciate" to 40,
+        "numOfDisagree" to 7,
+        "categoryIds" to TestData.categoriesIds.drop(1))
+
+    val mockedSnapshot2 = mock<DocumentSnapshot> {
+        on(it.data).doReturn(data2)
+    }
+
     override suspend fun getArticles(
         limit: Int,
         numOfAppreciation: Int,
@@ -26,8 +54,7 @@ open class FakeArticlesDataSource : ArticlesDataSource {
         pubIds: List<publisherId>,
         prevSnapshot: DocumentSnapshot?
     ): Result<Pair<List<Article>, DocumentSnapshot>> {
-        val mockedSnapshot = mock<DocumentSnapshot> { /*no-op*/ }
-        return Result.Success(Pair(TestData.articles1, mockedSnapshot))
+        return Result.Success(Pair(TestData.articles1, mockedSnapshot1))
     }
 
     override suspend fun getArticle(id: articleId): Result<Article> {
@@ -35,8 +62,7 @@ open class FakeArticlesDataSource : ArticlesDataSource {
     }
 
     override suspend fun getPubArticles(info: Pair<publisherId, Long>, prevSnapshot: DocumentSnapshot?): Result<Pair<List<Article>, DocumentSnapshot>> {
-        val mockedSnapshot = mock<DocumentSnapshot> { /*no-op*/ }
-        return Result.Success(Pair(TestData.articles2, mockedSnapshot))
+        return Result.Success(Pair(TestData.articles2, mockedSnapshot2))
     }
 
     override suspend fun addArticle(article: Article): Result<Boolean> {
