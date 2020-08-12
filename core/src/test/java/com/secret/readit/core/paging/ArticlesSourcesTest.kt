@@ -47,11 +47,11 @@ class ArticlesSourcesTest(private var firstSource: PagingSource<DocumentSnapshot
         @Parameterized.Parameters
         @JvmStatic
         fun objectsUnderTest() = listOf( //Run test 2 times
-            arrayOf(ArticlesPagingSource(reqParams, mockedArticlesSource, FakeContentDataSource()),
-                PubArticlesPagingSource(reqParams, mockedArticlesSource, FakeContentDataSource())),
+            arrayOf(ArticlesPagingSource(mockedArticlesSource, FakeContentDataSource()),
+                PubArticlesPagingSource(mockedArticlesSource, FakeContentDataSource())),
 
-            arrayOf(ArticlesPagingSource(reqParams, mockedArticlesSource, FakeContentDataSource()),
-            PubArticlesPagingSource(reqParams, mockedArticlesSource, FakeContentDataSource()))
+            arrayOf(ArticlesPagingSource(mockedArticlesSource, FakeContentDataSource()),
+            PubArticlesPagingSource(mockedArticlesSource, FakeContentDataSource()))
         )
     }
     //TODO: Refactor boilerplate
@@ -94,13 +94,13 @@ class ArticlesSourcesTest(private var firstSource: PagingSource<DocumentSnapshot
             on(it.getArticles(reqParams.limit, reqParams.appreciateNum,
                 reqParams.categoriesIds, reqParams.withMinutesRead, emptyList(), null)).doReturn(Result.Error(Exception()))
         }
-        return ArticlesPagingSource(reqParams, mockedArticlesSource, FakeContentDataSource())
+        return ArticlesPagingSource(mockedArticlesSource, FakeContentDataSource())
     }
 
     private suspend fun failPubArticlesSource(): PagingSource<DocumentSnapshot, ArticleWithContent> {
         mockedArticlesSource = mock {
             on(it.getPubArticles(reqParams.specificPub, null)).doReturn(Result.Error(Exception()))
         }
-        return PubArticlesPagingSource(reqParams, mockedArticlesSource, FakeContentDataSource())
+        return PubArticlesPagingSource(mockedArticlesSource, FakeContentDataSource())
     }
 }
