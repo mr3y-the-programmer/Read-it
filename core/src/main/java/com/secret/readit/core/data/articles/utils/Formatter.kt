@@ -8,7 +8,8 @@
 package com.secret.readit.core.data.articles.utils
 
 import android.net.Uri
-import com.google.firebase.firestore.DocumentSnapshot
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.data.articles.content.ContentDataSource
 import com.secret.readit.core.data.categories.CategoryRepository
@@ -17,6 +18,7 @@ import com.secret.readit.core.data.shared.StorageRepository
 import com.secret.readit.core.data.utils.CustomIDHandler
 import com.secret.readit.core.data.utils.isImageElement
 import com.secret.readit.core.data.utils.isTextElement
+import com.secret.readit.core.paging.ArticleWithContent
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.core.uimodels.ImageUiElement
@@ -42,38 +44,22 @@ class Formatter @Inject constructor(
     private val idHandler: CustomIDHandler = CustomIDHandler()
 ) {
 
-    /** format articles in expected format for consumers, parameter [contentLimit] to limit the content loaded from dataSource */
-    suspend fun formatArticles(result: Result<List<Article>>, contentLimit: Int) = format(result, contentLimit)
-
-    /** format partial/Summery article into full-content article */
-    suspend fun formatFullArticle(summeryArticle: UiArticle): UiArticle {
-        val fullContent = getExpectedElements(summeryArticle.article.id, 0)
-        return summeryArticle.copy(fullContent = Content(fullContent))
-    }
-
-    /** format specific Pub articles in expected format for consumers */
-    suspend fun formatPubArticles(result: Result<Pair<List<Article>, DocumentSnapshot>>, contentLimit: Int) = format(result, contentLimit, true)
-
-    // Refactor boilerplate to this private fun
-    @Suppress("UNCHECKED_CAST")
-    private suspend fun <T> format(result: Result<T>, contentLimit: Int, isResultOfPair: Boolean = false): List<UiArticle> {
-        val formattedArticles = mutableListOf<UiArticle>()
-        if (result != null && result.succeeded) {
-            (result as Result.Success).data.let {
-                val articles = if (isResultOfPair) (it as Pair<List<Article>, *>).first else (it as List<Article>)
-                for (article in articles) {
-                    val publisher = pubRepo.getPublisherInfo(article.publisherID)
-                    val initialContent = getExpectedElements(article.id, contentLimit)
-                    val categories = categoryRepo.getCategories(article.categoryIds)
-                    formattedArticles += UiArticle(article, publisher = publisher, category = categories, initialContent = Content(initialContent))
-                }
-            }
+    /** format articles in expected format for consumers*/
+    suspend fun formatArticles(page: PagingData<ArticleWithContent>): PagingData<UiArticle>{
+        return page.map {
+            val article = it.first
+            val content = it.second
+            val publisher = pubRepo.getPublisherInfo(article.publisherID)
+            val initialContent = formatContent(content)
+            val categories = categoryRepo.getCategories(article.categoryIds)
+            UiArticle(article, publisher = publisher, category = categories, initialContent = Content(initialContent))
         }
-        return formattedArticles
     }
 
     // Handle formatting elements
-    private suspend fun formatElements(elements: List<Element>): List<BaseElement> {
+    @Suppress("UNCHECKED_CAST")
+    suspend fun formatContent(content: Content): List<BaseElement> {
+        val elements = content.elements as List<Element>
         val formattedElements = mutableListOf<BaseElement>()
         for (baseElement in elements) {
             var firestoreElement = baseElement
@@ -88,15 +74,6 @@ class Formatter @Inject constructor(
             }
         }
         return formattedElements
-    }
-
-    private suspend fun getExpectedElements(id: articleId, limit: Int): List<BaseElement> {
-        val result = contentDataSource.getContent(id, limit)
-        if (result != null && result.succeeded) {
-            val contentElements = (result as Result.Success).data
-            return formatElements(contentElements)
-        }
-        return emptyList()
     }
 
     suspend fun formatComments(result: Result<List<Comment>>) = formatCommentsOrReplies(result)
