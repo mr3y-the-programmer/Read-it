@@ -11,7 +11,6 @@ import android.net.Uri
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.secret.readit.core.data.articles.ArticlesRepository
-import com.secret.readit.core.data.articles.content.ContentDataSource
 import com.secret.readit.core.data.categories.CategoryRepository
 import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.core.data.shared.StorageRepository
@@ -28,7 +27,6 @@ import com.secret.readit.model.*
 import timber.log.Timber
 import java.time.Instant
 import javax.inject.Inject
-import kotlin.IllegalArgumentException
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
@@ -36,7 +34,6 @@ import kotlin.math.roundToLong
  * Handles Formatting Articles to expected Format and vice-versa, Used mainly by ArticlesRepo
  */
 class Formatter @Inject constructor(
-    private val contentDataSource: ContentDataSource,
     private val storageRepo: StorageRepository,
     private val pubRepo: PublisherRepository,
     private val categoryRepo: CategoryRepository,
@@ -110,15 +107,6 @@ class Formatter @Inject constructor(
         }
         val article = uiArticle.article.copy(id = id, numMinutesRead = numMinutesRead, timestamp = timestamp, categoryIds = getCategoryIDs(uiArticle.category))
         return Pair(article, deFormattedElements)
-    }
-
-    // FIXME: Architecture drift, This should be moved later, also this applies for getExpectedElements()
-    suspend fun uploadElements(id: articleId, elements: List<Element>): Boolean {
-        val result = contentDataSource.addContent(id, elements)
-        if (result != null && result.succeeded) {
-            return (result as Result.Success).data
-        }
-        return false
     }
 
     private suspend fun deFormatElements(id: articleId, elements: List<BaseElement>): List<Element> {

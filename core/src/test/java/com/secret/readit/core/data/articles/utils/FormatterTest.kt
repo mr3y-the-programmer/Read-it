@@ -33,7 +33,7 @@ class FormatterTest {
     val sharedMocks = SharedMocks(mainCoroutineRule)
     @Before
     fun setUp() {
-        formatter = Formatter(FakeContentDataSource(), DummyStorageRepository(), sharedMocks.mockedPubRepo, sharedMocks.mockedCategoryRepo)
+        formatter = Formatter(DummyStorageRepository(), sharedMocks.mockedPubRepo, sharedMocks.mockedCategoryRepo)
     }
 
     @Test

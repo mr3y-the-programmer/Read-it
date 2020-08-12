@@ -139,10 +139,19 @@ class ArticlesRepository @Inject constructor(
         val deFormattingResult = formatter.deFormatArticle(uiArticle) ?: return false // Couldn't deFormat article
         val result = articlesDataSource.addArticle(deFormattingResult.first)
         if (checkIfSuccessful(result)) {
-            return formatter.uploadElements(deFormattingResult.first.id, deFormattingResult.second) // If article upload succeeded, upload content
+            return uploadElements(deFormattingResult.first.id, deFormattingResult.second) // If article upload succeeded, upload content
         }
         return false
     }
+
+    private suspend fun uploadElements(id: articleId, elements: List<Element>): Boolean {
+        val result = contentDataSource.addContent(id, elements)
+        if (result != null && result.succeeded) {
+            return (result as Result.Success).data
+        }
+        return false
+    }
+
     private suspend fun appreciateOrDisagree(article: UiArticle, appreciate: Boolean = true): Boolean {
         val result = if (appreciate) articlesDataSource.incrementAppreciation(article.article.id) else articlesDataSource.incrementDisagree(article.article.id)
         return checkIfSuccessful(result)

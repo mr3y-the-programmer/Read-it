@@ -35,7 +35,7 @@ class ArticlesRepositoryTest {
     private lateinit var articlesRepo: ArticlesRepository
 
     private val sharedMocks = SharedMocks(mainCoroutineRule)
-    private val formatter = Formatter(FakeContentDataSource(), DummyStorageRepository(), sharedMocks.mockedPubRepo, sharedMocks.mockedCategoryRepo)
+    private val formatter = Formatter(DummyStorageRepository(), sharedMocks.mockedPubRepo, sharedMocks.mockedCategoryRepo)
 
     // TODO: refactor
     @Before
