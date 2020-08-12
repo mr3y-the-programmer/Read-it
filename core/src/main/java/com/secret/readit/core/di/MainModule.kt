@@ -38,6 +38,9 @@ import com.secret.readit.core.data.shared.Converter
 import com.secret.readit.core.data.shared.DefaultStorageDataSource
 import com.secret.readit.core.data.shared.StorageDataSource
 import com.secret.readit.core.data.shared.StorageRepository
+import com.secret.readit.core.paging.ArticlesPagingSource
+import com.secret.readit.core.paging.BasePagingSource
+import com.secret.readit.core.paging.PubArticlesPagingSource
 import com.secret.readit.core.prefs.DefaultSharedPrefs
 import com.secret.readit.core.prefs.SharedPrefs
 import dagger.Lazy
@@ -150,11 +153,11 @@ class MainModule {
         return Formatter(contentSource, storageRepo, pubRepo, categoryRepo)
     }
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideArticlesRepository(articlesSource: ArticlesDataSource, commentsSource: CommentDataSource, formatter: Formatter): ArticlesRepository {
         return ArticlesRepository(articlesSource, commentsSource, formatter)
-    }
+    }*/
 
     @Provides
     @Singleton
@@ -170,6 +173,18 @@ class MainModule {
     @Provides
     fun provideCommentsDataSource(firestore: FirebaseFirestore, @IoDispatcher dispatcher: CoroutineDispatcher): CommentDataSource {
         return DefaultCommentsDataSource(firestore, dispatcher)
+    }
+
+    @Provides
+    @HomeFeedSource
+    fun provideArticlesPagingSource(articlesSource: ArticlesDataSource, contentSource: ContentDataSource): BasePagingSource {
+        return ArticlesPagingSource.create(articlesSource, contentSource)
+    }
+
+    @Provides
+    @PubArticlesSource
+    fun providePubPagingSource(articlesSource: ArticlesDataSource, contentSource: ContentDataSource): BasePagingSource {
+        return PubArticlesPagingSource(articlesSource, contentSource)
     }
     // TODO: make drafts database
 }
