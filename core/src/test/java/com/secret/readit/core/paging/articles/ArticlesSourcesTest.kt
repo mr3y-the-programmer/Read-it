@@ -5,7 +5,7 @@
  *   Written by MR3Y <abdonasr379@gmail.com>, 2020.
  */
 
-package com.secret.readit.core.paging
+package com.secret.readit.core.paging.articles
 
 import androidx.paging.PagingSource
 import com.secret.readit.core.MainCoroutineRule
@@ -17,6 +17,8 @@ import com.google.common.truth.Truth.assertThat
 import com.google.firebase.firestore.DocumentSnapshot
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
+import com.secret.readit.core.paging.ArticleWithContent
+import com.secret.readit.core.paging.RequestParams
 import com.secret.readit.core.result.Result
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
@@ -35,23 +37,48 @@ class ArticlesSourcesTest(private var firstSource: PagingSource<DocumentSnapshot
     @get:Rule
     val mainCoroutineRule = MainCoroutineRule()
 
-    private var reqParams = Companion.reqParams
-    private var mockedArticlesSource = Companion.mockedArticlesSource
+    private var reqParams =
+        Companion.reqParams
+    private var mockedArticlesSource =
+        Companion.mockedArticlesSource
 
     companion object {
-        private var reqParams = RequestParams(limit = 50, appreciateNum = 70, categoriesIds = TestData.categoriesIds,
-            mostFollowedPubsId = emptyList(), withMinutesRead = 3, specificPub = Pair("2pub", 14525478887), contentLimit = 5)
+        private var reqParams = RequestParams(
+            limit = 50,
+            appreciateNum = 70,
+            categoriesIds = TestData.categoriesIds,
+            mostFollowedPubsId = emptyList(),
+            withMinutesRead = 3,
+            specificPub = Pair("2pub", 14525478887),
+            contentLimit = 5
+        )
 
         private var mockedArticlesSource = FakeArticlesDataSource()
 
         @Parameterized.Parameters
         @JvmStatic
         fun objectsUnderTest() = listOf( //Run test 2 times
-            arrayOf(ArticlesPagingSource(mockedArticlesSource, FakeContentDataSource()),
-                PubArticlesPagingSource(mockedArticlesSource, FakeContentDataSource())),
+            arrayOf(
+                ArticlesPagingSource(
+                    mockedArticlesSource,
+                    FakeContentDataSource()
+                ),
+                PubArticlesPagingSource(
+                    mockedArticlesSource,
+                    FakeContentDataSource()
+                )
+            ),
 
-            arrayOf(ArticlesPagingSource(mockedArticlesSource, FakeContentDataSource()),
-            PubArticlesPagingSource(mockedArticlesSource, FakeContentDataSource()))
+            arrayOf(
+                ArticlesPagingSource(
+                    mockedArticlesSource,
+                    FakeContentDataSource()
+                ),
+                PubArticlesPagingSource(
+                    mockedArticlesSource,
+                    FakeContentDataSource()
+                )
+            )
         )
     }
     //TODO: Refactor boilerplate
@@ -94,13 +121,19 @@ class ArticlesSourcesTest(private var firstSource: PagingSource<DocumentSnapshot
             on(it.getArticles(reqParams.limit, reqParams.appreciateNum,
                 reqParams.categoriesIds, reqParams.withMinutesRead, emptyList(), null)).doReturn(Result.Error(Exception()))
         }
-        return ArticlesPagingSource(mockedArticlesSource, FakeContentDataSource())
+        return ArticlesPagingSource(
+            mockedArticlesSource,
+            FakeContentDataSource()
+        )
     }
 
     private suspend fun failPubArticlesSource(): PagingSource<DocumentSnapshot, ArticleWithContent> {
         mockedArticlesSource = mock {
             on(it.getPubArticles(reqParams.specificPub, null)).doReturn(Result.Error(Exception()))
         }
-        return PubArticlesPagingSource(mockedArticlesSource, FakeContentDataSource())
+        return PubArticlesPagingSource(
+            mockedArticlesSource,
+            FakeContentDataSource()
+        )
     }
 }

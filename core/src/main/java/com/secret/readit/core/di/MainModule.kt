@@ -17,7 +17,6 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import com.secret.readit.core.data.articles.ArticlesDataSource
-import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.data.articles.DefaultArticlesDataSource
 import com.secret.readit.core.data.articles.NormalizeHelper
 import com.secret.readit.core.data.articles.comments.CommentDataSource
@@ -38,9 +37,9 @@ import com.secret.readit.core.data.shared.Converter
 import com.secret.readit.core.data.shared.DefaultStorageDataSource
 import com.secret.readit.core.data.shared.StorageDataSource
 import com.secret.readit.core.data.shared.StorageRepository
-import com.secret.readit.core.paging.ArticlesPagingSource
+import com.secret.readit.core.paging.articles.ArticlesPagingSource
 import com.secret.readit.core.paging.BasePagingSource
-import com.secret.readit.core.paging.PubArticlesPagingSource
+import com.secret.readit.core.paging.articles.PubArticlesPagingSource
 import com.secret.readit.core.prefs.DefaultSharedPrefs
 import com.secret.readit.core.prefs.SharedPrefs
 import dagger.Lazy
@@ -184,7 +183,7 @@ class MainModule {
     @Provides
     @PubArticlesSource
     fun providePubPagingSource(articlesSource: ArticlesDataSource, contentSource: ContentDataSource): BasePagingSource {
-        return PubArticlesPagingSource(articlesSource, contentSource)
+        return PubArticlesPagingSource.create(articlesSource, contentSource)
     }
     // TODO: make drafts database
 }
