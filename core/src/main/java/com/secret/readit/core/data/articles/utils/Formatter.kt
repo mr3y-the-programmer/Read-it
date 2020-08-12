@@ -17,7 +17,7 @@ import com.secret.readit.core.data.shared.StorageRepository
 import com.secret.readit.core.data.utils.CustomIDHandler
 import com.secret.readit.core.data.utils.isImageElement
 import com.secret.readit.core.data.utils.isTextElement
-import com.secret.readit.core.paging.ArticleWithContent
+import com.secret.readit.core.paging.articles.ArticleWithContent
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.core.uimodels.ImageUiElement

@@ -16,7 +16,7 @@ import com.secret.readit.core.data.articles.utils.Formatter
 import com.secret.readit.core.di.HomeFeedSource
 import com.secret.readit.core.di.PubArticlesSource
 import com.secret.readit.core.paging.BasePagingSource
-import com.secret.readit.core.paging.RequestParams
+import com.secret.readit.core.paging.articles.RequestParams
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.core.uimodels.UiArticle
@@ -97,7 +97,15 @@ class ArticlesRepository @Inject constructor(
         mostFollowedPubsId: List<publisherId> = emptyList(),
         specificPub: Pair<publisherId, Long> = Pair("", -1)
     ): Flow<PagingData<UiArticle>> {
-        val parameters = RequestParams(limit, appreciateNum, categoriesIds, withMinutesRead, mostFollowedPubsId, specificPub, CONTENT_DISPLAYED_LIMIT)
+        val parameters = RequestParams(
+            limit,
+            appreciateNum,
+            categoriesIds,
+            withMinutesRead,
+            mostFollowedPubsId,
+            specificPub,
+            CONTENT_DISPLAYED_LIMIT
+        )
         val pagingSource = if (specificPub.first.isNotEmpty() && specificPub.second > 0) {
             pubArticlesPagingSource.withParams(parameters)
         } else {

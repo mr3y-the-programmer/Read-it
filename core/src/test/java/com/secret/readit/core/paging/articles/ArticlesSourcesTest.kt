@@ -17,8 +17,6 @@ import com.google.common.truth.Truth.assertThat
 import com.google.firebase.firestore.DocumentSnapshot
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
-import com.secret.readit.core.paging.ArticleWithContent
-import com.secret.readit.core.paging.RequestParams
 import com.secret.readit.core.result.Result
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
@@ -43,15 +41,16 @@ class ArticlesSourcesTest(private var firstSource: PagingSource<DocumentSnapshot
         Companion.mockedArticlesSource
 
     companion object {
-        private var reqParams = RequestParams(
-            limit = 50,
-            appreciateNum = 70,
-            categoriesIds = TestData.categoriesIds,
-            mostFollowedPubsId = emptyList(),
-            withMinutesRead = 3,
-            specificPub = Pair("2pub", 14525478887),
-            contentLimit = 5
-        )
+        private var reqParams =
+            RequestParams(
+                limit = 50,
+                appreciateNum = 70,
+                categoriesIds = TestData.categoriesIds,
+                mostFollowedPubsId = emptyList(),
+                withMinutesRead = 3,
+                specificPub = Pair("2pub", 14525478887),
+                contentLimit = 5
+            )
 
         private var mockedArticlesSource = FakeArticlesDataSource()
 

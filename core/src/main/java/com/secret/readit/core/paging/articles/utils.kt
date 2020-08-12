@@ -5,7 +5,7 @@
  *   Written by MR3Y <abdonasr379@gmail.com>, 2020.
  */
 
-package com.secret.readit.core.paging
+package com.secret.readit.core.paging.articles
 
 import androidx.paging.PagingSource
 import com.google.firebase.firestore.DocumentSnapshot
@@ -54,4 +54,12 @@ internal suspend fun process(result: Result<Pair<List<Article>, DocumentSnapshot
 
 private fun checkIfSuccessful(result: Result<Pair<List<Article>, DocumentSnapshot>>) = if (result != null && result.succeeded) (result as Result.Success).data else null
 
-fun emptyReq() = RequestParams(0, 0, emptyList(), 0, emptyList(), Pair("", -1), 0)
+fun emptyReq() = RequestParams(
+    0,
+    0,
+    emptyList(),
+    0,
+    emptyList(),
+    Pair("", -1),
+    0
+)
