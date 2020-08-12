@@ -115,7 +115,20 @@ class ArticlesRepository @Inject constructor(
      * getFullArticle fun which called to load/format the full article like: clicking on article on homefeed to display its full content
      * @return the UiArticle with full content formatted
      */
-//    suspend fun getFullArticle(partialArticle: UiArticle): UiArticle = formatter.formatFullArticle(partialArticle).also { currentArticleID = it.article.id }
+    //TODO: make this fun handle refreshing, so it fetches updated article from data Source
+    suspend fun getFullArticle(partialArticle: UiArticle): UiArticle {
+        return getFullContent(partialArticle.article.id).let {
+            val elements = formatter.formatContent(it)
+            partialArticle.copy(fullContent = Content(elements))
+        }.also {
+            currentArticleID = it.article.id
+        }
+    }
+
+    private suspend fun getFullContent(id: articleId): Content{
+        val result = contentDataSource.getContent(id, 0)
+        return if (result != null && result.succeeded) Content((result as Result.Success).data) else Content(emptyList())
+    }
 
     /**
      * Publish this article, add it to firestore
