@@ -7,42 +7,54 @@
 
 package com.secret.readit.core.data.articles
 
-import androidx.annotation.VisibleForTesting
-import com.google.firebase.firestore.DocumentSnapshot
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.secret.readit.core.data.articles.comments.CommentDataSource
+import com.secret.readit.core.data.articles.content.ContentDataSource
 import com.secret.readit.core.data.articles.utils.Formatter
+import com.secret.readit.core.di.HomeFeedSource
+import com.secret.readit.core.di.PubArticlesSource
+import com.secret.readit.core.paging.BasePagingSource
+import com.secret.readit.core.paging.RequestParams
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.core.uimodels.UiArticle
 import com.secret.readit.core.uimodels.UiComment
 import com.secret.readit.model.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
  * Single Source Of Truth for articles data, Any consumers should consume from it not from data sources directly.
  *
- * Rule: -forward actions to dataSource when needed(i.e: loading new data)
+ * Rule: -forward actions to dataSource when needed(i.e: loading new data), it do this by Using PagingSource For caching
+ *       And Use the dataSource directly in upload operations cause it doesn't need cache
  */
 @Singleton
 class ArticlesRepository @Inject constructor(
     private val articlesDataSource: ArticlesDataSource,
+    private val contentDataSource: ContentDataSource,
     private val commentsDataSource: CommentDataSource,
+    @HomeFeedSource private val articlesPagingSource: BasePagingSource,
+    @PubArticlesSource private val pubArticlesPagingSource: BasePagingSource,
     private val formatter: Formatter
 ) {
 
     /** Exposed APIs For consumers to get articles based on these attributes */
-    suspend fun getMostAppreciatedArticles(limit: Int, appreciateNum: Int): List<UiArticle> = getNewArticles(limit, appreciateNum)
+    suspend fun getMostAppreciatedArticles(limit: Int, appreciateNum: Int): Flow<PagingData<UiArticle>> = getNewArticles(limit, appreciateNum)
 
-    suspend fun getMostFollowedPublishersArticles(limit: Int, pubsIds: List<publisherId>): List<UiArticle> = getNewArticles(limit, mostFollowedPubsId = pubsIds)
+    suspend fun getMostFollowedPublishersArticles(limit: Int, pubsIds: List<publisherId>): Flow<PagingData<UiArticle>> = getNewArticles(limit, mostFollowedPubsId = pubsIds)
 
-    suspend fun getShortAndAppreciatedArticles(limit: Int, maximumMinutesRead: Int, appreciateNum: Int): List<UiArticle> {
+    suspend fun getShortAndAppreciatedArticles(limit: Int, maximumMinutesRead: Int, appreciateNum: Int): Flow<PagingData<UiArticle>> {
         return getNewArticles(limit, appreciateNum = appreciateNum, withMinutesRead = maximumMinutesRead)
     }
 
-    suspend fun getArticlesWhichHaveCategories(limit: Int, categoriesIds: List<String>): List<UiArticle> = getNewArticles(limit, categoriesIds = categoriesIds)
+    suspend fun getArticlesWhichHaveCategories(limit: Int, categoriesIds: List<String>): Flow<PagingData<UiArticle>> = getNewArticles(limit, categoriesIds = categoriesIds)
 
-    suspend fun getPubArticlesSince(pubId: publisherId, since: Long): List<UiArticle> = getNewArticles(limit = 0, specificPub = Pair(pubId, since))
+    suspend fun getPubArticlesSince(pubId: publisherId, since: Long): Flow<PagingData<UiArticle>> = getNewArticles(limit = 0, specificPub = Pair(pubId, since))
 
     suspend fun appreciate(article: UiArticle): Boolean = appreciateOrDisagree(article)
 
@@ -71,47 +83,39 @@ class ArticlesRepository @Inject constructor(
         val result = commentsDataSource.addReply(articleID, deFormattedComment.id, deFormattedReply)
         return checkIfSuccessful(result)
     }
-    // hold last document snapshot in-Memory to be able to get queries after it and avoid leaking resources and money
-    @VisibleForTesting
-    var prevSnapshot: DocumentSnapshot? = null
-        private set
 
-    // also hold the current displayed Article Id,
+    // hold the current displayed Article Id,
     var currentArticleID: articleId? = null
         private set
-    /**
-     * move/Encapsulate the boilerplate to this function that is only public for sake of testing,
-     * **IMPORTANT NOTE**: Consumers mustn't call this directly, instead Use one of [getMostAppreciatedArticles], [getMostFollowedPublishersArticles]...etc
-     *
-     * We are Using @VisibleForTesting here to guarantee encapsulation
-     * Other Solutions would be: 1- using reflection , make a custom lint rule with high penalty on calling this function like raising a compiler error
-     */
-    @VisibleForTesting
-    suspend fun getNewArticles(
+
+    /* move/Encapsulate the boilerplate to this function */
+    private suspend fun getNewArticles(
         limit: Int,
         appreciateNum: Int = 0,
         categoriesIds: List<String> = emptyList(),
         withMinutesRead: Int = 999,
         mostFollowedPubsId: List<publisherId> = emptyList(),
         specificPub: Pair<publisherId, Long> = Pair("", -1)
-    ): List<UiArticle> {
-        val articles = mutableListOf<UiArticle>()
-        if (specificPub.first.isNotEmpty() && specificPub.second > 0) {
-            val articlesResult = articlesDataSource.getPubArticles(specificPub, prevSnapshot)
-            articles.addAll(formatter.formatPubArticles(articlesResult, CONTENT_DISPLAYED_LIMIT))
-            prevSnapshot = if (articlesResult.succeeded) (articlesResult as Result.Success).data.second else prevSnapshot
+    ): Flow<PagingData<UiArticle>> {
+        val parameters = RequestParams(limit, appreciateNum, categoriesIds, withMinutesRead, mostFollowedPubsId, specificPub, CONTENT_DISPLAYED_LIMIT)
+        val pagingSource = if (specificPub.first.isNotEmpty() && specificPub.second > 0) {
+            pubArticlesPagingSource.withParams(parameters)
         } else {
-            val articlesResult = articlesDataSource.getArticles(limit, appreciateNum, categoriesIds, withMinutesRead, mostFollowedPubsId)
-            articles.addAll(formatter.formatArticles(articlesResult, CONTENT_DISPLAYED_LIMIT))
+            articlesPagingSource.withParams(parameters)
         }
-        return articles
+        return Pager(
+            config = PagingConfig(limit),
+            pagingSourceFactory = { pagingSource }
+        ).flow.map {
+            formatter.formatArticles(it)
+        }
     }
 
     /**
      * getFullArticle fun which called to load/format the full article like: clicking on article on homefeed to display its full content
      * @return the UiArticle with full content formatted
      */
-    suspend fun getFullArticle(partialArticle: UiArticle): UiArticle = formatter.formatFullArticle(partialArticle).also { currentArticleID = it.article.id }
+//    suspend fun getFullArticle(partialArticle: UiArticle): UiArticle = formatter.formatFullArticle(partialArticle).also { currentArticleID = it.article.id }
 
     /**
      * Publish this article, add it to firestore
@@ -134,7 +138,8 @@ class ArticlesRepository @Inject constructor(
     private fun checkIfSuccessful(result: Result<Boolean>) = if (result != null && result.succeeded) (result as Result.Success).data else false
 
     companion object {
-        const val CONTENT_DISPLAYED_LIMIT = 5 // TODO: configure it through remote config
+        // TODO: configure those through remote config
+        const val CONTENT_DISPLAYED_LIMIT = 5
         const val PLACE_HOLDER_URL = "https://firebasestorage.googleapis.com/v0/b/read-it-b9c8b.appspot.com" +
             "/o/articles%2Fplace_holder_image.png?alt=media&token=fd6b444e-0115-4f40-8b8d-f6deaf238179"
     }

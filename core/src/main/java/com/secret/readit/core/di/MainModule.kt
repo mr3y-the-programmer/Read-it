@@ -17,6 +17,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import com.secret.readit.core.data.articles.ArticlesDataSource
+import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.data.articles.DefaultArticlesDataSource
 import com.secret.readit.core.data.articles.NormalizeHelper
 import com.secret.readit.core.data.articles.comments.CommentDataSource
@@ -152,11 +153,16 @@ class MainModule {
         return Formatter(contentSource, storageRepo, pubRepo, categoryRepo)
     }
 
-    /*@Provides
+    @Provides
     @Singleton
-    fun provideArticlesRepository(articlesSource: ArticlesDataSource, commentsSource: CommentDataSource, formatter: Formatter): ArticlesRepository {
-        return ArticlesRepository(articlesSource, commentsSource, formatter)
-    }*/
+    fun provideArticlesRepository(articlesSource: ArticlesDataSource,
+                                  contentSource: ContentDataSource,
+                                  commentsSource: CommentDataSource,
+                                  @HomeFeedSource articlesPagingSource: BasePagingSource,
+                                  @PubArticlesSource pubArticlesPagingSource: BasePagingSource,
+                                  formatter: Formatter): ArticlesRepository {
+        return ArticlesRepository(articlesSource, contentSource, commentsSource, articlesPagingSource, pubArticlesPagingSource, formatter)
+    }
 
     @Provides
     @Singleton

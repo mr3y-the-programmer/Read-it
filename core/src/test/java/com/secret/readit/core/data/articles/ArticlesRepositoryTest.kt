@@ -8,7 +8,6 @@
 package com.secret.readit.core.data.articles
 
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.firestore.DocumentSnapshot
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.MainCoroutineRule
@@ -18,6 +17,7 @@ import com.secret.readit.core.data.articles.comments.FakeCommentsDataSource
 import com.secret.readit.core.data.articles.content.FakeContentDataSource
 import com.secret.readit.core.data.articles.utils.Formatter
 import com.secret.readit.core.data.shared.DummyStorageRepository
+import com.secret.readit.core.paging.BasePagingSource
 import com.secret.readit.core.result.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -40,76 +40,18 @@ class ArticlesRepositoryTest {
     // TODO: refactor
     @Before
     fun setUp() {
-        /*
-        Notice here we used a real object(Parser, CustomIDHandler) in testing, because it is:
+        /*Notice here we used a real object(Parser, CustomIDHandler) in testing, because it is:
         -fast, see: Benchmark results
-        -Reliable and well tested, so it cannot fail easily
-         */
-        articlesRepo = ArticlesRepository(FakeArticlesDataSource(), FakeCommentsDataSource(), formatter)
+        -Reliable and well tested, so it cannot fail easily*/
+        val mockedBaseSource = mock<BasePagingSource> { /*no-op for now*/ }
+        articlesRepo = ArticlesRepository(FakeArticlesDataSource(), FakeContentDataSource(),
+                                          FakeCommentsDataSource(), mockedBaseSource,
+                                          mockedBaseSource, formatter)
     }
 
-    @Test
-    fun dataSourceSuccess_ReturnFormattedArticles() = mainCoroutineRule.runBlockingTest {
-        // When getting a result of Articles
-        val result = articlesRepo.getNewArticles(100)
+    /*getNewArticles() tests removed cause it is no longer contain logic to test*/
 
-        // Assert it matches our expectations
-        assertThat(result).isNotEmpty()
-        assertThat(result.size).isEqualTo(1)
-        assertThat(result[0].publisher).isEqualTo(TestData.uiPublisher1)
-        assertThat(result[0].category).isEqualTo(TestData.categories)
-        assertThat(result[0].initialContent).isEqualTo(TestData.reverseContent1)
-        // And so on ....
-    }
-
-    @Test
-    fun dataSourceFails_ReturnEmptyArticles() = mainCoroutineRule.runBlockingTest {
-        // GIVEN a data source that fails to get data
-        val mockedDataSource = mock<FakeArticlesDataSource> {
-            on(it.getArticles(0, 0, emptyList(), 0, listOf(TestData.publisher1.id))).doReturn(Result.Error(Exception()))
-        }
-
-        articlesRepo = articlesRepo.copy(mockedDataSource)
-
-        // When trying to get new results
-        val result = articlesRepo.getNewArticles(100)
-
-        // Assert list is empty
-        assertThat(result).isEmpty()
-    }
-
-    @Test
-    fun dataSourceSuccess_ReturnPubArticles() = mainCoroutineRule.runBlockingTest {
-        // When getting last-7-days Articles of publisher
-        val result = articlesRepo.getNewArticles(0, specificPub = Pair(TestData.publisher2.id, 1594764000))
-
-        // Assert it matches our expectations
-        assertThat(articlesRepo.prevSnapshot).isInstanceOf(DocumentSnapshot::class.java)
-        assertThat(result).isNotEmpty()
-        assertThat(result.size).isEqualTo(1)
-        assertThat(result[0].publisher).isEqualTo(TestData.uiPublisher2)
-        assertThat(result[0].category).isEqualTo(listOf(TestData.category3))
-        assertThat(result[0].initialContent).isEqualTo(TestData.reverseContent1)
-        // And so on ....
-    }
-
-    @Test
-    fun dataSourceFails_ReturnEmptyPubArticles() = mainCoroutineRule.runBlockingTest {
-        // GIVEN a data source that fails to get data
-        val mockedDataSource = mock<FakeArticlesDataSource> {
-            on(it.getPubArticles(Pair(TestData.publisher2.id, 1594764000), null)).doReturn(Result.Error(Exception()))
-        }
-
-        articlesRepo = articlesRepo.copy(mockedDataSource)
-
-        // When trying to get new results
-        val result = articlesRepo.getNewArticles(0, specificPub = Pair(TestData.publisher2.id, 1594764000))
-
-        // Assert list is empty
-        assertThat(result).isEmpty()
-        assertThat(articlesRepo.prevSnapshot).isNull() // when it is the first time it should be null
-    }
-    /* getFullArticles() test Removed because it is no longer contain logic to test */
+    /* getFullArticles() test Removed because it is no longer contain logic to test*/
 
     @Test
     fun addArticle2_allOk_ReturnTrue() = mainCoroutineRule.runBlockingTest {
@@ -211,6 +153,7 @@ class ArticlesRepositoryTest {
     }
 
     private fun ArticlesRepository.copy(dataSource: FakeArticlesDataSource): ArticlesRepository {
-        return ArticlesRepository(dataSource, FakeCommentsDataSource(), formatter)
+        val mockedBaseSource = mock<BasePagingSource> { /*no-op for now*/ }
+        return ArticlesRepository(dataSource, FakeContentDataSource(), FakeCommentsDataSource(), mockedBaseSource, mockedBaseSource, formatter)
     }
 }
