@@ -52,4 +52,6 @@ internal suspend fun process(result: Result<Pair<List<Article>, DocumentSnapshot
     return PagingSource.LoadResult.Page(data, prevKey = null /*We don't support loading before current page yet*/, nextKey = lastSnapshot)
 }
 
-private fun checkIfSuccessful(result: Result<Pair<List<Article>, DocumentSnapshot>>) = if (result.succeeded) (result as Result.Success).data else null
+private fun checkIfSuccessful(result: Result<Pair<List<Article>, DocumentSnapshot>>) = if (result != null && result.succeeded) (result as Result.Success).data else null
+
+fun emptyReq() = RequestParams(0, 0, emptyList(), 0, emptyList(), Pair("", -1), 0)

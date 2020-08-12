@@ -22,9 +22,12 @@ import javax.inject.Inject
  * **NOTE**: This should be cached By appropriate scope of Ui consumers like: viewModelScope
  */
 //TODO: handle the lifetime of this Source in dagger
-class ArticlesPagingSource @Inject constructor(private val reqParams: RequestParams,
-                                               private val articlesSource: ArticlesDataSource,
-                                               private val contentSource: ContentDataSource): PagingSource<DocumentSnapshot, ArticleWithContent>(){
+class ArticlesPagingSource @Inject constructor(
+    private val articlesSource: ArticlesDataSource,
+    private val contentSource: ContentDataSource
+): PagingSource<DocumentSnapshot, ArticleWithContent>(), BasePagingSource{
+
+    override var reqParams: RequestParams = emptyReq() //It is empty for now, filling Request is Consumer responsibility
 
     override suspend fun load(params: LoadParams<DocumentSnapshot>): LoadResult<DocumentSnapshot, ArticleWithContent> {
         val result = articlesSource.getArticles(
@@ -33,5 +36,11 @@ class ArticlesPagingSource @Inject constructor(private val reqParams: RequestPar
         )
         return process(result, params, contentSource, reqParams.contentLimit)
     }
-}
 
+    companion object {
+        //Create A new Instance of PagingSource
+        fun create(articlesSource: ArticlesDataSource, contentSource: ContentDataSource): ArticlesPagingSource {
+            return ArticlesPagingSource(articlesSource = articlesSource, contentSource = contentSource)
+        }
+    }
+}
