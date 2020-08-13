@@ -9,6 +9,7 @@ package com.secret.readit.core.data.categories
 
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.secret.readit.core.data.utils.after
 import com.secret.readit.core.data.utils.withIds
 import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
 import com.secret.readit.core.di.IoDispatcher
@@ -36,11 +37,11 @@ internal class DefaultCategoryDataSource @Inject constructor(
         return wrapInCoroutineCancellable(
             ioDispatcher
         ) { continuation ->
-            var query = firestore.collection(CATEGORIES_COLLECTION)
+            firestore.collection(CATEGORIES_COLLECTION)
                 .withIds(ids, ID_FIELD)
                 .limit(limit.toLong())
-            query = if (prevSnapshot != null) query.startAfter(prevSnapshot) else query
-            query.get()
+                .after(prevSnapshot)
+                .get()
                 .addOnSuccessListener { categoriesSnapshot ->
                     if (continuation.isActive) {
                         Timber.d("fetching categories Success,categories returned: ${categoriesSnapshot.documents}")

@@ -8,6 +8,7 @@
 package com.secret.readit.core.data.publisher
 
 import com.google.firebase.firestore.*
+import com.secret.readit.core.data.utils.after
 import com.secret.readit.core.data.utils.withIds
 import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
 import com.secret.readit.core.di.IoDispatcher
@@ -90,12 +91,12 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
         prevSnapshot: DocumentSnapshot?
     ): Result<Pair<List<Publisher>, DocumentSnapshot>> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
-            var query = firestore.collection(PUBLISHERS_COLLECTION)
+            firestore.collection(PUBLISHERS_COLLECTION)
                 .whereGreaterThanOrEqualTo(FOLLOWERS_NUMBER_FIELD, numOfFollowers)
                 .withIds(ids, ID_FIELD)
                 .limit(limit.toLong())
-            query = if (prevSnapshot != null) query.startAfter(prevSnapshot) else query
-            query.get()
+                .after(prevSnapshot)
+                .get()
                 .addOnSuccessListener { publishersDocs ->
                     if (continuation.isActive) {
                         Timber.d("Returned publishers with NumOfFollowers: $numOfFollowers successfully, docs: ${publishersDocs.documents}")

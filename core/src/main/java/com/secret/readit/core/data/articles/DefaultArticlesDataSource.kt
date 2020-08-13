@@ -11,6 +11,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.secret.readit.core.data.utils.after
 import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
 import com.secret.readit.core.di.IoDispatcher
 import com.secret.readit.core.result.Result
@@ -76,13 +77,13 @@ internal class DefaultArticlesDataSource @Inject constructor(
         ) { continuation ->
             // TODO:try configure the number of limit with Remote config
             // or try some pagination to avoid wasting resources
-            var query = firestore.collection(ARTICLES_COLLECTION)
+            firestore.collection(ARTICLES_COLLECTION)
                 .whereGreaterThanOrEqualTo(NUM_OF_APPRECIATE_FIELD, numOfAppreciation)
                 .whereLessThanOrEqualTo(NUM_MINUTES_READ_FIELD, numOfMinutesRead)
                 .categoryOrPublishersQuery(categoriesIds, pubIds)
                 .limit(limit.toLong())
-            query = if (prevSnapshot != null) query.startAfter(prevSnapshot) else query
-            query.get()
+                .after(prevSnapshot)
+                .get()
                 .addOnSuccessListener { articlesSnapshot ->
                     if (continuation.isActive) {
                         Timber.d("fetched articles Successfully: ${articlesSnapshot.documents}")
@@ -135,11 +136,11 @@ internal class DefaultArticlesDataSource @Inject constructor(
         return wrapInCoroutineCancellable(
             ioDispatcher
         ) { continuation ->
-            var query = firestore.collection(ARTICLES_COLLECTION)
+            firestore.collection(ARTICLES_COLLECTION)
                 .whereEqualTo(PUBLISHER_ID_FILED, pubInfo.first)
                 .whereGreaterThanOrEqualTo(TIMESTAMP_FIELD, pubInfo.second)
-            query = if (prevSnapshot != null) query.startAfter(prevSnapshot) else query
-            query.get()
+                .after(prevSnapshot)
+                .get()
                 .addOnSuccessListener { articlesSnapshot ->
                     if (continuation.isActive) {
                         Timber.d("fetched articles Successfully: ${articlesSnapshot.documents}")

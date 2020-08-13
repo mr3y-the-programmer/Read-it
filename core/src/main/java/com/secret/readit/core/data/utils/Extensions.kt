@@ -7,6 +7,7 @@
 
 package com.secret.readit.core.data.utils
 
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.uimodels.ImageUiElement
@@ -41,6 +42,9 @@ val BaseElement.isImageElement
  * [field]: the field to search in for values like: ID_FIELD
  */
 fun Query.withIds(ids: List<String>, field: String) = if (!ids.isNullOrEmpty()) whereIn(field, ids) else this // Otherwise return query without additional filters
+
+/**Benefit from declarative code style By Using this Extension fun*/
+fun Query.after(snapshot: DocumentSnapshot?) = if (snapshot != null) this.startAfter(snapshot) else this
 
 // Refactored thumbnail to be an extension property, it help our model code to be more clean
 val Publisher.thumbnail
