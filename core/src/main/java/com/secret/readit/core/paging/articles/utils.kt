@@ -10,26 +10,11 @@ package com.secret.readit.core.paging.articles
 import androidx.paging.PagingSource
 import com.google.firebase.firestore.DocumentSnapshot
 import com.secret.readit.core.data.articles.content.ContentDataSource
-import com.secret.readit.core.paging.BaseReqParams
 import com.secret.readit.core.paging.checkIfSuccessful
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.model.Article
 import com.secret.readit.model.Content
-import com.secret.readit.model.publisherId
-
-/**
- * take parameters that customize the query/result returned from data source,
- *
- * also it takes [contentLimit] as a parameter to download limited num of content to de displayed like a summery
- */
-data class RequestParams(val limit: Int,
-                                  val appreciateNum: Int,
-                                  val categoriesIds: List<String>,
-                                  val withMinutesRead: Int,
-                                  val mostFollowedPubsId: List<publisherId>,
-                                  val specificPub: Pair<publisherId, Long>,
-                                  val contentLimit: Int): BaseReqParams()
 
 typealias ArticleWithContent = Pair<Article, Content>
 
