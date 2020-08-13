@@ -38,8 +38,8 @@ class ArticlesRepository @Inject constructor(
     private val articlesDataSource: ArticlesDataSource,
     private val contentDataSource: ContentDataSource,
     private val commentsDataSource: CommentDataSource,
-    @HomeFeedSource private val articlesPagingSource: BasePagingSource,
-    @PubArticlesSource private val pubArticlesPagingSource: BasePagingSource,
+    @HomeFeedSource private val articlesPagingSource: BasePagingSource<RequestParams>,
+    @PubArticlesSource private val pubArticlesPagingSource: BasePagingSource<RequestParams>,
     private val formatter: Formatter
 ) {
 

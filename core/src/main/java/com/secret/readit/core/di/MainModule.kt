@@ -41,6 +41,7 @@ import com.secret.readit.core.data.shared.StorageRepository
 import com.secret.readit.core.paging.articles.ArticlesPagingSource
 import com.secret.readit.core.paging.BasePagingSource
 import com.secret.readit.core.paging.articles.PubArticlesPagingSource
+import com.secret.readit.core.paging.articles.RequestParams
 import com.secret.readit.core.prefs.DefaultSharedPrefs
 import com.secret.readit.core.prefs.SharedPrefs
 import dagger.Lazy
@@ -158,8 +159,8 @@ class MainModule {
     fun provideArticlesRepository(articlesSource: ArticlesDataSource,
                                   contentSource: ContentDataSource,
                                   commentsSource: CommentDataSource,
-                                  @HomeFeedSource articlesPagingSource: BasePagingSource,
-                                  @PubArticlesSource pubArticlesPagingSource: BasePagingSource,
+                                  @HomeFeedSource articlesPagingSource: BasePagingSource<RequestParams>,
+                                  @PubArticlesSource pubArticlesPagingSource: BasePagingSource<RequestParams>,
                                   formatter: Formatter): ArticlesRepository {
         return ArticlesRepository(articlesSource, contentSource, commentsSource, articlesPagingSource, pubArticlesPagingSource, formatter)
     }
@@ -182,13 +183,13 @@ class MainModule {
 
     @Provides
     @HomeFeedSource
-    fun provideArticlesPagingSource(articlesSource: ArticlesDataSource, contentSource: ContentDataSource): BasePagingSource {
+    fun provideArticlesPagingSource(articlesSource: ArticlesDataSource, contentSource: ContentDataSource): BasePagingSource<RequestParams> {
         return ArticlesPagingSource.create(articlesSource, contentSource)
     }
 
     @Provides
     @PubArticlesSource
-    fun providePubPagingSource(articlesSource: ArticlesDataSource, contentSource: ContentDataSource): BasePagingSource {
+    fun providePubPagingSource(articlesSource: ArticlesDataSource, contentSource: ContentDataSource): BasePagingSource<RequestParams> {
         return PubArticlesPagingSource.create(articlesSource, contentSource)
     }
     // TODO: make drafts database

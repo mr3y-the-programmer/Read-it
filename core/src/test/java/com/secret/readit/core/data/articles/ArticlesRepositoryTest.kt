@@ -18,6 +18,7 @@ import com.secret.readit.core.data.articles.content.FakeContentDataSource
 import com.secret.readit.core.data.articles.utils.Formatter
 import com.secret.readit.core.data.shared.DummyStorageRepository
 import com.secret.readit.core.paging.BasePagingSource
+import com.secret.readit.core.paging.articles.RequestParams
 import com.secret.readit.core.result.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -43,7 +44,7 @@ class ArticlesRepositoryTest {
         /*Notice here we used a real object(Parser, CustomIDHandler) in testing, because it is:
         -fast, see: Benchmark results
         -Reliable and well tested, so it cannot fail easily*/
-        val mockedBaseSource = mock<BasePagingSource> { /*no-op for now*/ }
+        val mockedBaseSource = mock<BasePagingSource<RequestParams>> { /*no-op for now*/ }
         articlesRepo = ArticlesRepository(FakeArticlesDataSource(), FakeContentDataSource(),
                                           FakeCommentsDataSource(), mockedBaseSource,
                                           mockedBaseSource, formatter)
@@ -165,7 +166,7 @@ class ArticlesRepositoryTest {
     }
 
     private fun ArticlesRepository.copy(dataSource: FakeArticlesDataSource): ArticlesRepository {
-        val mockedBaseSource = mock<BasePagingSource> { /*no-op for now*/ }
+        val mockedBaseSource = mock<BasePagingSource<RequestParams>> { /*no-op for now*/ }
         return ArticlesRepository(dataSource, FakeContentDataSource(), FakeCommentsDataSource(), mockedBaseSource, mockedBaseSource, formatter)
     }
 }
