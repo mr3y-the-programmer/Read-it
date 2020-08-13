@@ -16,3 +16,11 @@ annotation class HomeFeedSource
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class PubArticlesSource
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class PublishersSource
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class PubProfileSource

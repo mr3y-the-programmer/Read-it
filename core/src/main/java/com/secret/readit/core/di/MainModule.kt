@@ -42,6 +42,9 @@ import com.secret.readit.core.paging.articles.ArticlesPagingSource
 import com.secret.readit.core.paging.BasePagingSource
 import com.secret.readit.core.paging.articles.PubArticlesPagingSource
 import com.secret.readit.core.paging.articles.RequestParams
+import com.secret.readit.core.paging.publisher.PubProfilePagingSource
+import com.secret.readit.core.paging.publisher.PublishersPagingSource
+import com.secret.readit.core.paging.publisher.RequestParams as pubParams
 import com.secret.readit.core.prefs.DefaultSharedPrefs
 import com.secret.readit.core.prefs.SharedPrefs
 import dagger.Lazy
@@ -191,6 +194,18 @@ class MainModule {
     @PubArticlesSource
     fun providePubPagingSource(articlesSource: ArticlesDataSource, contentSource: ContentDataSource): BasePagingSource<RequestParams> {
         return PubArticlesPagingSource.create(articlesSource, contentSource)
+    }
+
+    @Provides
+    @PublishersSource
+    fun providePublishersPagingSource(pubDataSource: PublisherInfoDataSource): BasePagingSource<pubParams> {
+        return PublishersPagingSource(pubDataSource)
+    }
+
+    @Provides
+    @PubProfileSource
+    fun providePubProfilePagingSource(pubDataSource: PublisherInfoDataSource): BasePagingSource<pubParams> {
+        return PubProfilePagingSource(pubDataSource)
     }
     // TODO: make drafts database
 }
