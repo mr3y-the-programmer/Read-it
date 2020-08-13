@@ -16,6 +16,7 @@ import com.secret.readit.core.data.articles.utils.Formatter
 import com.secret.readit.core.di.HomeFeedSource
 import com.secret.readit.core.di.PubArticlesSource
 import com.secret.readit.core.paging.BasePagingSource
+import com.secret.readit.core.paging.articles.ArticleWithContent
 import com.secret.readit.core.paging.articles.RequestParams
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
@@ -107,7 +108,7 @@ class ArticlesRepository @Inject constructor(
             CONTENT_DISPLAYED_LIMIT
         )
         val pagingSource = if (specificPub.first.isNotEmpty() && specificPub.second > 0) {
-            pubArticlesPagingSource.withParams(parameters)
+            pubArticlesPagingSource.withParams<ArticleWithContent>(parameters)
         } else {
             articlesPagingSource.withParams(parameters)
         }
