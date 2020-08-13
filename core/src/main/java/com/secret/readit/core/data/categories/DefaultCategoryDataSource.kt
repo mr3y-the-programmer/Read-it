@@ -7,6 +7,7 @@
 
 package com.secret.readit.core.data.categories
 
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.secret.readit.core.data.utils.withIds
 import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
@@ -31,18 +32,20 @@ internal class DefaultCategoryDataSource @Inject constructor(
     /**
      * For now, all returned categories guaranteed to be non-null since it only configured/added through server not from the client
      */
-    override suspend fun getCategories(ids: List<String>): Result<List<Category>> {
+    override suspend fun getCategories(limit: Int, ids: List<String>, prevSnapshot: DocumentSnapshot?): Result<Pair<List<Category>, DocumentSnapshot>> {
         return wrapInCoroutineCancellable(
             ioDispatcher
         ) { continuation ->
-            firestore.collection(CATEGORIES_COLLECTION)
+            var query = firestore.collection(CATEGORIES_COLLECTION)
                 .withIds(ids, ID_FIELD)
-                .get()
+                .limit(limit.toLong())
+            query = if (prevSnapshot != null) query.startAfter(prevSnapshot) else query
+            query.get()
                 .addOnSuccessListener { categoriesSnapshot ->
                     if (continuation.isActive) {
                         Timber.d("fetching categories Success,categories returned: ${categoriesSnapshot.documents}")
                         val categories = categoriesSnapshot.toObjects(Category::class.java)
-                        continuation.resume(Result.Success(categories))
+                        continuation.resume(Result.Success(Pair(categories, categoriesSnapshot.documents.last())))
                     } else {
                         Timber.d("continuation is no longer active")
                     }
