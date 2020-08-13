@@ -7,6 +7,8 @@
 
 package com.secret.domain.pubprofile
 
+import androidx.paging.PagingData
+import androidx.paging.filter
 import com.secret.domain.FlowUseCase
 import com.secret.domain.UseCase
 import com.secret.domain.di.CurrentUserProfile
@@ -23,11 +25,14 @@ import javax.inject.Inject
 class GetFollowingUseCase @Inject constructor(
     @CurrentUserProfile private val currentUser: UseCase<Unit, UiPublisher>,
     private val pubRepo: PublisherRepository
-) : FlowUseCase<Unit, UiPublisher>() {
+) : FlowUseCase<Unit, PagingData<UiPublisher>>() {
 
-    override suspend fun execute(parameters: Unit): Flow<UiPublisher> {
+    override suspend fun execute(parameters: Unit): Flow<PagingData<UiPublisher>> {
         val followingIds = currentUser(parameters).publisher.followedPublishersIds // If it throws NullPointerException it will be caught by catch in [FlowUseCase]
-        return pubRepo.getFollowingPubsList(followingIds).asFlow()
-            .filterNot { it.publisher.id.isEmpty() || it.publisher.memberSince < 0 }
+        return pubRepo.getFollowingPubsList(followingIds).map {
+            it.filter { pub ->
+                pub.publisher.id.isNotEmpty() && pub.publisher.memberSince > 0
+            }
+        }
     }
 }

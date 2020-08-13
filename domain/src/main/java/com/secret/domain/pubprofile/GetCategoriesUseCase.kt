@@ -7,6 +7,8 @@
 
 package com.secret.domain.pubprofile
 
+import androidx.paging.PagingData
+import androidx.paging.filter
 import com.secret.domain.FlowUseCase
 import com.secret.domain.UseCase
 import com.secret.domain.di.CurrentUserProfile
@@ -17,16 +19,22 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 /**
- * Similar to [GetFollowingUseCase] but for getting Categories
+ * Similar to [GetFollowingUseCase] but for getting Categories,
+ * **Note**: This should be cached in appropriate scope like: viewModelScope
  */
 class GetCategoriesUseCase @Inject constructor(
     @CurrentUserProfile private val currentUser: UseCase<Unit, UiPublisher>,
     private val categoryRepo: CategoryRepository
-) : FlowUseCase<Unit, Category>() {
+) : FlowUseCase<Unit, PagingData<Category>>() {
 
-    override suspend fun execute(parameters: Unit): Flow<Category> {
+    override suspend fun execute(parameters: Unit): Flow<PagingData<Category>> {
         val categoriesIds = currentUser(parameters).publisher.followedCategoriesIds
-        return categoryRepo.getCategories(categoriesIds).asFlow()
-            .filterNot { it.id.isEmpty() || it.name.isEmpty() }
+        return categoryRepo.getCategories(limit = LIMIT, ids = categoriesIds).map { dropEmpty(it) }
+    }
+
+    private fun dropEmpty(page: PagingData<Category>) = page.filter { it.id.isNotEmpty() && it.name.isNotEmpty() }
+
+    companion object {
+        const val LIMIT = 50 //Configured through RemoteConfig
     }
 }
