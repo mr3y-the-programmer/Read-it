@@ -64,6 +64,9 @@ dependencies {
     kapt depenedcies.dagger_compiler
     kapt depenedcies.dagger_android_annotation
 
+    //Paging
+    implementation depenedcies.paging_runtime
+
     //Timber
     implementation depenedcies.timber
 
