@@ -7,6 +7,8 @@
 
 package com.secret.domain.pubprofile
 
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
@@ -18,7 +20,7 @@ import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.core.uimodels.UiArticle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.toCollection
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.FixMethodOrder
@@ -47,7 +49,7 @@ class PublishedArticlesSinceTest {
         val mockedArticlesRepo = mock<ArticlesRepository> {
             mainCoroutineRule.runBlockingTest {
                 on(it.getPubArticlesSince(TestData.publisher1.id, period))
-                    .doReturn(TestData.uiArticles)
+                    .doReturn(flowOf(PagingData.from(TestData.uiArticles)))
             }
         }
 
@@ -66,7 +68,7 @@ class PublishedArticlesSinceTest {
     fun allOk_getPublishedSince() = mainCoroutineRule.runBlockingTest {
         val returnedArticles = mutableListOf<UiArticle>()
         // When trying to get the published articles last seven days
-        pubArticlesSince(Pair(testPubInfo, Since.LAST_7_DAYS)).collect { returnedArticles.add(it) }
+        pubArticlesSince(Pair(testPubInfo, Since.LAST_7_DAYS)).collect { it.map {article -> returnedArticles.add(article)} }
 
         // Assert empty articles dropped
         assertThat(returnedArticles).isEqualTo(TestData.uiArticles.dropLast(1))
@@ -79,7 +81,7 @@ class PublishedArticlesSinceTest {
         val period = ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).minusDays(7).toEpochSecond()
         val mockedArticlesRepo = mock<ArticlesRepository> {
             on(it.getPubArticlesSince(TestData.publisher1.id, period)).doReturn(
-                TestData.uiArticles
+                flowOf(PagingData.from(TestData.uiArticles))
             )
         }
 
@@ -87,7 +89,7 @@ class PublishedArticlesSinceTest {
 
         // When trying to get Articles of this publisher
         val returnArticles = mutableListOf<UiArticle>()
-        pubArticlesSince(Pair(testPubInfo, Since.LAST_7_DAYS)).toCollection(returnArticles)
+        pubArticlesSince(Pair(testPubInfo, Since.LAST_7_DAYS)).collect { it.map {article -> returnArticles.add(article)} }
 
         // Assert the list is empty since there's exception happened
         assertThat(returnArticles).isEmpty()
