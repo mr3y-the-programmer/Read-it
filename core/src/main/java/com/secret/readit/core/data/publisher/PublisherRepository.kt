@@ -108,7 +108,6 @@ class PublisherRepository @Inject constructor(
                                                            followersNumber: Int = 0,
                                                            limit: Int = 100,
                                                            isPubProfile: Boolean = false): Flow<PagingData<UiPublisher>> {
-        //TODO: make all pageSource dependencies lazy
         val params = RequestParams(limit, followersNumber, ids)
         val pagingSource = if (isPubProfile) pubProfilePagingSource.withParams<Publisher>(params) else pubsPagingSource.withParams(params)
         return Pager(
