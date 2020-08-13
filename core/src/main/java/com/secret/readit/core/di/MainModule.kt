@@ -42,9 +42,11 @@ import com.secret.readit.core.paging.articles.ArticlesPagingSource
 import com.secret.readit.core.paging.BasePagingSource
 import com.secret.readit.core.paging.articles.PubArticlesPagingSource
 import com.secret.readit.core.paging.articles.RequestParams
+import com.secret.readit.core.paging.categories.CategoriesPagingSource
 import com.secret.readit.core.paging.publisher.PubProfilePagingSource
 import com.secret.readit.core.paging.publisher.PublishersPagingSource
 import com.secret.readit.core.paging.publisher.RequestParams as pubParams
+import com.secret.readit.core.paging.categories.RequestParams as categoryParams
 import com.secret.readit.core.prefs.DefaultSharedPrefs
 import com.secret.readit.core.prefs.SharedPrefs
 import dagger.Lazy
@@ -172,8 +174,8 @@ class MainModule {
 
     @Provides
     @Singleton
-    fun provideCategoriesRepository(categoryDataSource: CategoryDataSource): CategoryRepository {
-        return CategoryRepository(categoryDataSource)
+    fun provideCategoriesRepository(categoryDataSource: CategoryDataSource, categoryPagingSource: BasePagingSource<categoryParams>): CategoryRepository {
+        return CategoryRepository(categoryDataSource, categoryPagingSource)
     }
 
     @Provides
@@ -208,6 +210,11 @@ class MainModule {
     @PubProfileSource
     fun providePubProfilePagingSource(pubDataSource: PublisherInfoDataSource): BasePagingSource<pubParams> {
         return PubProfilePagingSource(pubDataSource)
+    }
+
+    @Provides
+    fun provideCategoriesPagingSource(categoryDataSource: CategoryDataSource): BasePagingSource<categoryParams> {
+        return CategoriesPagingSource(categoryDataSource)
     }
     // TODO: make drafts database
 }
