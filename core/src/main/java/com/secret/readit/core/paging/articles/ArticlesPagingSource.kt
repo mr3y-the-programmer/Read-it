@@ -44,14 +44,4 @@ class ArticlesPagingSource @Inject constructor(
             reqParams.contentLimit
         )
     }
-
-    companion object {
-        //Create A new Instance of PagingSource
-        fun create(articlesSource: ArticlesDataSource, contentSource: ContentDataSource): ArticlesPagingSource {
-            return ArticlesPagingSource(
-                articlesSource = articlesSource,
-                contentSource = contentSource
-            )
-        }
-    }
 }

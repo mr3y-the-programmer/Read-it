@@ -187,13 +187,13 @@ class MainModule {
     @Provides
     @HomeFeedSource
     fun provideArticlesPagingSource(articlesSource: ArticlesDataSource, contentSource: ContentDataSource): BasePagingSource<RequestParams> {
-        return ArticlesPagingSource.create(articlesSource, contentSource)
+        return ArticlesPagingSource(articlesSource, contentSource)
     }
 
     @Provides
     @PubArticlesSource
     fun providePubPagingSource(articlesSource: ArticlesDataSource, contentSource: ContentDataSource): BasePagingSource<RequestParams> {
-        return PubArticlesPagingSource.create(articlesSource, contentSource)
+        return PubArticlesPagingSource(articlesSource, contentSource)
     }
 
     @Provides
