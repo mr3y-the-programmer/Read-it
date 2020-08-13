@@ -7,6 +7,7 @@
 
 package com.secret.domain.homefeed
 
+import androidx.paging.PagingData
 import com.secret.domain.FlowUseCase
 import com.secret.domain.UseCase
 import com.secret.domain.di.MostFollowedPublishers
@@ -20,32 +21,33 @@ import javax.inject.Inject
 /**
  * Picked up for you Use case, which takes a limit [Int] and return semi-randomly customized articles for user
  * based on some factors like: most appreciated, most-followed publishers(composite index), (short articles & appreciated a lot)
+ * **NOTE**: This should be cached in appropriate scope like viewModelScope
  */
 class PickedUpForYou @Inject constructor(
     private val articlesRepo: ArticlesRepository,
     @MostFollowedPublishers private val mostFollowedPubs: UseCase<Pair<Int, Int>, List<publisherId>>
-) : FlowUseCase<Int, UiArticle>() {
+) : FlowUseCase<Int, PagingData<UiArticle>>() {
 
-    override suspend fun execute(parameters: Int): Flow<UiArticle> {
+    override suspend fun execute(parameters: Int): Flow<PagingData<UiArticle>> {
         val limit = parameters.coerceIn(5, 30) // Ensure we don't request big number of articles that user will never read
         val (mostAppreciateLimit, mostFollowedPubLimit, shortArticlesLimit) = getEachPartLimit(limit)
         // First
-        val mostAppreciated = articlesRepo.getMostAppreciatedArticles(limit = mostAppreciateLimit, appreciateNum = APPRECIATE_NUMBER).asFlow()
+        val mostAppreciated = articlesRepo.getMostAppreciatedArticles(limit = mostAppreciateLimit, appreciateNum = APPRECIATE_NUMBER)
         // Second
         val pubIds = mostFollowedPubs(Pair(NUMBER_OF_FOLLOWERS, mostFollowedPubLimit))
-        val mostFollowedPublishers = articlesRepo.getMostFollowedPublishersArticles(limit = mostFollowedPubLimit, pubsIds = pubIds).asFlow()
+        val mostFollowedPublishers = articlesRepo.getMostFollowedPublishersArticles(limit = mostFollowedPubLimit, pubsIds = pubIds)
         // Third
         val shortAppreciatedArticles = articlesRepo.getShortAndAppreciatedArticles(
             limit = shortArticlesLimit,
             maximumMinutesRead = MINUTES_READ_NUMBER,
             appreciateNum = SHORT_ARTICLES_APPRECIATE_NUMBER
-        ).asFlow()
+        )
         // Wrap and combine them
         val articles = mostAppreciated.combine(mostFollowedPublishers) { fromMA, fromMFP ->
             if (Random().nextInt(2) == 0) fromMA else fromMFP
         }.combine(shortAppreciatedArticles) { other, fromSAA ->
             if (Random().nextInt(2) == 0) other else fromSAA
-        }.filterNot { it.article.id.isEmpty() || it.article.timestamp < 0 }
+        }.map { dropEmptyArticles(it) }
         return articles
     }
 

@@ -8,8 +8,8 @@
 package com.secret.domain.pubprofile
 
 import androidx.paging.PagingData
-import androidx.paging.filter
 import com.secret.domain.FlowUseCase
+import com.secret.domain.homefeed.dropEmptyArticles
 import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.data.publisher.PubImportantInfo
 import com.secret.readit.core.data.publisher.PublisherRepository
@@ -41,9 +41,7 @@ class PublishedArticlesSince @Inject constructor(
             Since.OLDER -> pubInfo.memberSince
         }
         return articlesRepo.getPubArticlesSince(pubId, period).map {
-            it.filter { article ->
-                article.article.id.isNotEmpty() && article.article.timestamp > 0
-            }
+            dropEmptyArticles(it)
         }
     }
 }

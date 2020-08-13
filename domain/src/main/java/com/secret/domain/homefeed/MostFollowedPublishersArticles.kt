@@ -7,9 +7,11 @@
 
 package com.secret.domain.homefeed
 
+import androidx.paging.map
 import com.secret.domain.UseCase
 import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.model.publisherId
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 /**
@@ -25,10 +27,11 @@ class MostFollowedPublishersArticles @Inject constructor(private val pubReposito
      * takes a pair of numberOfFollowers and limit respectively
      */
     override suspend fun execute(parameters: Pair<Int, Int>): List<publisherId> {
-        val publishers = pubRepository.getPubsWithNumOfFollowers(parameters.first, parameters.second)
         val pubIds = mutableListOf<publisherId>()
-        for (uiPub in publishers) {
-            pubIds.add(uiPub.publisher.id)
+        pubRepository.getPubsWithNumOfFollowers(parameters.first, parameters.second).collect {
+            it.map { pub ->
+                pubIds.add(pub.publisher.id)
+            }
         }
         return pubIds
     }
