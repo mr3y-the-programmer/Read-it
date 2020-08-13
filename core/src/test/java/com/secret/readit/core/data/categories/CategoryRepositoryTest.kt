@@ -30,7 +30,7 @@ class CategoryRepositoryTest {
 
     @Before
     fun setUp() {
-        categoryRepo = CategoryRepository(FakeCategoryDataSource())
+        categoryRepo = CategoryRepository(FakeCategoryDataSource(), mock {  })
     }
 
     @Test
@@ -48,7 +48,7 @@ class CategoryRepositoryTest {
     fun dataSourceFails_ReturnEmptyResult() = mainCoroutineRule.runBlockingTest {
         // GIVEN data Source that fails to get new result
         val mockedDataSource = mock<FakeCategoryDataSource> {
-            on(it.getCategories(emptyList())).doReturn(Result.Error(Exception()))
+            on(it.getCategories(999, TestData.categoriesIds, null)).doReturn(Result.Error(Exception()))
         }
 
         categoryRepo = categoryRepo.copy(mockedDataSource)
@@ -59,33 +59,7 @@ class CategoryRepositoryTest {
         assertThat(result).isEmpty()
     }
 
-    @Test
-    fun dataSourceSuccess_ReturnArticleCategories() = mainCoroutineRule.runBlockingTest {
-        // When trying to get a successful result
-        val result = categoryRepo.getArticleCategories(TestData.uiArticle1)
-
-        val expected = TestData.articleCategories
-
-        // Assert it equals our expectations
-        assertThat(result).isEqualTo(expected)
-    }
-
-    @Test
-    fun dataSourceFails_ReturnEmptyArticleCategories() = mainCoroutineRule.runBlockingTest {
-        // GIVEN data Source that fails to get new result
-        val mockedDataSource = mock<FakeCategoryDataSource> {
-            on(it.getArticleCategories("fake")).doReturn(Result.Error(Exception()))
-        }
-
-        categoryRepo = categoryRepo.copy(mockedDataSource)
-        // When trying to get a result
-        val result = categoryRepo.getArticleCategories(TestData.uiArticle1)
-
-        // Assert it is empty
-        assertThat(result).isEmpty()
-    }
-
     private fun CategoryRepository.copy(dataSource: CategoryDataSource): CategoryRepository {
-        return CategoryRepository(dataSource)
+        return CategoryRepository(dataSource, mock {  })
     }
 }
