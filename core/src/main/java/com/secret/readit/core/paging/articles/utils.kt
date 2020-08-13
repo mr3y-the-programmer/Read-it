@@ -10,6 +10,7 @@ package com.secret.readit.core.paging.articles
 import androidx.paging.PagingSource
 import com.google.firebase.firestore.DocumentSnapshot
 import com.secret.readit.core.data.articles.content.ContentDataSource
+import com.secret.readit.core.paging.BaseReqParams
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.model.Article
@@ -27,7 +28,7 @@ data class RequestParams(val limit: Int,
                                   val withMinutesRead: Int,
                                   val mostFollowedPubsId: List<publisherId>,
                                   val specificPub: Pair<publisherId, Long>,
-                                  val contentLimit: Int)
+                                  val contentLimit: Int): BaseReqParams()
 
 typealias ArticleWithContent = Pair<Article, Content>
 

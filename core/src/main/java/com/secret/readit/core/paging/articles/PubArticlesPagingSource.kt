@@ -23,7 +23,7 @@ class PubArticlesPagingSource @Inject constructor(
     private val articlesSource: ArticlesDataSource,
     private val contentSource: ContentDataSource
 ): PagingSource<DocumentSnapshot, ArticleWithContent>(),
-    BasePagingSource {
+    BasePagingSource<RequestParams> {
 
     override var reqParams: RequestParams =
         emptyReq() //It is empty for now, filling Request is Consumer responsibility
