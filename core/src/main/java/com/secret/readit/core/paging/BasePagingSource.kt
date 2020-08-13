@@ -9,7 +9,6 @@ package com.secret.readit.core.paging
 
 import androidx.paging.PagingSource
 import com.google.firebase.firestore.DocumentSnapshot
-import com.secret.readit.core.paging.articles.ArticleWithContent
 
 /**
  * This is the Base PagingSource that handles childs boilerplate

@@ -11,10 +11,8 @@ import androidx.paging.PagingSource
 import com.google.firebase.firestore.DocumentSnapshot
 import com.secret.readit.core.data.publisher.PublisherInfoDataSource
 import com.secret.readit.core.paging.BasePagingSource
-import com.secret.readit.core.paging.checkIfSuccessful
 import com.secret.readit.model.Publisher
 import javax.inject.Inject
-import kotlin.Exception
 
 /**
  * Paging Source which handles loading/caching things related to publishers on homefeed..etc
