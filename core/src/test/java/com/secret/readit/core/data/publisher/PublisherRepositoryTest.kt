@@ -8,14 +8,14 @@
 package com.secret.readit.core.data.publisher
 
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.firestore.DocumentSnapshot
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.MainCoroutineRule
 import com.secret.readit.core.TestData
 import com.secret.readit.core.data.auth.AuthRepository
 import com.secret.readit.core.data.shared.DummyStorageRepository
-import com.secret.readit.core.result.Result
+import com.secret.readit.core.paging.BasePagingSource
+import com.secret.readit.core.paging.publisher.RequestParams
 import com.secret.readit.core.uimodels.UiPublisher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -40,7 +40,8 @@ class PublisherRepositoryTest {
             on(it.getId()).doReturn(TestData.publisher1.id)
         }
 
-        publisherRepo = PublisherRepository(FakePublisherInfoDataSource(), mockedAuthRepository, DummyStorageRepository())
+        val mockedPagingSource = mock<BasePagingSource<RequestParams>> { /*no-op for now*/ }
+        publisherRepo = PublisherRepository(FakePublisherInfoDataSource(), mockedPagingSource, mockedPagingSource, mockedAuthRepository, DummyStorageRepository())
     }
 
     @Test
@@ -52,35 +53,6 @@ class PublisherRepositoryTest {
     @Test
     fun dataSourceFails_ReturnEmptyPublisher() = mainCoroutineRule.runBlockingTest { runUiPublisherTest(mockDataSourceFun = true) { publisherRepo.getCurrentUser() } }
 
-    @Test
-    fun allOk_ReturnPublishersSuccessfully() = mainCoroutineRule.runBlockingTest {
-        // When trying to get publishers with a number of followers
-        val result = publisherRepo.getPublishersWithNumberOfFollowers(emptyList(), 23, 30)
-
-        // Assert all data is ok
-        assertThat(publisherRepo.prevSnapshot).isInstanceOf(DocumentSnapshot::class.java)
-        assertThat(result).isNotEmpty()
-        assertThat(result.size).isEqualTo(1)
-        assertThat(result[0].profileImg).isNotNull()
-        assertThat(result[0].publisher).isEqualTo(TestData.publisher1)
-    }
-
-    @Test
-    fun dataSourceFails_ReturnEmptyPublishers() = mainCoroutineRule.runBlockingTest {
-        // GIVEN failed dataSource
-        val mockedPublisherDataSource = mock<FakePublisherInfoDataSource> {
-            on(it.getPublishers(listOf(TestData.publisher1.id), 23, 30, null)).doReturn(Result.Error(Exception()))
-        }
-        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
-
-        // When trying to get Publisher with valid number of followers
-        val result = publisherRepo.getPublishersWithNumberOfFollowers(emptyList(), 23, 30)
-
-        // Assert We have an empty list
-        assertThat(publisherRepo.prevSnapshot).isNull()
-        assertThat(result).isEmpty()
-    }
-    // TODO: refactor the above two tests
     @Test
     fun allOk_ReturnPublisherInfoSuccessfully() = mainCoroutineRule.runBlockingTest {
         runUiPublisherTest {
@@ -355,9 +327,10 @@ class PublisherRepositoryTest {
         if (nullUser) mockedAuthRepository = mock { on(it.getId()).doReturn(null) } // GIVEN no signed-in User
 
         val mockedPublisherDataSource = if (mockDataSourceFun) DummyPublisherDataSource() else FakePublisherInfoDataSource() // GIVEN failed dataSource
+        val mockedPagingSource = mock<BasePagingSource<RequestParams>> { /*no-op for now*/ }
 
         // Satisfy dependencies based on conditions
-        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
+        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedPagingSource, mockedPagingSource, mockedAuthRepository, DummyStorageRepository())
         val result = publisherRepo.funUnderTest()
         // Assert it all goes as intended
         if (nullUser || mockDataSourceFun || invalidParameter) assertThat(result).isFalse() else assertThat(result).isTrue()
@@ -373,9 +346,10 @@ class PublisherRepositoryTest {
         if (nullUser) mockedAuthRepository = mock { on(it.getId()).doReturn(null) } // GIVEN no signed-in User
 
         val mockedPublisherDataSource = if (mockDataSourceFun) DummyPublisherDataSource() else FakePublisherInfoDataSource() // GIVEN failed dataSource
+        val mockedPagingSource = mock<BasePagingSource<RequestParams>> { /*no-op for now*/ }
 
         // Satisfy dependencies based on conditions
-        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedAuthRepository, DummyStorageRepository())
+        publisherRepo = PublisherRepository(mockedPublisherDataSource, mockedPagingSource, mockedPagingSource, mockedAuthRepository, DummyStorageRepository())
         val result = publisherRepo.funUnderTest()
         // Assert it all goes as intended
         assertThat(result).isInstanceOf(UiPublisher::class.java)

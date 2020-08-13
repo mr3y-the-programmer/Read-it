@@ -9,11 +9,17 @@ package com.secret.readit.core.data.publisher
 
 import android.graphics.Bitmap
 import android.net.Uri
-import androidx.annotation.VisibleForTesting
-import com.google.firebase.firestore.DocumentSnapshot
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.secret.readit.core.data.auth.AuthRepository
 import com.secret.readit.core.data.shared.StorageRepository
 import com.secret.readit.core.data.utils.CustomIDHandler
+import com.secret.readit.core.di.PubProfileSource
+import com.secret.readit.core.di.PublishersSource
+import com.secret.readit.core.paging.BasePagingSource
+import com.secret.readit.core.paging.publisher.RequestParams
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.core.uimodels.UiArticle
@@ -21,18 +27,22 @@ import com.secret.readit.core.uimodels.UiPublisher
 import com.secret.readit.model.Category
 import com.secret.readit.model.Publisher
 import com.secret.readit.model.publisherId
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
  * Any consumers should interact with this Repo not with DataSources directly,
- * Rule: -forward actions when needed to dataSource
+ * Rule: -forward actions when needed to dataSource(Use PagingSources for caching)
  *       -provide Publisher data to consumers in expected format
  */
 @Singleton
 class PublisherRepository @Inject constructor(
     private val publisherDataSource: PublisherInfoDataSource,
+    @PublishersSource private val pubsPagingSource: BasePagingSource<RequestParams>,
+    @PubProfileSource private val pubProfilePagingSource: BasePagingSource<RequestParams>,
     private val authRepo: AuthRepository,
     private val storageRepo: StorageRepository,
     private val idHandler: CustomIDHandler = CustomIDHandler()
@@ -89,28 +99,31 @@ class PublisherRepository @Inject constructor(
     suspend fun unFollowPublisher(publisher: UiPublisher): Boolean = updateFollowers(publisher, positive = false)
 
     /** Exposed APIs For Consumers */
-    suspend fun getPubsWithNumOfFollowers(followersNumber: Int, limit: Int): List<UiPublisher> = getPublishersWithNumberOfFollowers(followersNumber = followersNumber, limit = limit)
+    suspend fun getPubsWithNumOfFollowers(followersNumber: Int, limit: Int): Flow<PagingData<UiPublisher>> = getPublishersWithNumberOfFollowers(followersNumber = followersNumber, limit = limit)
 
-    suspend fun getFollowingPubsList(followingIds: List<publisherId>): List<UiPublisher> = getPublishersWithNumberOfFollowers(followingIds)
+    suspend fun getFollowingPubsList(followingIds: List<publisherId>): Flow<PagingData<UiPublisher>> = getPublishersWithNumberOfFollowers(followingIds, isPubProfile = true)
 
-    // hold last document snapshot in-Memory to be able to get queries after it and avoid leaking resources and money
-    @VisibleForTesting
-    var prevSnapshot: DocumentSnapshot? = null
-        private set
     /**private fun handles the boilerplate and connecting to dataSource*/
-    @VisibleForTesting
-    suspend fun getPublishersWithNumberOfFollowers(ids: List<publisherId> = emptyList(), followersNumber: Int = 0, limit: Int = 100): List<UiPublisher> {
-        val result = publisherDataSource.getPublishers(ids, followersNumber, limit, prevSnapshot)
-        val uiPublishers = mutableListOf<UiPublisher>()
-        if (result != null && result.succeeded) {
-            val data = (result as Result.Success).data
-            for (pub in data.first) {
-                val profileImg = storageRepo.downloadImg(Uri.parse(pub.profileImgUri), DEFAULT_PROFILE_IMG_URL)
-                uiPublishers += UiPublisher(pub, profileImg)
-            }
-            prevSnapshot = data.second
+    private suspend fun getPublishersWithNumberOfFollowers(ids: List<publisherId> = emptyList(),
+                                                           followersNumber: Int = 0,
+                                                           limit: Int = 100,
+                                                           isPubProfile: Boolean = false): Flow<PagingData<UiPublisher>> {
+        //TODO: make all pageSource dependencies lazy
+        val params = RequestParams(limit, followersNumber, ids)
+        val pagingSource = if (isPubProfile) pubProfilePagingSource.withParams<Publisher>(params) else pubsPagingSource.withParams(params)
+        return Pager(
+            config = PagingConfig(pageSize = limit), 
+            pagingSourceFactory = { pagingSource }
+        ).flow.map {
+            format(it)
         }
-        return uiPublishers
+    }
+
+    private suspend fun format(page: PagingData<Publisher>): PagingData<UiPublisher> {
+        return page.map {
+            val profileImg = storageRepo.downloadImg(Uri.parse(it.profileImgUri), DEFAULT_PROFILE_IMG_URL)
+            UiPublisher(it, profileImg)
+        }
     }
 
     suspend fun getPublisherInfo(id: publisherId): UiPublisher {

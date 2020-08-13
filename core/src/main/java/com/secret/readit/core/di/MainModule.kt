@@ -146,10 +146,12 @@ class MainModule {
     @Singleton
     fun providePublisherRepository(
         publisherDataSource: PublisherInfoDataSource,
+        @PublishersSource pubsPagingSource: BasePagingSource<pubParams>,
+        @PubProfileSource pubProfilePagingSource: BasePagingSource<pubParams>,
         authRepo: AuthRepository,
         storageRepo: StorageRepository
     ): PublisherRepository {
-        return PublisherRepository(publisherDataSource, authRepo, storageRepo)
+        return PublisherRepository(publisherDataSource, pubsPagingSource, pubProfilePagingSource, authRepo, storageRepo)
     }
 
     @Provides
