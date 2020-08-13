@@ -10,23 +10,22 @@ package com.secret.readit.core.paging
 import androidx.paging.PagingSource
 import com.google.firebase.firestore.DocumentSnapshot
 import com.secret.readit.core.paging.articles.ArticleWithContent
-import com.secret.readit.core.paging.articles.RequestParams
 
 /**
  * This is the Base PagingSource that handles childs boilerplate
  */
-interface BasePagingSource {
+interface BasePagingSource<params: BaseReqParams> {
 
     /**
      * Specify params needed to make request of data like limit, ids...etc
      */
-    var reqParams: RequestParams
+    var reqParams: params
 
     /**
      * Handles providing request data to PagingSource
      */
     @Suppress("UNCHECKED_CAST")
-    fun withParams(reqParams: RequestParams): PagingSource<DocumentSnapshot, ArticleWithContent> {
+    fun withParams(reqParams: params): PagingSource<DocumentSnapshot, ArticleWithContent> {
         val source = apply { this.reqParams = reqParams }
         return (source as PagingSource<DocumentSnapshot, ArticleWithContent>)
     }
