@@ -11,6 +11,7 @@ import androidx.paging.PagingSource
 import com.google.firebase.firestore.DocumentSnapshot
 import com.secret.readit.core.data.articles.content.ContentDataSource
 import com.secret.readit.core.paging.BaseReqParams
+import com.secret.readit.core.paging.checkIfSuccessful
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.model.Article
@@ -52,8 +53,6 @@ internal suspend fun process(result: Result<Pair<List<Article>, DocumentSnapshot
     } ?: return PagingSource.LoadResult.Error(Exception()) //result didn't succeed, this can be interpreted by Ui consumers as LoadState.Error
     return PagingSource.LoadResult.Page(data, prevKey = null /*We don't support loading before current page yet*/, nextKey = lastSnapshot)
 }
-
-private fun checkIfSuccessful(result: Result<Pair<List<Article>, DocumentSnapshot>>) = if (result != null && result.succeeded) (result as Result.Success).data else null
 
 fun emptyReq() = RequestParams(
     0,
