@@ -25,8 +25,8 @@ interface BasePagingSource<params: BaseReqParams> {
      * Handles providing request data to PagingSource
      */
     @Suppress("UNCHECKED_CAST")
-    fun withParams(reqParams: params): PagingSource<DocumentSnapshot, ArticleWithContent> {
+    fun <T: Any> withParams(reqParams: params): PagingSource<DocumentSnapshot, T> {
         val source = apply { this.reqParams = reqParams }
-        return (source as PagingSource<DocumentSnapshot, ArticleWithContent>)
+        return (source as PagingSource<DocumentSnapshot, T>)
     }
 }
