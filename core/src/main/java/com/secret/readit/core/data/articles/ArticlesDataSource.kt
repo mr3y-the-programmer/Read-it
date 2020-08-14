@@ -45,7 +45,7 @@ interface ArticlesDataSource {
      *
      * **NOTE**: [prevSnapshot] should be null only when it is first time loading articles
      */
-    suspend fun getPubArticles(info: Pair<publisherId, Long>, prevSnapshot: DocumentSnapshot?): Result<Pair<List<Article>, DocumentSnapshot>>
+    suspend fun getPubArticles(info: Pair<publisherId, Long>, ids: List<articleId>, prevSnapshot: DocumentSnapshot?): Result<Pair<List<Article>, DocumentSnapshot>>
 
     /**
      * add the [article] to firestore
