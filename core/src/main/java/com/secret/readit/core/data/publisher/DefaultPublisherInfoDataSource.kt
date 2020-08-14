@@ -122,10 +122,19 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
     // Beginning of setting/updating data
 
     override suspend fun setDisplayName(newName: String, id: publisherId): Result<Boolean> {
+        return update(id, Pair(NAME_FIELD, newName))
+    }
+
+    override suspend fun updateProfilePicUrl(newUri: String, id: publisherId): Result<Boolean> {
+        return update(id, Pair(PROFILE_IMG_FIELD, newUri))
+    }
+
+
+    private suspend fun update(id: publisherId, fieldAndValue: Pair<String, String>): Result<Boolean> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
 
             val data = mapOf(
-                "name" to newName
+                fieldAndValue.first to fieldAndValue.second
             )
 
             firestore.collection(PUBLISHERS_COLLECTION)
@@ -133,13 +142,13 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
                 .set(data, SetOptions.merge())
                 .addOnSuccessListener {
                     if (continuation.isActive) {
-                        Timber.d("Updating publisher name success")
+                        Timber.d("Updating publisher Info success")
                         continuation.resume(Result.Success(true))
                     } else {
                         Timber.d("continuation is no longer active")
                     }
                 }.addOnFailureListener {
-                    Timber.d("Failed to update Publisher name For id: $id, cause: ${it.cause}")
+                    Timber.d("Failed to update Publisher Info For id: $id, cause: ${it.cause}")
                     continuation.resumeWithException(it)
                 }
         }
@@ -243,6 +252,7 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
     companion object {
         const val PUBLISHERS_COLLECTION = "publishers"
         const val NAME_FIELD = "name"
+        const val PROFILE_IMG_FIELD = "profileImgUri"
         const val ID_FIELD = "id"
         const val EMAIL_ADDRESS_FIELD = "emailAddress"
         const val MEMBER_SINCE_FIELD = "memberSince"
