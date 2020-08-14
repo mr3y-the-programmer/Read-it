@@ -99,6 +99,27 @@ class PublisherRepositoryTest {
     }
 
     @Test
+    fun allOk_UpdateUserProfileImgSuccessfully() = mainCoroutineRule.runBlockingTest {
+        runTest {
+            publisherRepo.updateProfileImg("some new Img path")
+        }
+    }
+
+    @Test
+    fun nullUser_CannotUpdateUserProfileImg() = mainCoroutineRule.runBlockingTest {
+        runTest(nullUser = true) {
+            publisherRepo.updateProfileImg("some new Img path")
+        }
+    }
+
+    @Test
+    fun dataSourceFails_CannotUpdateUserProfileImg() = mainCoroutineRule.runBlockingTest {
+        runTest(mockDataSourceFun = true) {
+            publisherRepo.updateProfileImg("some new Img path")
+        }
+    }
+
+    @Test
     fun allOk_AddNewArticleSuccessfully() = mainCoroutineRule.runBlockingTest {
         runTest {
             publisherRepo.addNewArticle(

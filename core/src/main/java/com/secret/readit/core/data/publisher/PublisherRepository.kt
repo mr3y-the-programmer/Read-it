@@ -14,6 +14,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.secret.readit.core.data.auth.AuthRepository
+import com.secret.readit.core.data.shared.Destination
 import com.secret.readit.core.data.shared.StorageRepository
 import com.secret.readit.core.data.utils.CustomIDHandler
 import com.secret.readit.core.di.PubProfileSource
@@ -63,6 +64,14 @@ class PublisherRepository @Inject constructor(
     suspend fun updateName(newName: String): Boolean {
         val id = authRepo.getId() ?: return false // User isn't Signed-in
         val result = publisherDataSource.setDisplayName(newName, id)
+        return if (result.succeeded) (result as Result.Success).data else false
+    }
+
+    //TODO: add retry to update image when connection is available again
+    suspend fun updateProfileImg(newImgPath: String): Boolean {
+        val id = authRepo.getId() ?: return false // User isn't Signed-in
+        val imgUri = storageRepo.uploadImg(id, newImgPath, Destination.PUBLISHER) ?: return false //Upload didn't succeed
+        val result = publisherDataSource.updateProfilePicUrl(imgUri.toString(), id)
         return if (result.succeeded) (result as Result.Success).data else false
     }
 
