@@ -11,7 +11,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
-import com.secret.readit.model.articleId
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -34,8 +33,12 @@ open class StorageRepository @Inject constructor(private val storageDataSource: 
         return if (result.succeeded) (result as Result.Success).data else null
     }
 
-    open suspend fun uploadImg(id: articleId, imgPath: String): Uri? {
-        val result = storageDataSource.uploadBitmap(id, imgPath)
+    open suspend fun uploadImg(
+        id: String,
+        imgPath: String,
+        destination: Destination = Destination.ARTICLES
+    ): Uri? {
+        val result = storageDataSource.uploadBitmap(id, imgPath, Destination.ARTICLES)
 
         return if (result.succeeded) (result as Result.Success).data else null
     }

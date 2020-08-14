@@ -81,7 +81,7 @@ class StorageRepositoryTest {
         val path = "images/favourites/myImg.png"
 
         // When trying to upload image with valid local path
-        val result = storageRepo.uploadImg(TestData.article1.id, path)
+        val result = storageRepo.uploadImg(TestData.article1.id, path, Destination.ARTICLES)
 
         // Assert we have a uri value
         assertThat(result).isNotNull()
@@ -94,12 +94,12 @@ class StorageRepositoryTest {
         // GIVEN a valid path, valid articleID and dataSource that fails to get data
         val path = "images/favourites/myImg.png"
         val mockedDataSource = mock<FakeStorageDataSource> {
-            on(it.uploadBitmap(TestData.article1.id, path)).doReturn(Result.Error(Exception()))
+            on(it.uploadBitmap(TestData.article1.id, path, Destination.ARTICLES)).doReturn(Result.Error(Exception()))
         }
         storageRepo = StorageRepository(mockedDataSource)
 
         // When trying to get a result
-        val result = storageRepo.uploadImg(TestData.article1.id, path)
+        val result = storageRepo.uploadImg(TestData.article1.id, path, Destination.ARTICLES)
 
         // Assert data is null, although path is valid
         assertThat(result).isNull()
