@@ -79,23 +79,35 @@ class PublisherRepository @Inject constructor(
      * publish new article,
      * @return true on success, false on failure or no signed-in user
      */
-    suspend fun addNewArticle(article: UiArticle): Boolean = update(article = article)
+    suspend fun addNewArticle(article: UiArticle): Boolean = update(type = UpdateType.PUBLISH_ARTICLE, article = article)
 
     /**
      * remove existing article,
      * @return true on success, false on failure or no signed-in user
      */
-    suspend fun removeArticle(article: UiArticle): Boolean = update(article = article, positive = false)
+    suspend fun removeArticle(article: UiArticle): Boolean = update(type = UpdateType.PUBLISH_ARTICLE, article = article, positive = false)
 
     /**
      * start following/subscribing new category
      */
-    suspend fun followCategory(category: Category): Boolean = update(category = category)
+    suspend fun followCategory(category: Category): Boolean = update(type = UpdateType.FOLLOW_CATEGORY, category = category)
 
     /**
      * UnFollow/UnSubscribe category
      */
-    suspend fun unFollowCategory(category: Category): Boolean = update(category = category, positive = false)
+    suspend fun unFollowCategory(category: Category): Boolean = update(type = UpdateType.FOLLOW_CATEGORY, category = category, positive = false)
+
+    /**
+     * Bookmark article
+     */
+    //**NOTE**: This unTested because its siblings tested well, you can add tests later
+    suspend fun bookmark(article: UiArticle): Boolean = update(type = UpdateType.BOOKMARK, article = article)
+
+    /**
+     * Remove article from bookmarks
+     */
+    //**NOTE**: This unTested because its siblings tested well, you can add tests later
+    suspend fun unBookmark(article: UiArticle): Boolean = update(type = UpdateType.BOOKMARK, article = article, positive = false)
 
     /**
      * follow publisher
@@ -153,21 +165,27 @@ class PublisherRepository @Inject constructor(
      * Callers should only specify one of two params either article or category
      * @param positive when true mean adding, false mean removing
      */
-    private suspend fun update(article: UiArticle? = null, category: Category? = null, positive: Boolean = true): Boolean {
+    private suspend fun update(type: UpdateType, article: UiArticle? = null, category: Category? = null, positive: Boolean = true): Boolean {
         val id = authRepo.getId() ?: return false
-        val objectID = try {
-            if (article != null) idHandler.getID(article.article) else idHandler.getID(category!!)
+        val result = try {
+            when(type) {
+                UpdateType.PUBLISH_ARTICLE -> {
+                    val articleID = idHandler.getID(article!!.article)
+                    if (positive) publisherDataSource.addNewArticleId(articleID, id) else publisherDataSource.removeExistingArticleId(articleID, id)
+                }
+                UpdateType.BOOKMARK -> {
+                    val articleID = idHandler.getID(article!!.article)
+                    if (positive) publisherDataSource.bookmark(articleID, id) else publisherDataSource.unBookmark(articleID, id)
+                }
+                UpdateType.FOLLOW_CATEGORY -> {
+                    val categoryID = idHandler.getID(category!!)
+                    if (positive) publisherDataSource.addNewCategoryId(categoryID, id) else publisherDataSource.unFollowExistingCategoryId(categoryID, id)
+                }
+            }
         } catch (ex: IllegalArgumentException) {
             Timber.e("Not Valid Article/Category")
             return false
         }
-
-        val result = if (article != null) {
-            if (positive) publisherDataSource.addNewArticleId(objectID, id) else publisherDataSource.removeExistingArticleId(objectID, id)
-        } else {
-            if (positive) publisherDataSource.addNewCategoryId(objectID, id) else publisherDataSource.unFollowExistingCategoryId(objectID, id)
-        }
-
         return if (result != null && result.succeeded) (result as Result.Success).data else false
     }
 
@@ -198,6 +216,12 @@ class PublisherRepository @Inject constructor(
     private fun getEmptyPublisher(): UiPublisher {
         val pub = Publisher(id = "", name = "", emailAddress = "", memberSince = -1)
         return UiPublisher(publisher = pub, profileImg = null)
+    }
+
+    private enum class UpdateType{
+        PUBLISH_ARTICLE,
+        FOLLOW_CATEGORY,
+        BOOKMARK
     }
 
     companion object {
