@@ -57,6 +57,10 @@ class ArticlesRepository @Inject constructor(
 
     suspend fun getPubArticlesSince(pubId: publisherId, since: Long): Flow<PagingData<UiArticle>> = getNewArticles(limit = 0, specificPub = Pair(pubId, since))
 
+    suspend fun getSpecificPubArticles(pubId: publisherId, ids: List<articleId>, since: Long = 0): Flow<PagingData<UiArticle>> {
+        return getNewArticles(limit = 0, specificPub = Pair(pubId, since), withIds = ids)
+    }
+
     suspend fun appreciate(article: UiArticle): Boolean = appreciateOrDisagree(article)
 
     suspend fun disagree(article: UiArticle): Boolean = appreciateOrDisagree(article, false)
@@ -96,7 +100,8 @@ class ArticlesRepository @Inject constructor(
         categoriesIds: List<String> = emptyList(),
         withMinutesRead: Int = 999,
         mostFollowedPubsId: List<publisherId> = emptyList(),
-        specificPub: Pair<publisherId, Long> = Pair("", -1)
+        specificPub: Pair<publisherId, Long> = Pair("", -1),
+        withIds: List<articleId> = emptyList()
     ): Flow<PagingData<UiArticle>> {
         val parameters = RequestParams(
             limit,
@@ -105,7 +110,8 @@ class ArticlesRepository @Inject constructor(
             withMinutesRead,
             mostFollowedPubsId,
             specificPub,
-            CONTENT_DISPLAYED_LIMIT
+            articleIds = withIds,
+            contentLimit = CONTENT_DISPLAYED_LIMIT
         )
         val pagingSource = if (specificPub.first.isNotEmpty() && specificPub.second > 0) {
             pubArticlesPagingSource.withParams<ArticleWithContent>(parameters)
