@@ -11,13 +11,16 @@ import android.graphics.Bitmap
 import android.net.Uri
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.result.Result
-import com.secret.readit.model.articleId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 open class FakeStorageDataSource : StorageDataSource {
 
-    override suspend fun uploadBitmap(id: articleId, imgPath: String): Result<Uri> {
+    override suspend fun uploadBitmap(
+        id: String,
+        imgPath: String,
+        des: Destination
+    ): Result<Uri> {
         val mockedUri = mock<Uri> {
             // no-op
         }
