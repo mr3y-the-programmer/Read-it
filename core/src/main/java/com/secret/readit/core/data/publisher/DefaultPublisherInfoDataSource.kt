@@ -249,6 +249,14 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
         }
     }
 
+    override suspend fun bookmark(articleID: articleId, userID: publisherId): Result<Boolean> {
+        return updateArray(BOOKMARKED_ARTICLES_FIELD, articleID, userID)
+    }
+
+    override suspend fun unBookmark(articleID: articleId, userID: publisherId): Result<Boolean> {
+        return updateArray(BOOKMARKED_ARTICLES_FIELD, articleID, userID, false)
+    }
+
     companion object {
         const val PUBLISHERS_COLLECTION = "publishers"
         const val NAME_FIELD = "name"
@@ -259,6 +267,7 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
         const val PUBLISHED_ARTICLES_FIELD = "publishedArticlesIds"
         const val FOLLOWED_CATEGORIES_FIELD = "followedCategoriesIds"
         const val FOLLOWED_PUBLISHERS_FIELD = "followedPublishersIds"
+        const val BOOKMARKED_ARTICLES_FIELD = "bookmarkedArticlesIds"
         const val FOLLOWERS_NUMBER_FIELD = "numOfFollowers"
     }
 }
