@@ -81,6 +81,7 @@ dependencies {
     implementation "com.google.firebase:firebase-firestore-ktx:$firestore_version"
     implementation "com.google.firebase:firebase-storage-ktx:$storage_version"
     implementation depenedcies.auth
+    implementation "com.google.firebase:firebase-config-ktx:$remote_config_version"
 
     // Dagger
     implementation depenedcies.dagger_android

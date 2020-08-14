@@ -22,6 +22,7 @@ buildscript {
         firestore_version = "21.4.3"
         firebase_ui_version = "6.2.0"
         storage_version = "19.1.1"
+        remote_config_version = "19.2.0"
         analytics_version = "17.4.4"
 
         dagger_version = "2.24"
@@ -62,7 +63,7 @@ buildscript {
         core_desugar_lib: "com.android.tools:desugar_jdk_libs:$desugar_version",
         //firebase
         auth: "com.firebaseui:firebase-ui-auth:$firebase_ui_version",
-        analytics: "com.google.firebase:firebase-analytics:$analytics_version",
+        analytics: "com.google.firebase:firebase-analytics-ktx:$analytics_version",
         //coroutines
         coroutines_core: "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_core_version",
         //dagger
