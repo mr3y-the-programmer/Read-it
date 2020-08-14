@@ -12,6 +12,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.secret.readit.core.data.utils.after
+import com.secret.readit.core.data.utils.withIds
 import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
 import com.secret.readit.core.di.IoDispatcher
 import com.secret.readit.core.result.Result
@@ -48,8 +49,10 @@ internal class DefaultArticlesDataSource @Inject constructor(
         return fetchArticle(id)
     }
 
-    override suspend fun getPubArticles(info: Pair<publisherId, Long>, prevSnapshot: DocumentSnapshot?): Result<Pair<List<Article>, DocumentSnapshot>> {
-        return fetchArticles(info, prevSnapshot)
+    override suspend fun getPubArticles(
+        info: Pair<publisherId, Long>, ids: List<articleId>, prevSnapshot: DocumentSnapshot?
+    ): Result<Pair<List<Article>, DocumentSnapshot>> {
+        return fetchArticles(info, ids, prevSnapshot)
     }
 
     override suspend fun addArticle(article: Article): Result<Boolean> {
@@ -132,13 +135,16 @@ internal class DefaultArticlesDataSource @Inject constructor(
         }
     }
 
-    private suspend fun fetchArticles(pubInfo: Pair<publisherId, Long>, prevSnapshot: DocumentSnapshot?): Result<Pair<List<Article>, DocumentSnapshot>> {
+    private suspend fun fetchArticles(
+        pubInfo: Pair<publisherId, Long>, ids: List<articleId>, prevSnapshot: DocumentSnapshot?
+    ): Result<Pair<List<Article>, DocumentSnapshot>> {
         return wrapInCoroutineCancellable(
             ioDispatcher
         ) { continuation ->
             firestore.collection(ARTICLES_COLLECTION)
                 .whereEqualTo(PUBLISHER_ID_FILED, pubInfo.first)
                 .whereGreaterThanOrEqualTo(TIMESTAMP_FIELD, pubInfo.second)
+                .withIds(ids, ID_FIELD)
                 .after(prevSnapshot)
                 .get()
                 .addOnSuccessListener { articlesSnapshot ->
@@ -217,6 +223,7 @@ internal class DefaultArticlesDataSource @Inject constructor(
     }
     companion object {
         const val ARTICLES_COLLECTION = "articles"
+        const val ID_FIELD = "id"
         const val NUM_OF_APPRECIATE_FIELD = "numOfAppreciate"
         const val NUM_OF_DISAGREE_FIELD = "numOfDisagree"
         const val NUM_MINUTES_READ_FIELD = "numMinutesRead"
