@@ -17,4 +17,5 @@ data class Publisher(val id: publisherId,
                      val publishedArticlesIds: List<articleId> = emptyList(),
                      val followedCategoriesIds: List<String> = emptyList(),
                      val followedPublishersIds: List<publisherId> = emptyList(),
+                     val bookmarkedArticlesIds: List<articleId> = emptyList(),
                      val numOfFollowers: Int = 0)
