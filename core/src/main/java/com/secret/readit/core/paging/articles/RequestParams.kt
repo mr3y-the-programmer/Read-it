@@ -8,6 +8,7 @@
 package com.secret.readit.core.paging.articles
 
 import com.secret.readit.core.paging.BaseReqParams
+import com.secret.readit.model.articleId
 import com.secret.readit.model.publisherId
 
 /**
@@ -22,5 +23,6 @@ data class RequestParams(
     val withMinutesRead: Int,
     val mostFollowedPubsId: List<publisherId>,
     val specificPub: Pair<publisherId, Long>,
+    val articleIds: List<articleId>,
     val contentLimit: Int
 ) : BaseReqParams()
