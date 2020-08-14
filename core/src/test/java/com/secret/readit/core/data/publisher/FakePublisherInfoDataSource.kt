@@ -48,4 +48,15 @@ class FakePublisherInfoDataSource : PublisherInfoDataSource {
     override suspend fun follow(followedPublisherID: publisherId, publisherID: publisherId): Result<Boolean> = Result.Success(true)
 
     override suspend fun unFollow(unFollowedPublisherID: publisherId, publisherID: publisherId): Result<Boolean> = Result.Success(true)
+
+    override suspend fun bookmark(articleID: articleId, userID: publisherId): Result<Boolean> {
+        TestData.publisher1 = TestData.publisher1.copy(bookmarkedArticlesIds = listOf(articleID))
+        return Result.Success(true)
+    }
+
+    override suspend fun unBookmark(articleID: articleId, userID: publisherId): Result<Boolean> {
+        val bookmarkedListUpdated = TestData.publisher1.bookmarkedArticlesIds.dropWhile { it == articleID}
+        TestData.publisher1 = TestData.publisher1.copy(bookmarkedArticlesIds = bookmarkedListUpdated)
+        return Result.Success(true)
+    }
 }

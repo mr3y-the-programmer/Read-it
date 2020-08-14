@@ -48,7 +48,7 @@ object TestData {
     val emptyCategory = Category("", "", 0)
 
     val publisher2 = Publisher(id = "2pub", name = "fake2", emailAddress = "fake2@gmail.com", memberSince = 45555555557785421)
-    val publisher1 = Publisher(
+    var publisher1 = Publisher(
         "1pub", "fake1", "fake1@gamil.com", memberSince = 1280282737737,
         followedCategoriesIds = listOf(category1.id, category2.id, category3.id),
         followedPublishersIds = listOf(
