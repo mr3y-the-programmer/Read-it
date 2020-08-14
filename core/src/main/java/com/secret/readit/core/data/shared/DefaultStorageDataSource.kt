@@ -13,7 +13,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
 import com.secret.readit.core.di.IoDispatcher
 import com.secret.readit.core.result.Result
-import com.secret.readit.model.articleId
 import dagger.Lazy
 import kotlinx.coroutines.CoroutineDispatcher
 import timber.log.Timber
@@ -33,10 +32,17 @@ internal class DefaultStorageDataSource @Inject constructor(
     /**
      * upload img with this path and return a uri that can be used to download it later
      */
-    override suspend fun uploadBitmap(id: articleId, imgPath: String): Result<Uri> {
+    override suspend fun uploadBitmap(
+        id: String,
+        imgPath: String,
+        des: Destination
+    ): Result<Uri> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
             val root = storage.reference // root reference
-            val ref = root.child(ARTICLES_DIR).child(id)
+            val ref = when(des) {
+                Destination.ARTICLES -> root.child(ARTICLES_DIR).child(id)
+                Destination.PUBLISHER -> root.child(PUBLISHERS_DIR).child(id)
+            }
 
             val pathInStream = converter.get().pathToInputStream(imgPath)
             ref.putStream(pathInStream)
@@ -89,5 +95,6 @@ internal class DefaultStorageDataSource @Inject constructor(
 
     companion object {
         const val ARTICLES_DIR = "articles"
+        const val PUBLISHERS_DIR = "publishers"
     }
 }
