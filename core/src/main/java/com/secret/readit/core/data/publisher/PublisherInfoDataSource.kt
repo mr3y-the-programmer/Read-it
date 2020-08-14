@@ -94,4 +94,18 @@ interface PublisherInfoDataSource {
      * @return true on success, otherwise false
      */
     suspend fun unFollow(unFollowedPublisherID: publisherId, publisherID: publisherId): Result<Boolean>
+
+    /**
+     * Add Article to Bookmarks
+     *
+     * @return true on success, otherwise false
+     */
+    suspend fun bookmark(articleID: articleId, userID: publisherId): Result<Boolean>
+
+    /**
+     * Remove Article From Bookmarks
+     *
+     * @return true on success, otherwise false
+     */
+    suspend fun unBookmark(articleID: articleId, userID: publisherId): Result<Boolean>
 }
