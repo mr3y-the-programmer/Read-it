@@ -10,7 +10,6 @@ package com.secret.readit.core.data.shared
 import android.graphics.Bitmap
 import android.net.Uri
 import com.secret.readit.core.result.Result
-import com.secret.readit.model.articleId
 
 /**
  * Blueprint for cloud storage operations for publishers/articles...etc
@@ -19,10 +18,10 @@ interface StorageDataSource {
 
     /**
      * Upload the bitmap at this local-file system path
-     *
+     * @param [des] to specify the Destination of image Publishers or Articles path
      * @return the Uri to download this bitmap later, **NOTE**: it can be revoked from firebase console
      */
-    suspend fun uploadBitmap(id: articleId, imgPath: String): Result<Uri>
+    suspend fun uploadBitmap(id: String, imgPath: String, des: Destination): Result<Uri>
 
     /**
      * Download bitmap that this uri represent
