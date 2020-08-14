@@ -47,6 +47,13 @@ interface PublisherInfoDataSource {
     suspend fun setDisplayName(newName: String, id: publisherId): Result<Boolean>
 
     /**
+     * update profile img url
+     *
+     * @return true on success, otherwise false
+     */
+    suspend fun updateProfilePicUrl(newUri: String, id: publisherId): Result<Boolean>
+
+    /**
      * when publishing new article, add its id to publisher profile
      *
      * @return true on success, otherwise false
