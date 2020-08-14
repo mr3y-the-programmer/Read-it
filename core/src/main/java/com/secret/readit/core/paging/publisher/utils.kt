@@ -12,8 +12,9 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.secret.readit.core.paging.checkIfSuccessful
 import com.secret.readit.core.result.Result
 
-fun <T: Any> process(result: Result<Pair<List<T>, DocumentSnapshot>>,
-                params: PagingSource.LoadParams<DocumentSnapshot>
+fun <T : Any> process(
+    result: Result<Pair<List<T>, DocumentSnapshot>>,
+    params: PagingSource.LoadParams<DocumentSnapshot>
 ): PagingSource.LoadResult<DocumentSnapshot, T> {
     var lastSnapshot = params.key
     val data = checkIfSuccessful(result)?.let {

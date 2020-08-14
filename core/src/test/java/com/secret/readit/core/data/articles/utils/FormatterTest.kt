@@ -11,7 +11,6 @@ import com.google.common.truth.Truth.assertThat
 import com.secret.readit.core.MainCoroutineRule
 import com.secret.readit.core.SharedMocks
 import com.secret.readit.core.TestData
-import com.secret.readit.core.data.articles.content.FakeContentDataSource
 import com.secret.readit.core.data.shared.DummyStorageRepository
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.uimodels.UiComment

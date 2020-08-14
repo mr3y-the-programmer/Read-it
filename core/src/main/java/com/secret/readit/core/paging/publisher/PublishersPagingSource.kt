@@ -19,9 +19,9 @@ import javax.inject.Inject
  */
 class PublishersPagingSource @Inject constructor(
     private val pubDataSource: PublisherInfoDataSource
-): PagingSource<DocumentSnapshot, Publisher>(), BasePagingSource<RequestParams>{
+) : PagingSource<DocumentSnapshot, Publisher>(), BasePagingSource<RequestParams> {
 
-    override var reqParams: RequestParams = RequestParams(0, 0, emptyList()) //It is consumer responsibility to fill the request
+    override var reqParams: RequestParams = RequestParams(0, 0, emptyList()) // It is consumer responsibility to fill the request
 
     override suspend fun load(params: LoadParams<DocumentSnapshot>): LoadResult<DocumentSnapshot, Publisher> {
         val result = pubDataSource.getPublishers(reqParams.withIds, reqParams.followersNum, reqParams.limit, params.key)

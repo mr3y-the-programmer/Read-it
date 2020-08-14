@@ -20,27 +20,31 @@ import com.secret.readit.model.publisherId
 // Another Solution by using Mockito2 and make extensions file on Resources
 open class FakeArticlesDataSource : ArticlesDataSource {
 
-    private val data1 = mapOf("id" to "4045494-4pub-A Ne",
+    private val data1 = mapOf(
+        "id" to "4045494-4pub-A Ne",
         "title" to "A New Orleans",
         "publisherID" to "4pubtypoowa0392",
         "numMinutesRead" to 3,
         "timestamp" to 124687893210,
         "numOfAppreciate" to 12,
         "numOfDisagree" to 2,
-        "categoryIds" to TestData.categoriesIds)
+        "categoryIds" to TestData.categoriesIds
+    )
 
     val mockedSnapshot1 = mock<DocumentSnapshot> {
         on(it.data).doReturn(data1)
     }
 
-    private val data2 = mapOf("id" to "4045494-6pub-What",
+    private val data2 = mapOf(
+        "id" to "4045494-6pub-What",
         "title" to "What a Wonderful White",
         "publisherID" to "6pubty5456owa0392",
         "numMinutesRead" to 4,
         "timestamp" to 345447893210,
         "numOfAppreciate" to 40,
         "numOfDisagree" to 7,
-        "categoryIds" to TestData.categoriesIds.drop(1))
+        "categoryIds" to TestData.categoriesIds.drop(1)
+    )
 
     val mockedSnapshot2 = mock<DocumentSnapshot> {
         on(it.data).doReturn(data2)

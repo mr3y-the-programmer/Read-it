@@ -45,24 +45,26 @@ class ArticlesRepositoryTest {
         -fast, see: Benchmark results
         -Reliable and well tested, so it cannot fail easily*/
         val mockedBaseSource = mock<BasePagingSource<RequestParams>> { /*no-op for now*/ }
-        articlesRepo = ArticlesRepository(FakeArticlesDataSource(), FakeContentDataSource(),
-                                          FakeCommentsDataSource(), mockedBaseSource,
-                                          mockedBaseSource, formatter)
+        articlesRepo = ArticlesRepository(
+            FakeArticlesDataSource(), FakeContentDataSource(),
+            FakeCommentsDataSource(), mockedBaseSource,
+            mockedBaseSource, formatter
+        )
     }
 
     /*getNewArticles() tests removed cause it is no longer contain logic to test*/
 
     @Test
     fun getFullArticle_allOk() = mainCoroutineRule.runBlockingTest {
-        //First assert the current Article is null
+        // First assert the current Article is null
         assertThat(articlesRepo.currentArticleID).isNull()
 
-        //When trying to get the full article
+        // When trying to get the full article
         val article = articlesRepo.getFullArticle(TestData.uiArticle1)
 
-        //Assert that correct content returned and formatted correctly
+        // Assert that correct content returned and formatted correctly
         assertThat(article.fullContent).isEqualTo(TestData.reverseContent1)
-        //And the current id is not null
+        // And the current id is not null
         assertThat(articlesRepo.currentArticleID).isEqualTo(TestData.uiArticle1.article.id)
     }
 

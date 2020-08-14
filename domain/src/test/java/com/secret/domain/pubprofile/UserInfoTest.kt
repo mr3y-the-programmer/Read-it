@@ -82,8 +82,8 @@ class UserInfoTest(
         val followingList = mutableListOf<UiPublisher>()
         val categoriesList = mutableListOf<Category>()
         // When trying to collect the result
-        followingUseCase(Unit).collect { it.map { pub -> followingList.add(pub)} }
-        categoryUseCase(Unit).collect { it.map { category -> categoriesList.add(category)} }
+        followingUseCase(Unit).collect { it.map { pub -> followingList.add(pub) } }
+        categoryUseCase(Unit).collect { it.map { category -> categoriesList.add(category) } }
 
         // Assert it all goes as intended
         assertThat(followingList).isNotEmpty()

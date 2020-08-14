@@ -18,15 +18,15 @@ import javax.inject.Inject
  * Identical to [ArticlesPagingSource] but For articles with specific publisher
  * **NOTE**: This should be cached By appropriate scope of Ui consumers like: viewModelScope
  */
-//TODO: handle the lifetime of this Source in dagger
+// TODO: handle the lifetime of this Source in dagger
 class PubArticlesPagingSource @Inject constructor(
     private val articlesSource: ArticlesDataSource,
     private val contentSource: ContentDataSource
-): PagingSource<DocumentSnapshot, ArticleWithContent>(),
+) : PagingSource<DocumentSnapshot, ArticleWithContent>(),
     BasePagingSource<RequestParams> {
 
     override var reqParams: RequestParams =
-        emptyReq() //It is empty for now, filling Request is Consumer responsibility
+        emptyReq() // It is empty for now, filling Request is Consumer responsibility
 
     override suspend fun load(params: LoadParams<DocumentSnapshot>): LoadResult<DocumentSnapshot, ArticleWithContent> {
         val result = articlesSource.getPubArticles(reqParams.specificPub, params.key)

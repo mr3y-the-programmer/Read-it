@@ -35,6 +35,6 @@ class GetCategoriesUseCase @Inject constructor(
     private fun dropEmpty(page: PagingData<Category>) = page.filter { it.id.isNotEmpty() && it.name.isNotEmpty() }
 
     companion object {
-        const val LIMIT = 50 //Configured through RemoteConfig
+        const val LIMIT = 50 // Configured through RemoteConfig
     }
 }

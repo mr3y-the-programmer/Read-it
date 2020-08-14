@@ -28,7 +28,8 @@ import javax.inject.Singleton
 @Singleton
 class CategoryRepository @Inject constructor(
     private val categoryDataSource: CategoryDataSource,
-    private val categoryPagingSource: BasePagingSource<RequestParams>) {
+    private val categoryPagingSource: BasePagingSource<RequestParams>
+) {
 
     /**
      * Return Categories from data source or empty if dataSource failed
@@ -44,7 +45,7 @@ class CategoryRepository @Inject constructor(
     /**
      * Return Categories associated with each article, or empty list if any failure happens
      */
-    //TODO: this will be removed later (UNNEEDED)
+    // TODO: this will be removed later (UNNEEDED)
     /*suspend fun getArticleCategories(article: UiArticle): List<Category> {
         val id = try {
             idHandler.getID(article.article)
@@ -59,7 +60,7 @@ class CategoryRepository @Inject constructor(
         val params = RequestParams(limit, ids)
         return Pager(
             config = PagingConfig(limit),
-            pagingSourceFactory = { categoryPagingSource.withParams<Category>(params)}
+            pagingSourceFactory = { categoryPagingSource.withParams<Category>(params) }
         ).flow
     }
 }

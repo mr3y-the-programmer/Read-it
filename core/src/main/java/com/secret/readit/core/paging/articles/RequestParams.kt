@@ -15,10 +15,12 @@ import com.secret.readit.model.publisherId
  *
  * also it takes [contentLimit] as a parameter to download limited num of content to de displayed like a summery
  */
-data class RequestParams(val limit: Int,
-                         val appreciateNum: Int,
-                         val categoriesIds: List<String>,
-                         val withMinutesRead: Int,
-                         val mostFollowedPubsId: List<publisherId>,
-                         val specificPub: Pair<publisherId, Long>,
-                         val contentLimit: Int): BaseReqParams()
+data class RequestParams(
+    val limit: Int,
+    val appreciateNum: Int,
+    val categoriesIds: List<String>,
+    val withMinutesRead: Int,
+    val mostFollowedPubsId: List<publisherId>,
+    val specificPub: Pair<publisherId, Long>,
+    val contentLimit: Int
+) : BaseReqParams()

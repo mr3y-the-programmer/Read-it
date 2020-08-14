@@ -20,7 +20,7 @@ open class FakeCategoryDataSource : CategoryDataSource {
         ids: List<String>,
         prevSnapshot: DocumentSnapshot?
     ): Result<Pair<List<Category>, DocumentSnapshot>> {
-        return Result.Success(Pair(TestData.categories, mock {  }))
+        return Result.Success(Pair(TestData.categories, mock { }))
     }
 
     override suspend fun getArticleCategories(id: articleId): Result<List<Category>> {

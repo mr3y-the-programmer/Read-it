@@ -13,6 +13,8 @@ import com.secret.readit.model.publisherId
 /**
  * take parameters to customize the dataSource result
  */
-data class RequestParams(val limit: Int,
-                         val followersNum: Int,
-                         val withIds: List<publisherId>): BaseReqParams()
+data class RequestParams(
+    val limit: Int,
+    val followersNum: Int,
+    val withIds: List<publisherId>
+) : BaseReqParams()

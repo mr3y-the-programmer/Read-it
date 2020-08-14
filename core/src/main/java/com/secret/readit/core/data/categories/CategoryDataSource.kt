@@ -28,6 +28,6 @@ interface CategoryDataSource {
     /**
      * get categories of specified [articleId]
      */
-    //TODO: This is UnUsed and maybe Removed later
+    // TODO: This is UnUsed and maybe Removed later
     suspend fun getArticleCategories(id: articleId): Result<List<Category>>
 }

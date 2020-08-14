@@ -42,7 +42,7 @@ class Formatter @Inject constructor(
 ) {
 
     /** format articles in expected format for consumers*/
-    suspend fun formatArticles(page: PagingData<ArticleWithContent>): PagingData<UiArticle>{
+    suspend fun formatArticles(page: PagingData<ArticleWithContent>): PagingData<UiArticle> {
         return page.map {
             val article = it.first
             val content = it.second

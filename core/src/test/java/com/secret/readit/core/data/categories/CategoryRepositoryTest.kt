@@ -30,7 +30,7 @@ class CategoryRepositoryTest {
 
     @Before
     fun setUp() {
-        categoryRepo = CategoryRepository(FakeCategoryDataSource(), mock {  })
+        categoryRepo = CategoryRepository(FakeCategoryDataSource(), mock { })
     }
 
     @Test
@@ -60,6 +60,6 @@ class CategoryRepositoryTest {
     }
 
     private fun CategoryRepository.copy(dataSource: CategoryDataSource): CategoryRepository {
-        return CategoryRepository(dataSource, mock {  })
+        return CategoryRepository(dataSource, mock { })
     }
 }

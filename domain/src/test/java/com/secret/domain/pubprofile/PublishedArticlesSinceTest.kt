@@ -68,7 +68,7 @@ class PublishedArticlesSinceTest {
     fun allOk_getPublishedSince() = mainCoroutineRule.runBlockingTest {
         val returnedArticles = mutableListOf<UiArticle>()
         // When trying to get the published articles last seven days
-        pubArticlesSince(Pair(testPubInfo, Since.LAST_7_DAYS)).collect { it.map {article -> returnedArticles.add(article)} }
+        pubArticlesSince(Pair(testPubInfo, Since.LAST_7_DAYS)).collect { it.map { article -> returnedArticles.add(article) } }
 
         // Assert empty articles dropped
         assertThat(returnedArticles).isEqualTo(TestData.uiArticles.dropLast(1))
@@ -89,7 +89,7 @@ class PublishedArticlesSinceTest {
 
         // When trying to get Articles of this publisher
         val returnArticles = mutableListOf<UiArticle>()
-        pubArticlesSince(Pair(testPubInfo, Since.LAST_7_DAYS)).collect { it.map {article -> returnArticles.add(article)} }
+        pubArticlesSince(Pair(testPubInfo, Since.LAST_7_DAYS)).collect { it.map { article -> returnArticles.add(article) } }
 
         // Assert the list is empty since there's exception happened
         assertThat(returnArticles).isEmpty()

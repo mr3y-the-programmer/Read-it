@@ -38,15 +38,13 @@ import com.secret.readit.core.data.shared.Converter
 import com.secret.readit.core.data.shared.DefaultStorageDataSource
 import com.secret.readit.core.data.shared.StorageDataSource
 import com.secret.readit.core.data.shared.StorageRepository
-import com.secret.readit.core.paging.articles.ArticlesPagingSource
 import com.secret.readit.core.paging.BasePagingSource
+import com.secret.readit.core.paging.articles.ArticlesPagingSource
 import com.secret.readit.core.paging.articles.PubArticlesPagingSource
 import com.secret.readit.core.paging.articles.RequestParams
 import com.secret.readit.core.paging.categories.CategoriesPagingSource
 import com.secret.readit.core.paging.publisher.PubProfilePagingSource
 import com.secret.readit.core.paging.publisher.PublishersPagingSource
-import com.secret.readit.core.paging.publisher.RequestParams as pubParams
-import com.secret.readit.core.paging.categories.RequestParams as categoryParams
 import com.secret.readit.core.prefs.DefaultSharedPrefs
 import com.secret.readit.core.prefs.SharedPrefs
 import dagger.Lazy
@@ -55,6 +53,8 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton
+import com.secret.readit.core.paging.categories.RequestParams as categoryParams
+import com.secret.readit.core.paging.publisher.RequestParams as pubParams
 
 @Module
 class MainModule {
@@ -163,12 +163,14 @@ class MainModule {
 
     @Provides
     @Singleton
-    fun provideArticlesRepository(articlesSource: ArticlesDataSource,
-                                  contentSource: ContentDataSource,
-                                  commentsSource: CommentDataSource,
-                                  @HomeFeedSource articlesPagingSource: BasePagingSource<RequestParams>,
-                                  @PubArticlesSource pubArticlesPagingSource: BasePagingSource<RequestParams>,
-                                  formatter: Formatter): ArticlesRepository {
+    fun provideArticlesRepository(
+        articlesSource: ArticlesDataSource,
+        contentSource: ContentDataSource,
+        commentsSource: CommentDataSource,
+        @HomeFeedSource articlesPagingSource: BasePagingSource<RequestParams>,
+        @PubArticlesSource pubArticlesPagingSource: BasePagingSource<RequestParams>,
+        formatter: Formatter
+    ): ArticlesRepository {
         return ArticlesRepository(articlesSource, contentSource, commentsSource, articlesPagingSource, pubArticlesPagingSource, formatter)
     }
 

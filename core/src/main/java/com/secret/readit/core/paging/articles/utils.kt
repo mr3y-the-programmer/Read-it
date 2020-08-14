@@ -18,11 +18,13 @@ import com.secret.readit.model.Content
 
 typealias ArticleWithContent = Pair<Article, Content>
 
-//Handle boilerplate of filling page with the correct data
-internal suspend fun process(result: Result<Pair<List<Article>, DocumentSnapshot>>,
-                            params: PagingSource.LoadParams<DocumentSnapshot>,
-                            contentSource: ContentDataSource,
-                            contentLimit: Int): PagingSource.LoadResult<DocumentSnapshot, ArticleWithContent> {
+// Handle boilerplate of filling page with the correct data
+internal suspend fun process(
+    result: Result<Pair<List<Article>, DocumentSnapshot>>,
+    params: PagingSource.LoadParams<DocumentSnapshot>,
+    contentSource: ContentDataSource,
+    contentLimit: Int
+): PagingSource.LoadResult<DocumentSnapshot, ArticleWithContent> {
     var lastSnapshot = params.key
     val data = checkIfSuccessful(result)?.let {
         val articles = it.first
@@ -35,7 +37,7 @@ internal suspend fun process(result: Result<Pair<List<Article>, DocumentSnapshot
             }
         }
         articles.zip(contents)
-    } ?: return PagingSource.LoadResult.Error(Exception()) //result didn't succeed, this can be interpreted by Ui consumers as LoadState.Error
+    } ?: return PagingSource.LoadResult.Error(Exception()) // result didn't succeed, this can be interpreted by Ui consumers as LoadState.Error
     return PagingSource.LoadResult.Page(data, prevKey = null /*We don't support loading before current page yet*/, nextKey = lastSnapshot)
 }
 

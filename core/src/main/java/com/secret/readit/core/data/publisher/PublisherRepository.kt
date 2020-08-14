@@ -104,14 +104,16 @@ class PublisherRepository @Inject constructor(
     suspend fun getFollowingPubsList(followingIds: List<publisherId>): Flow<PagingData<UiPublisher>> = getPublishersWithNumberOfFollowers(followingIds, isPubProfile = true)
 
     /**private fun handles the boilerplate and connecting to dataSource*/
-    private suspend fun getPublishersWithNumberOfFollowers(ids: List<publisherId> = emptyList(),
-                                                           followersNumber: Int = 0,
-                                                           limit: Int = 100,
-                                                           isPubProfile: Boolean = false): Flow<PagingData<UiPublisher>> {
+    private suspend fun getPublishersWithNumberOfFollowers(
+        ids: List<publisherId> = emptyList(),
+        followersNumber: Int = 0,
+        limit: Int = 100,
+        isPubProfile: Boolean = false
+    ): Flow<PagingData<UiPublisher>> {
         val params = RequestParams(limit, followersNumber, ids)
         val pagingSource = if (isPubProfile) pubProfilePagingSource.withParams<Publisher>(params) else pubsPagingSource.withParams(params)
         return Pager(
-            config = PagingConfig(pageSize = limit), 
+            config = PagingConfig(pageSize = limit),
             pagingSourceFactory = { pagingSource }
         ).flow.map {
             format(it)

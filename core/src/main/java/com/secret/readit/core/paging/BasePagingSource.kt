@@ -13,7 +13,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 /**
  * This is the Base PagingSource that handles childs boilerplate
  */
-interface BasePagingSource<params: BaseReqParams> {
+interface BasePagingSource<params : BaseReqParams> {
 
     /**
      * Specify params needed to make request of data like limit, ids...etc
@@ -24,7 +24,7 @@ interface BasePagingSource<params: BaseReqParams> {
      * Handles providing request data to PagingSource
      */
     @Suppress("UNCHECKED_CAST")
-    fun <T: Any> withParams(reqParams: params): PagingSource<DocumentSnapshot, T> {
+    fun <T : Any> withParams(reqParams: params): PagingSource<DocumentSnapshot, T> {
         val source = apply { this.reqParams = reqParams }
         return (source as PagingSource<DocumentSnapshot, T>)
     }

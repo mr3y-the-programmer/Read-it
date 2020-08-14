@@ -12,5 +12,7 @@ import com.secret.readit.core.paging.BaseReqParams
 /**
  * Request Params for Category PagingSource
  */
-data class RequestParams(val limit: Int,
-                         val ids: List<String>) : BaseReqParams()
+data class RequestParams(
+    val limit: Int,
+    val ids: List<String>
+) : BaseReqParams()
