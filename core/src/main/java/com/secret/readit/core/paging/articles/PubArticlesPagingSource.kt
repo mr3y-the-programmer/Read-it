@@ -29,7 +29,7 @@ class PubArticlesPagingSource @Inject constructor(
         emptyReq() // It is empty for now, filling Request is Consumer responsibility
 
     override suspend fun load(params: LoadParams<DocumentSnapshot>): LoadResult<DocumentSnapshot, ArticleWithContent> {
-        val result = articlesSource.getPubArticles(reqParams.specificPub, params.key)
+        val result = articlesSource.getPubArticles(reqParams.specificPub, reqParams.articleIds, params.key)
         return process(
             result,
             params,
