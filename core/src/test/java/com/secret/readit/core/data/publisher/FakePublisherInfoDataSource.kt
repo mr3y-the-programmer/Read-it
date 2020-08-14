@@ -32,6 +32,11 @@ class FakePublisherInfoDataSource : PublisherInfoDataSource {
 
     override suspend fun setDisplayName(newName: String, id: publisherId): Result<Boolean> = Result.Success(true)
 
+    override suspend fun updateProfilePicUrl(
+        newUri: String,
+        id: publisherId
+    ): Result<Boolean> = Result.Success(true)
+
     override suspend fun addNewArticleId(articleID: articleId, publisherID: publisherId): Result<Boolean> = Result.Success(true)
 
     override suspend fun removeExistingArticleId(articleID: articleId, publisherID: publisherId): Result<Boolean> = Result.Success(true)

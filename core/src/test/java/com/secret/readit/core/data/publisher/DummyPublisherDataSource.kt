@@ -28,6 +28,11 @@ class DummyPublisherDataSource : PublisherInfoDataSource {
 
     override suspend fun setDisplayName(newName: String, id: publisherId): Result<Boolean> = mock { } // no-op
 
+    override suspend fun updateProfilePicUrl(
+        newUri: String,
+        id: publisherId
+    ): Result<Boolean> = mock {  } // no-op
+
     override suspend fun addNewArticleId(articleID: articleId, publisherID: publisherId): Result<Boolean> = mock { } // no-op
 
     override suspend fun removeExistingArticleId(articleID: articleId, publisherID: publisherId): Result<Boolean> = mock { } // no-op
