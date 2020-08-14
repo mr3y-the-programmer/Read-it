@@ -40,14 +40,3 @@ internal suspend fun process(
     } ?: return PagingSource.LoadResult.Error(Exception()) // result didn't succeed, this can be interpreted by Ui consumers as LoadState.Error
     return PagingSource.LoadResult.Page(data, prevKey = null /*We don't support loading before current page yet*/, nextKey = lastSnapshot)
 }
-
-fun emptyReq() = RequestParams(
-    0,
-    0,
-    emptyList(),
-    0,
-    emptyList(),
-    Pair("", -1),
-    emptyList(),
-    0
-)

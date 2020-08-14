@@ -29,8 +29,7 @@ class ArticlesPagingSource @Inject constructor(
 ) : PagingSource<DocumentSnapshot, ArticleWithContent>(),
     BasePagingSource<RequestParams> {
 
-    override var reqParams: RequestParams =
-        emptyReq() // It is empty for now, filling Request is Consumer responsibility
+    override lateinit var reqParams: RequestParams  // filling Request is Consumer responsibility
 
     override suspend fun load(params: LoadParams<DocumentSnapshot>): LoadResult<DocumentSnapshot, ArticleWithContent> {
         val result = articlesSource.getArticles(

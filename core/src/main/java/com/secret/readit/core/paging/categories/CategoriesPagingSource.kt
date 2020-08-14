@@ -22,7 +22,7 @@ class CategoriesPagingSource @Inject constructor(
     private val categoryDataSource: CategoryDataSource
 ) : PagingSource<DocumentSnapshot, Category>(), BasePagingSource<RequestParams> {
 
-    override var reqParams: RequestParams = RequestParams(0, emptyList()) // It is consumer responsibility to fill the request
+    override lateinit var reqParams: RequestParams // It is consumer responsibility to fill the request
 
     override suspend fun load(params: LoadParams<DocumentSnapshot>): LoadResult<DocumentSnapshot, Category> {
         val result = categoryDataSource.getCategories(reqParams.limit, reqParams.ids, params.key)
