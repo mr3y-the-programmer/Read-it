@@ -49,6 +49,8 @@ android {
 dependencies {
     implementation project(":core")
     implementation project(":model")
+    /*UnComment this once this feature is supported in AGP*/
+//    testImplementation testFixtures(project(":core")) //Need to be wrapped in testFixtures() to Use shared Tests Data in core
     implementation depenedcies.file_tree
     implementation depenedcies.kt_standard_lib
     implementation depenedcies.android_core_ktx

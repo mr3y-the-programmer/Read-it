@@ -9,6 +9,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'java-test-fixtures' //benefit from Gradle 5.6 test-fixture feature
 
 apply plugin: "org.jmailen.kotlinter"
 apply plugin: "org.jlleitschuh.gradle.ktlint"
@@ -57,10 +58,10 @@ android {
 
     sourceSets {
         androidTest {
-            java.srcDir "src/shared/java"
+            java.srcDir "src/shared/testFixtures/java"
         }
         test {
-            java.srcDir "src/shared/java"
+            java.srcDir "src/shared/testFixtures/java"
         }
     }
 }
