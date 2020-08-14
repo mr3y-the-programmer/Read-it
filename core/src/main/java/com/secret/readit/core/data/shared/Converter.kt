@@ -10,12 +10,7 @@ package com.secret.readit.core.data.shared
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.secret.readit.core.di.DefaultDispatcher
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
@@ -27,7 +22,7 @@ import javax.inject.Inject
  */
 class Converter @Inject constructor(@DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher) {
 
-    val coroutineScope = CoroutineScope(Job() + defaultDispatcher)
+    private val coroutineScope = CoroutineScope(Job() + defaultDispatcher)
 
     /**
      * Provide FileInputStream From the given path
@@ -50,9 +45,8 @@ class Converter @Inject constructor(@DefaultDispatcher private val defaultDispat
                     bitmap = BitmapFactory.decodeStream(inStream)
                 }
             }
-        } catch (cancelEx: CancellationException) {
-            Timber.e("Coroutine cancelled No need to complete the work")
-            throw cancelEx
+        } finally {
+            coroutineScope.cancel()
         }
         return bitmap
     }
