@@ -18,7 +18,6 @@ import javax.inject.Inject
  * Identical to [ArticlesPagingSource] but For articles with specific publisher
  * **NOTE**: This should be cached By appropriate scope of Ui consumers like: viewModelScope
  */
-// TODO: handle the lifetime of this Source in dagger
 class PubArticlesPagingSource @Inject constructor(
     private val articlesSource: ArticlesDataSource,
     private val contentSource: ContentDataSource

@@ -22,7 +22,6 @@ import javax.inject.Inject
  *
  * **NOTE**: This should be cached By appropriate scope of Ui consumers like: viewModelScope
  */
-// TODO: handle the lifetime of this Source in dagger
 class ArticlesPagingSource @Inject constructor(
     private val articlesSource: ArticlesDataSource,
     private val contentSource: ContentDataSource
