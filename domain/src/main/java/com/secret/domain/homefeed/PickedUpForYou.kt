@@ -12,8 +12,10 @@ import com.secret.domain.FlowUseCase
 import com.secret.domain.UseCase
 import com.secret.domain.di.MostFollowedPublishers
 import com.secret.readit.core.data.articles.ArticlesRepository
+import com.secret.readit.core.remoteconfig.RemoteConfigSource
 import com.secret.readit.core.uimodels.UiArticle
 import com.secret.readit.model.publisherId
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import java.util.*
 import javax.inject.Inject
@@ -23,13 +25,17 @@ import javax.inject.Inject
  * based on some factors like: most appreciated, most-followed publishers(composite index), (short articles & appreciated a lot)
  * **NOTE**: This should be cached in appropriate scope like viewModelScope
  */
+@ExperimentalCoroutinesApi
 class PickedUpForYou @Inject constructor(
     private val articlesRepo: ArticlesRepository,
-    @MostFollowedPublishers private val mostFollowedPubs: UseCase<Pair<Int, Int>, List<publisherId>>
+    @MostFollowedPublishers private val mostFollowedPubs: UseCase<Pair<Int, Int>, List<publisherId>>,
+    private val remoteConfig: RemoteConfigSource
 ) : FlowUseCase<Int, PagingData<UiArticle>>() {
 
     override suspend fun execute(parameters: Int): Flow<PagingData<UiArticle>> {
-        val limit = parameters.coerceIn(5, 30) // Ensure we don't request big number of articles that user will never read
+        val minimum = remoteConfig.minimumArticlesLimit.value.toInt()
+        val maximum = remoteConfig.maximumArticlesLimit.value.toInt()
+        val limit = parameters.coerceIn(minimum, maximum) // Ensure we don't request big number of articles that user will never read
         val (mostAppreciateLimit, mostFollowedPubLimit, shortArticlesLimit) = getEachPartLimit(limit)
         // First
         val mostAppreciated = articlesRepo.getMostAppreciatedArticles(limit = mostAppreciateLimit, appreciateNum = APPRECIATE_NUMBER)
@@ -65,11 +71,8 @@ class PickedUpForYou @Inject constructor(
         return Triple(first, second, third)
     }
 
-    companion object {
-        // TODO: update this to be configured through RemoteConfig
-        const val NUMBER_OF_FOLLOWERS = 100
-        const val APPRECIATE_NUMBER = 1000
-        const val MINUTES_READ_NUMBER = 4
-        const val SHORT_ARTICLES_APPRECIATE_NUMBER = 4000
-    }
+    private val NUMBER_OF_FOLLOWERS = remoteConfig.withNumOfFollowers.value.toInt()
+    private val APPRECIATE_NUMBER = remoteConfig.withAppreciateNum.value.toInt()
+    private val MINUTES_READ_NUMBER = remoteConfig.withMinutesRead.value.toInt()
+    private val SHORT_ARTICLES_APPRECIATE_NUMBER = remoteConfig.shortArtWithAppreciateNum.value.toInt()
 }
