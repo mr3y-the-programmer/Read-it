@@ -19,6 +19,7 @@ import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
+import com.secret.readit.R
 import com.secret.readit.core.data.articles.ArticlesDataSource
 import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.data.articles.DefaultArticlesDataSource
@@ -113,6 +114,7 @@ class MainModule {
             fetchTimeoutInSeconds = 60 // Also set the timeout to 1 minute
         }
         remoteConfig.setConfigSettingsAsync(settings)
+        remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
         return remoteConfig
     }
 
