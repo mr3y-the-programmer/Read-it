@@ -14,6 +14,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import com.secret.readit.core.data.articles.ArticlesDataSource
@@ -99,6 +102,18 @@ class MainModule {
     @Singleton
     fun provideFirebaseStorage(): FirebaseStorage {
         return Firebase.storage
+    }
+
+    @Provides
+    @Singleton
+    fun provideRemoteConfig(): FirebaseRemoteConfig {
+        val remoteConfig = Firebase.remoteConfig
+        val settings = remoteConfigSettings {
+            minimumFetchIntervalInSeconds = 3600 // During Development, We need to low this value. Override this by using another value in fetch(long)
+            fetchTimeoutInSeconds = 60 // Also set the timeout to 1 minute
+        }
+        remoteConfig.setConfigSettingsAsync(settings)
+        return remoteConfig
     }
 
     @Provides
