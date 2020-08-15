@@ -12,7 +12,7 @@ package com.secret.domain.search
  */
 sealed class Searchable {
 
-    data class Article(val title: String, val content: String, val pubName: String, val sinceYear: Int)
+    data class SearchableArticle(val title: String, val content: String, val pubName: String, val sinceYear: Int): Searchable()
 
-    data class Publisher(val name: String, val email: String, val sinceYear: Int, val profileImgUrl: String)
+    data class SearchablePublisher(val name: String, val email: String, val sinceYear: Int, val profileImgUrl: String): Searchable()
 }

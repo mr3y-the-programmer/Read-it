@@ -12,7 +12,7 @@ import com.algolia.search.client.Index
 import com.algolia.search.dsl.*
 import com.algolia.search.model.IndexName
 import com.secret.domain.FlowUseCase
-import com.secret.domain.search.Searchable.Publisher
+import com.secret.domain.search.Searchable.SearchablePublisher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.serialization.json.content
@@ -25,10 +25,10 @@ import javax.inject.Inject
 /**
  * Identical to [SearchArticle] but for publishers
  */
-class SearchPublisher @Inject constructor(private val searchClient: ClientSearch) : FlowUseCase<SearchPublisherParams, Publisher>() {
+class SearchPublisher @Inject constructor(private val searchClient: ClientSearch) : FlowUseCase<SearchPublisherParams, SearchablePublisher>() {
 
-    override suspend fun execute(parameters: SearchPublisherParams): Flow<Publisher> {
-        val consumedResult = mutableListOf<Publisher>()
+    override suspend fun execute(parameters: SearchPublisherParams): Flow<SearchablePublisher> {
+        val consumedResult = mutableListOf<SearchablePublisher>()
         val pubIndex = configureIndex(parameters)
         val query = query(parameters.query) { hitsPerPage = 50 }
         pubIndex.search(query).hits.forEach {
@@ -37,7 +37,7 @@ class SearchPublisher @Inject constructor(private val searchClient: ClientSearch
             val sinceYear = ZonedDateTime.ofInstant(Instant.ofEpochMilli(it["memberSince"]!!.long), ZoneId.systemDefault()).year
             // With Algolia's provided widgets and glide we can use this url directly as Img, See: https://discourse.algolia.com/t/how-do-i-add-an-image-to-an-object-in-algolia/8398
             val profileImg = it["profileImgUri"]!!.content
-            consumedResult.add(Publisher(name, email, sinceYear, profileImg))
+            consumedResult.add(SearchablePublisher(name, email, sinceYear, profileImg))
         }
         return consumedResult.asFlow()
     }

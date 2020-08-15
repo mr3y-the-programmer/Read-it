@@ -12,7 +12,7 @@ import com.algolia.search.client.Index
 import com.algolia.search.dsl.*
 import com.algolia.search.model.IndexName
 import com.secret.domain.FlowUseCase
-import com.secret.domain.search.Searchable.Article
+import com.secret.domain.search.Searchable.SearchableArticle
 import com.secret.readit.model.Category
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
@@ -27,10 +27,10 @@ import javax.inject.Inject
  * SearchArticle UseCase which takes [SearchArticleParams] as param and
  * return the Flow of Articles that match this search
  */
-class SearchArticle @Inject constructor(private val searchClient: ClientSearch) : FlowUseCase<SearchArticleParams, Article>() {
+class SearchArticle @Inject constructor(private val searchClient: ClientSearch) : FlowUseCase<SearchArticleParams, SearchableArticle>() {
 
-    override suspend fun execute(parameters: SearchArticleParams): Flow<Article> {
-        val consumedResult = mutableListOf<Article>()
+    override suspend fun execute(parameters: SearchArticleParams): Flow<SearchableArticle> {
+        val consumedResult = mutableListOf<SearchableArticle>()
         val articleIndex = configureIndex(parameters)
         val query = query(parameters.query) { hitsPerPage = 50 }
         articleIndex.search(query).hits.forEach {
@@ -38,7 +38,7 @@ class SearchArticle @Inject constructor(private val searchClient: ClientSearch) 
             val content = it.snippetResult.content["value"]!!.content // Snippet includes also highlighting
             val publisherName = it["pubName"]!!.content // display the pub of article
             val timestamp = ZonedDateTime.ofInstant(Instant.ofEpochMilli(it["timestamp"]!!.long), ZoneId.systemDefault()).year
-            consumedResult.add(Article(title, content, publisherName, timestamp))
+            consumedResult.add(SearchableArticle(title, content, publisherName, timestamp))
         }
         return consumedResult.asFlow()
     }
