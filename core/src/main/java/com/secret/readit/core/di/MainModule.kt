@@ -51,6 +51,8 @@ import com.secret.readit.core.paging.publisher.PubProfilePagingSource
 import com.secret.readit.core.paging.publisher.PublishersPagingSource
 import com.secret.readit.core.prefs.DefaultSharedPrefs
 import com.secret.readit.core.prefs.SharedPrefs
+import com.secret.readit.core.remoteconfig.DefaultRemoteConfigSource
+import com.secret.readit.core.remoteconfig.RemoteConfigSource
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
@@ -116,6 +118,12 @@ class MainModule {
         remoteConfig.setConfigSettingsAsync(settings)
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
         return remoteConfig
+    }
+
+    @Provides
+    @ExperimentalCoroutinesApi
+    fun provideRemoteConfigDataSource(config: FirebaseRemoteConfig, @IoDispatcher ioDispatcher: CoroutineDispatcher): RemoteConfigSource {
+        return DefaultRemoteConfigSource(config, ioDispatcher)
     }
 
     @Provides
