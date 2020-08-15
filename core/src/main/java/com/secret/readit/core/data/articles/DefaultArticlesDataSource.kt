@@ -78,8 +78,6 @@ internal class DefaultArticlesDataSource @Inject constructor(
         return wrapInCoroutineCancellable(
             ioDispatcher
         ) { continuation ->
-            // TODO:try configure the number of limit with Remote config
-            // or try some pagination to avoid wasting resources
             firestore.collection(ARTICLES_COLLECTION)
                 .whereGreaterThanOrEqualTo(NUM_OF_APPRECIATE_FIELD, numOfAppreciation)
                 .whereLessThanOrEqualTo(NUM_MINUTES_READ_FIELD, numOfMinutesRead)
