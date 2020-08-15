@@ -71,16 +71,12 @@ class UserInfoTest(
         fun testUseCases() = listOf(
             arrayOf(
                 GetFollowingUseCase(FakeCurrentUser(), mockedPubRepo),
-                GetCategoriesUseCase(
-                    FakeCurrentUser(), mockedCategoryRepo
-                ),
+                GetCategoriesUseCase(FakeCurrentUser(), mockedCategoryRepo, DummyRemoteConfig()),
                 GetBookmarks(FakeCurrentUser(), mockedArticlesRepo)
             ),
             arrayOf(
                 GetFollowingUseCase(FakeCurrentUser(), mockedPubRepo),
-                GetCategoriesUseCase(
-                    FakeCurrentUser(), mockedCategoryRepo
-                ),
+                GetCategoriesUseCase(FakeCurrentUser(), mockedCategoryRepo, DummyRemoteConfig()),
                 GetBookmarks(FakeCurrentUser(), mockedArticlesRepo)
             )
         )
