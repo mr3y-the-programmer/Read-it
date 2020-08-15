@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~  Copyright (C) MR3Y - All Rights Reserved
+  ~   Unauthorized copying of this file, via any medium is strictly prohibited
+  ~   Proprietary and confidential
+  ~   Written by MR3Y <abdonasr379@gmail.com>, 2020.
+  -->
+
+<defaultsMap>
+    <entry>
+        <key>CONTENT_DISPLAYED_LIMIT</key>
+        <value>5</value>
+    </entry>
+    <entry>
+        <key>IMG_PLACE_HOLDER_URL</key>
+        <value>https://firebasestorage.googleapis.com/v0/b/read-it-b9c8b.appspot.com/o/articles%2Fplace_holder_image.png?alt=media&amp;token=fd6b444e-0115-4f40-8b8d-f6deaf238179</value>
+    </entry>
+    <entry>
+        <key>PROFILE_IMG_PLACE_HOLDER_URL</key>
+        <value>https://firebasestorage.googleapis.com/v0/b/read-it-b9c8b.appspot.com/o/publishers%2Faccount_default.png?alt=media&amp;token=1502d0e1-c30f-4d45-997d-e39ac5af62ba</value>
+    </entry>
+    <entry>
+        <key>LAUNCH_DATE</key>
+        <value>2020-09-15T0:0:0.00+02:00[Africa/Cairo]</value>
+    </entry>
+
+    <!--Search related-->
+    <entry>
+        <key>SEARCH_APP_ID</key>
+        <value></value>
+    </entry>
+    <entry>
+        <key>SEARCH_API_KEY</key>
+        <value></value>
+    </entry>
+    <entry>
+        <key>SHIP_SEARCH_FEATURE</key>
+        <value>false</value>
+    </entry>
+
+    <!--UseCase related-->
+    <entry>
+        <key>WITH_NUM_OF_FOLLOWERS</key>
+        <value>100</value>
+    </entry>
+    <entry>
+        <key>WITH_APPRECIATE_NUM</key>
+        <value>1000</value>
+    </entry>
+    <entry>
+        <key>WITH_MINUTES_READ</key>
+        <value>4</value>
+    </entry>
+    <entry>
+        <key>SHORT_WITH_APPRECIATE_NUM</key>
+        <value>4000</value>
+    </entry>
+    <entry>
+        <key>MINIMUM_ARTICLES_LIMIT</key>
+        <value>5</value>
+    </entry>
+    <entry>
+        <key>MAXIMUM_ARTICLES_LIMIT</key>
+        <value>30</value>
+    </entry>
+
+    <entry>
+        <key>CATEGORIES_LIMIT</key>
+        <value>50</value>
+    </entry>
+</defaultsMap>
