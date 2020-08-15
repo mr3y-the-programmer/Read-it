@@ -48,7 +48,7 @@ class ArticlesRepositoryTest {
         articlesRepo = ArticlesRepository(
             FakeArticlesDataSource(), FakeContentDataSource(),
             FakeCommentsDataSource(), mockedBaseSource,
-            mockedBaseSource, formatter
+            mockedBaseSource, formatter, mock {  }
         )
     }
 
@@ -169,6 +169,6 @@ class ArticlesRepositoryTest {
 
     private fun ArticlesRepository.copy(dataSource: FakeArticlesDataSource): ArticlesRepository {
         val mockedBaseSource = mock<BasePagingSource<RequestParams>> { /*no-op for now*/ }
-        return ArticlesRepository(dataSource, FakeContentDataSource(), FakeCommentsDataSource(), mockedBaseSource, mockedBaseSource, formatter)
+        return ArticlesRepository(dataSource, FakeContentDataSource(), FakeCommentsDataSource(), mockedBaseSource, mockedBaseSource, formatter, mock {  })
     }
 }

@@ -187,6 +187,7 @@ class MainModule {
     }
 
     @Provides
+    @ExperimentalCoroutinesApi
     @Singleton
     fun provideArticlesRepository(
         articlesSource: ArticlesDataSource,
@@ -194,9 +195,10 @@ class MainModule {
         commentsSource: CommentDataSource,
         @HomeFeedSource articlesPagingSource: BasePagingSource<RequestParams>,
         @PubArticlesSource pubArticlesPagingSource: BasePagingSource<RequestParams>,
-        formatter: Formatter
+        formatter: Formatter,
+        configSource: RemoteConfigSource
     ): ArticlesRepository {
-        return ArticlesRepository(articlesSource, contentSource, commentsSource, articlesPagingSource, pubArticlesPagingSource, formatter)
+        return ArticlesRepository(articlesSource, contentSource, commentsSource, articlesPagingSource, pubArticlesPagingSource, formatter, configSource)
     }
 
     @Provides

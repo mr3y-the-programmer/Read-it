@@ -18,6 +18,7 @@ import com.secret.readit.core.di.PubArticlesSource
 import com.secret.readit.core.paging.BasePagingSource
 import com.secret.readit.core.paging.articles.ArticleWithContent
 import com.secret.readit.core.paging.articles.RequestParams
+import com.secret.readit.core.remoteconfig.RemoteConfigSource
 import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.core.uimodels.UiArticle
@@ -41,7 +42,8 @@ class ArticlesRepository @Inject constructor(
     private val commentsDataSource: CommentDataSource,
     @HomeFeedSource private val articlesPagingSource: BasePagingSource<RequestParams>,
     @PubArticlesSource private val pubArticlesPagingSource: BasePagingSource<RequestParams>,
-    private val formatter: Formatter
+    private val formatter: Formatter,
+    private val remoteConfig: RemoteConfigSource
 ) {
 
     /** Exposed APIs For consumers to get articles based on these attributes */
@@ -111,7 +113,7 @@ class ArticlesRepository @Inject constructor(
             mostFollowedPubsId,
             specificPub,
             articleIds = withIds,
-            contentLimit = CONTENT_DISPLAYED_LIMIT
+            contentLimit = remoteConfig.contentLimit.value.toInt()
         )
         val pagingSource = if (specificPub.first.isNotEmpty() && specificPub.second > 0) {
             pubArticlesPagingSource.withParams<ArticleWithContent>(parameters)
@@ -175,9 +177,7 @@ class ArticlesRepository @Inject constructor(
     private fun checkIfSuccessful(result: Result<Boolean>) = if (result != null && result.succeeded) (result as Result.Success).data else false
 
     companion object {
-        // TODO: configure those through remote config
-        const val CONTENT_DISPLAYED_LIMIT = 5
         const val PLACE_HOLDER_URL = "https://firebasestorage.googleapis.com/v0/b/read-it-b9c8b.appspot.com" +
-            "/o/articles%2Fplace_holder_image.png?alt=media&token=fd6b444e-0115-4f40-8b8d-f6deaf238179"
+            "/o/articles%2Fplace_holder_image.png?alt=media&token=fd6b444e-0115-4f40-8b8d-f6deaf238179" // FIXME: Replace with one in remote config
     }
 }
