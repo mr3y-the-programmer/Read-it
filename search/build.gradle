@@ -8,6 +8,10 @@
 apply plugin: "com.android.dynamic-feature"
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+apply plugin: "org.jmailen.kotlinter"
+apply plugin: "org.jlleitschuh.gradle.ktlint"
 
 android {
     compileSdkVersion rootProject.compile_sdk_version
@@ -28,9 +32,20 @@ dependencies {
     implementation depenedcies.file_tree
     implementation project(":app")
     implementation project(":domain")
+    implementation project(":model")
     implementation depenedcies.android_core_ktx
     implementation depenedcies.kt_standard_lib
 
+    // Dagger
+    implementation depenedcies.dagger_android
+    implementation depenedcies.dagger_android_support
+    kapt depenedcies.dagger_compiler
+    kapt depenedcies.dagger_android_annotation
+
+    //Algolia
+    implementation "com.algolia:algoliasearch-client-kotlin-android:$kt_client_version"
+    implementation "io.ktor:ktor-client-android:$ktor_version" //it also uses ktor
+    
     //Test
     testImplementation depenedcies.junit
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
