@@ -28,4 +28,6 @@
         <item quantity="one">@string/hour_ago</item>
         <item quantity="other">@string/hours_ago</item>
     </plurals>
+    <!--Search dynamic module title-->
+    <string name="title_search">Search</string>
 </resources>

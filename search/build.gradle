@@ -1,0 +1,39 @@
+/*
+ *  Copyright (C) MR3Y - All Rights Reserved
+ *   Unauthorized copying of this file, via any medium is strictly prohibited
+ *   Proprietary and confidential
+ *   Written by MR3Y <abdonasr379@gmail.com>, 2020.
+ */
+
+apply plugin: "com.android.dynamic-feature"
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion rootProject.compile_sdk_version
+    buildToolsVersion rootProject.build_tools_version
+
+    defaultConfig {
+        minSdkVersion rootProject.min_sdk_version
+        targetSdkVersion rootProject.target_sdk_version
+        versionCode rootProject.versionCode
+        versionName rootProject.versionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+}
+
+dependencies {
+    implementation depenedcies.file_tree
+    implementation project(":app")
+    implementation project(":domain")
+    implementation depenedcies.android_core_ktx
+    implementation depenedcies.kt_standard_lib
+
+    //Test
+    testImplementation depenedcies.junit
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.annotation:annotation:1.1.0'
+}

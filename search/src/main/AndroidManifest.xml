@@ -1,0 +1,23 @@
+<!--
+  ~  Copyright (C) MR3Y - All Rights Reserved
+  ~   Unauthorized copying of this file, via any medium is strictly prohibited
+  ~   Proprietary and confidential
+  ~   Written by MR3Y <abdonasr379@gmail.com>, 2020.
+  -->
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
+    package="com.secret.readit.search">
+
+    <!--Move Search to separate dynamic module until we ready to ship this feature,
+     This may get merged again into domain again in upcoming Releases -->
+
+    <dist:module
+        dist:instant="false"
+        dist:title="@string/title_search">
+        <dist:delivery>
+            <dist:on-demand />
+        </dist:delivery>
+        <dist:fusing dist:include="true" />
+    </dist:module>
+</manifest>
