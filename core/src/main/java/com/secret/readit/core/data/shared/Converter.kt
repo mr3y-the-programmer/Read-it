@@ -22,8 +22,6 @@ import javax.inject.Inject
  */
 class Converter @Inject constructor(@DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher) {
 
-    private val coroutineScope = CoroutineScope(Job() + defaultDispatcher)
-
     /**
      * Provide FileInputStream From the given path
      */
@@ -40,13 +38,12 @@ class Converter @Inject constructor(@DefaultDispatcher private val defaultDispat
     fun inputStreamToBitmap(inStream: InputStream): Bitmap? {
         var bitmap: Bitmap? = null
         try {
-            coroutineScope.launch {
-                if (isActive) {
-                    bitmap = BitmapFactory.decodeStream(inStream)
-                }
+            CoroutineScope(Job() + defaultDispatcher).launch {
+                bitmap = BitmapFactory.decodeStream(inStream)
             }
-        } finally {
-            coroutineScope.cancel()
+        } catch (ex: IllegalArgumentException) {
+            Timber.e("Bitmap configuration has something wrong, cause: ${ex.message}")
+            return null
         }
         return bitmap
     }
