@@ -34,6 +34,8 @@ internal class DefaultArticlesDataSource @Inject constructor(
     private val normalizeHelper: NormalizeHelper = NormalizeHelper()
 ) : ArticlesDataSource {
 
+    //TODO: refactor boilerplate
+
     override suspend fun getArticles(
         limit: Int,
         numOfAppreciation: Int,
@@ -43,6 +45,14 @@ internal class DefaultArticlesDataSource @Inject constructor(
         prevSnapshot: DocumentSnapshot?
     ): Result<Pair<List<Article>, DocumentSnapshot>> {
         return fetchArticles(limit, numOfAppreciation, containCategories, numOfMinutesRead, pubIds, prevSnapshot)
+    }
+
+    override suspend fun getArticles(
+        limit: Int,
+        ids: List<articleId>,
+        prevSnapshot: DocumentSnapshot?
+    ): Result<Pair<List<Article>, DocumentSnapshot>> {
+        return fetchArticles(limit, ids, prevSnapshot)
     }
 
     override suspend fun getArticle(id: articleId): Result<Article> {
@@ -83,6 +93,32 @@ internal class DefaultArticlesDataSource @Inject constructor(
                 .whereGreaterThanOrEqualTo(NUM_OF_APPRECIATE_FIELD, numOfAppreciation)
                 .whereLessThanOrEqualTo(NUM_MINUTES_READ_FIELD, numOfMinutesRead)
                 .categoryOrPublishersQuery(categoriesIds, pubIds)
+                .limit(limit.toLong())
+                .after(prevSnapshot)
+                .get()
+                .addOnSuccessListener { articlesSnapshot ->
+                    if (continuation.isActive) {
+                        Timber.d("fetched articles Successfully: ${articlesSnapshot.documents}")
+
+                        val articles = normalizeHelper.getNormalizedArticles(articlesSnapshot)
+
+                        continuation.resume(Result.Success(Pair(articles, articlesSnapshot.documents.last())))
+                    } else {
+                        Timber.d("Exception, continuation is no longer active")
+                    }
+                }.addOnFailureListener {
+                    Timber.d("Exception in fetching articles, Cause: ${it.message}")
+                    continuation.resumeWithException(it)
+                }
+        }
+    }
+
+    private suspend fun fetchArticles(limit: Int, ids: List<articleId>, prevSnapshot: DocumentSnapshot?): Result<Pair<List<Article>, DocumentSnapshot>> {
+        return wrapInCoroutineCancellable(
+            ioDispatcher
+        ) { continuation ->
+            firestore.collection(ARTICLES_COLLECTION)
+                .withIds(ids, ID_FIELD)
                 .limit(limit.toLong())
                 .after(prevSnapshot)
                 .get()
