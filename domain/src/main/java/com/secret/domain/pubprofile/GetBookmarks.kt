@@ -28,9 +28,8 @@ class GetBookmarks @Inject constructor(
 ) : FlowUseCase<Unit, PagingData<UiArticle>>() {
 
     override suspend fun execute(parameters: Unit): Flow<PagingData<UiArticle>> {
-        val pub = currentUser(parameters).publisher
-        val bookmarkedArticles = pub.bookmarkedArticlesIds
-        return articlesRepo.getSpecificPubArticles(pub.id, bookmarkedArticles).map {
+        val bookmarkedArticles = currentUser(parameters).publisher.bookmarkedArticlesIds
+        return articlesRepo.getArticlesWithIds(bookmarkedArticles).map {
             dropEmptyArticles(it)
         }
     }
