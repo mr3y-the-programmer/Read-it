@@ -27,7 +27,12 @@ class PubArticlesPagingSource @Inject constructor(
     override lateinit var reqParams: RequestParams // filling Request is Consumer responsibility
 
     override suspend fun load(params: LoadParams<DocumentSnapshot>): LoadResult<DocumentSnapshot, ArticleWithContent> {
-        val result = articlesSource.getPubArticles(reqParams.specificPub, params.key)
+        // In order to get correct key, when consumers switch between two conditions, PagingSource must be invalidated
+        val result = if (reqParams.articleIds.isNotEmpty()) {
+            articlesSource.getArticles(reqParams.limit, reqParams.articleIds, params.key)
+        } else {
+            articlesSource.getPubArticles(reqParams.specificPub, params.key)
+        }
         return process(
             result,
             params,

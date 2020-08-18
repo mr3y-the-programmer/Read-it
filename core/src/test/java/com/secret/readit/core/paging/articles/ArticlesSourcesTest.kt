@@ -16,6 +16,7 @@ import com.secret.readit.core.MainCoroutineRule
 import com.secret.readit.core.TestData
 import com.secret.readit.core.data.articles.FakeArticlesDataSource
 import com.secret.readit.core.data.articles.content.FakeContentDataSource
+import com.secret.readit.core.paging.BasePagingSource
 import com.secret.readit.core.result.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -64,22 +65,22 @@ class ArticlesSourcesTest(
                 ArticlesPagingSource(
                     mockedArticlesSource,
                     FakeContentDataSource()
-                ),
+                ).withParams<ArticleWithContent>(reqParams),
                 PubArticlesPagingSource(
                     mockedArticlesSource,
                     FakeContentDataSource()
-                )
+                ).withParams(reqParams)
             ),
 
             arrayOf(
                 ArticlesPagingSource(
                     mockedArticlesSource,
                     FakeContentDataSource()
-                ),
+                ).withParams(reqParams),
                 PubArticlesPagingSource(
                     mockedArticlesSource,
                     FakeContentDataSource()
-                )
+                ).withParams(reqParams)
             )
         )
     }
@@ -96,9 +97,10 @@ class ArticlesSourcesTest(
 
     // When it fails whether it first time or not
     @Test
+    @Suppress("UNCHECKED_CAST")
     fun `getArticles failure ReturnLoadResultOfError`() = mainCoroutineRule.runBlockingTest {
-        firstSource = failArticlesSource()
-        secondSource = failPubArticlesSource()
+        firstSource = (failArticlesSource() as BasePagingSource<RequestParams>).withParams(reqParams)
+        secondSource = (failPubArticlesSource() as BasePagingSource<RequestParams>).withParams(reqParams)
         val homeFeedResult = firstSource.load(mockLoadParams(mockedArticlesSource.mockedSnapshot1))
         val pubArticlesResult = secondSource.load(mockLoadParams(mockedArticlesSource.mockedSnapshot2))
         assertThat(homeFeedResult).isInstanceOf(PagingSource.LoadResult.Error::class.java)
