@@ -125,7 +125,7 @@ class ArticlesRepository @Inject constructor(
             articlesPagingSource.withParams(parameters)
         }
         return Pager(
-            config = if (limit <= 0) PagingConfig(20) else PagingConfig(limit),
+            config = if (limit <= 0) PagingConfig(remoteConfig.pageConfigSizeLimit.value.toInt()) else PagingConfig(limit),
             pagingSourceFactory = { pagingSource }
         ).flow.map {
             formatter.formatArticles(it)
