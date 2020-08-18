@@ -59,8 +59,12 @@ class ArticlesRepository @Inject constructor(
 
     suspend fun getPubArticlesSince(pubId: publisherId, since: Long): Flow<PagingData<UiArticle>> = getNewArticles(limit = 0, specificPub = Pair(pubId, since))
 
-    suspend fun getSpecificPubArticles(pubId: publisherId, ids: List<articleId>, since: Long = 0): Flow<PagingData<UiArticle>> {
-        return getNewArticles(limit = 0, specificPub = Pair(pubId, since), withIds = ids)
+    suspend fun getSpecificPubArticles(pubId: publisherId, since: Long = 0): Flow<PagingData<UiArticle>> {
+        return getNewArticles(limit = 0, specificPub = Pair(pubId, since))
+    }
+
+    suspend fun getArticlesWithIds(ids: List<articleId>): Flow<PagingData<UiArticle>> {
+        return getNewArticles(limit = 0, withIds = ids)
     }
 
     suspend fun appreciate(article: UiArticle): Boolean = appreciateOrDisagree(article)
@@ -115,13 +119,13 @@ class ArticlesRepository @Inject constructor(
             articleIds = withIds,
             contentLimit = remoteConfig.contentLimit.value.toInt()
         )
-        val pagingSource = if (specificPub.first.isNotEmpty() && specificPub.second > 0) {
+        val pagingSource = if ((specificPub.first.isNotEmpty() && specificPub.second > 0) || withIds.isNotEmpty()) {
             pubArticlesPagingSource.withParams<ArticleWithContent>(parameters)
         } else {
             articlesPagingSource.withParams(parameters)
         }
         return Pager(
-            config = PagingConfig(limit),
+            config = if (limit <= 0) PagingConfig(20) else PagingConfig(limit),
             pagingSourceFactory = { pagingSource }
         ).flow.map {
             formatter.formatArticles(it)
