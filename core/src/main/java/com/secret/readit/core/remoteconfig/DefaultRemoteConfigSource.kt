@@ -36,6 +36,10 @@ class DefaultRemoteConfigSource @Inject constructor(private val config: Firebase
     override val launchDate: StateFlow<String>
         get() = _launchDate
 
+    private val _pageConfigSizeLimit = MutableStateFlow(config.getLong(RemoteConfigSource.PAGING_CONFIG_LIMIT_KEY))
+    override val pageConfigSizeLimit: StateFlow<Long>
+        get() = _pageConfigSizeLimit
+
     private val _searchAppId = MutableStateFlow(config.getString(RemoteConfigSource.SEARCH_APP_ID_KEY))
     override val searchAppId: StateFlow<String>
         get() = _searchAppId
@@ -104,6 +108,7 @@ class DefaultRemoteConfigSource @Inject constructor(private val config: Firebase
         _imgPlaceHolder.value = config.getString(RemoteConfigSource.CONTENT_PLACE_HOLDER_KEY)
         _profileImgPlaceHolder.value = config.getString(RemoteConfigSource.PROFILE_IMG_KEY)
         _launchDate.value = config.getString(RemoteConfigSource.LAUNCH_DATE_KEY)
+        _pageConfigSizeLimit.value = config.getLong(RemoteConfigSource.PAGING_CONFIG_LIMIT_KEY)
         _searchAppId.value = config.getString(RemoteConfigSource.SEARCH_APP_ID_KEY)
         _searchApiKey.value = config.getString(RemoteConfigSource.SEARCH_API_KEY)
         _isSearchReady.value = config.getBoolean(RemoteConfigSource.SHIP_SEARCH_KEY)

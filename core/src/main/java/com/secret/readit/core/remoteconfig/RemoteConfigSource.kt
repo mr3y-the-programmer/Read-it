@@ -37,6 +37,11 @@ interface RemoteConfigSource {
     val launchDate: StateFlow<String>
 
     /**
+     * value of [PAGING_CONFIG_LIMIT_KEY]
+     */
+     val pageConfigSizeLimit: StateFlow<Long>
+
+    /**
      * value of [SEARCH_APP_ID_KEY]
      */
     val searchAppId: StateFlow<String>
@@ -91,6 +96,7 @@ interface RemoteConfigSource {
         const val CONTENT_PLACE_HOLDER_KEY = "IMG_PLACE_HOLDER_URL"
         const val PROFILE_IMG_KEY = "PROFILE_IMG_PLACE_HOLDER_URL"
         const val LAUNCH_DATE_KEY = "LAUNCH_DATE"
+        const val PAGING_CONFIG_LIMIT_KEY = "PAGING_CONFIG_LIMIT"
         const val SEARCH_APP_ID_KEY = "SEARCH_APP_ID"
         const val SEARCH_API_KEY = "SEARCH_API_KEY"
         const val SHIP_SEARCH_KEY = "SHIP_SEARCH_FEATURE"
