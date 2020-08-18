@@ -34,6 +34,11 @@ interface ArticlesDataSource {
     ): Result<Pair<List<Article>, DocumentSnapshot>>
 
     /**
+     * overload for [getArticles] but with different parameters
+     */
+    suspend fun getArticles(limit: Int, ids: List<articleId>, prevSnapshot: DocumentSnapshot?): Result<Pair<List<Article>, DocumentSnapshot>>
+
+    /**
      * get specific article by [id]
      */
     suspend fun getArticle(id: articleId): Result<Article>
