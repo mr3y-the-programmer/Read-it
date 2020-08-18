@@ -50,9 +50,10 @@ internal class DefaultArticlesDataSource @Inject constructor(
     }
 
     override suspend fun getPubArticles(
-        info: Pair<publisherId, Long>, ids: List<articleId>, prevSnapshot: DocumentSnapshot?
+        info: Pair<publisherId, Long>,
+        prevSnapshot: DocumentSnapshot?
     ): Result<Pair<List<Article>, DocumentSnapshot>> {
-        return fetchArticles(info, ids, prevSnapshot)
+        return fetchArticles(info, prevSnapshot)
     }
 
     override suspend fun addArticle(article: Article): Result<Boolean> {
@@ -133,16 +134,13 @@ internal class DefaultArticlesDataSource @Inject constructor(
         }
     }
 
-    private suspend fun fetchArticles(
-        pubInfo: Pair<publisherId, Long>, ids: List<articleId>, prevSnapshot: DocumentSnapshot?
-    ): Result<Pair<List<Article>, DocumentSnapshot>> {
+    private suspend fun fetchArticles(pubInfo: Pair<publisherId, Long>, prevSnapshot: DocumentSnapshot?): Result<Pair<List<Article>, DocumentSnapshot>> {
         return wrapInCoroutineCancellable(
             ioDispatcher
         ) { continuation ->
             firestore.collection(ARTICLES_COLLECTION)
                 .whereEqualTo(PUBLISHER_ID_FILED, pubInfo.first)
                 .whereGreaterThanOrEqualTo(TIMESTAMP_FIELD, pubInfo.second)
-                .withIds(ids, ID_FIELD)
                 .after(prevSnapshot)
                 .get()
                 .addOnSuccessListener { articlesSnapshot ->

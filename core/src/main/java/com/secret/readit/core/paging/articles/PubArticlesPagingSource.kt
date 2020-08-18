@@ -27,7 +27,7 @@ class PubArticlesPagingSource @Inject constructor(
     override lateinit var reqParams: RequestParams // filling Request is Consumer responsibility
 
     override suspend fun load(params: LoadParams<DocumentSnapshot>): LoadResult<DocumentSnapshot, ArticleWithContent> {
-        val result = articlesSource.getPubArticles(reqParams.specificPub, reqParams.articleIds, params.key)
+        val result = articlesSource.getPubArticles(reqParams.specificPub, params.key)
         return process(
             result,
             params,

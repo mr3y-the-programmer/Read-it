@@ -135,7 +135,7 @@ class ArticlesSourcesTest(
 
     private suspend fun failPubArticlesSource(): PagingSource<DocumentSnapshot, ArticleWithContent> {
         mockedArticlesSource = mock {
-            on(it.getPubArticles(reqParams.specificPub, emptyList(), null)).doReturn(Result.Error(Exception()))
+            on(it.getPubArticles(reqParams.specificPub, null)).doReturn(Result.Error(Exception()))
         }
         return PubArticlesPagingSource(
             mockedArticlesSource,
