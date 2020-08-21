@@ -117,9 +117,10 @@ internal class DefaultArticlesDataSource @Inject constructor(
         return wrapInCoroutineCancellable(
             ioDispatcher
         ) { continuation ->
+            val safeLimit = if (limit <= 0) 99 else limit
             firestore.collection(ARTICLES_COLLECTION)
                 .withIds(ids, ID_FIELD)
-                .limit(limit.toLong())
+                .limit(safeLimit.toLong())
                 .after(prevSnapshot)
                 .get()
                 .addOnSuccessListener { articlesSnapshot ->
