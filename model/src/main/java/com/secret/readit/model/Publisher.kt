@@ -18,4 +18,6 @@ data class Publisher(val id: publisherId,
                      val followedCategoriesIds: List<String> = emptyList(),
                      val followedPublishersIds: List<publisherId> = emptyList(),
                      val bookmarkedArticlesIds: List<articleId> = emptyList(),
-                     val numOfFollowers: Int = 0)
+                     val numOfFollowers: Int = 0,
+                     val rank: String = "Beginner") //This is immutable for client, it has one of values: ["Beginner", "amateur", "Pro", "Super_Pro"]
+           // TODO: Configure this from server through cloud function, fields affect rank: memberSince, publishedArticles
