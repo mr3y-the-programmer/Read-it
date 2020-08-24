@@ -53,7 +53,7 @@ object TestData {
         followedCategoriesIds = listOf(category1.id, category2.id, category3.id),
         followedPublishersIds = listOf(
             publisher2.id
-        )
+        ), rank = "Amateur"
     )
     val uiPublisher1 = UiPublisher(publisher1, null)
     val uiPublisher2 = UiPublisher(publisher2, null)
