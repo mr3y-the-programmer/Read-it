@@ -38,7 +38,7 @@ open class StorageRepository @Inject constructor(private val storageDataSource: 
         imgPath: String,
         destination: Destination = Destination.ARTICLES
     ): Uri? {
-        val result = storageDataSource.uploadBitmap(id, imgPath, Destination.ARTICLES)
+        val result = storageDataSource.uploadBitmap(id, imgPath, destination)
 
         return if (result.succeeded) (result as Result.Success).data else null
     }
