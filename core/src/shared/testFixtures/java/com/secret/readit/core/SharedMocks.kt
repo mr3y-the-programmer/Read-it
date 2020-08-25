@@ -11,10 +11,9 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.data.categories.CategoryRepository
 import com.secret.readit.core.data.publisher.PublisherRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 
-@ExperimentalCoroutinesApi
+
 class SharedMocks(private val rule: MainCoroutineRule) {
 
     val mockedPubRepo = mock<PublisherRepository> {

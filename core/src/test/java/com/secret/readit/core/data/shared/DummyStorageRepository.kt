@@ -10,9 +10,8 @@ package com.secret.readit.core.data.shared
 import android.graphics.Bitmap
 import android.net.Uri
 import com.nhaarman.mockitokotlin2.mock
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
+
 class DummyStorageRepository : StorageRepository(FakeStorageDataSource()) {
     override suspend fun downloadImg(imgUri: Uri?, defaultValue: String): Bitmap? {
         return mock {

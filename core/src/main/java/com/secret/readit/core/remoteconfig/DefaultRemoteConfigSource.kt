@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
 import javax.inject.Inject
 
-@ExperimentalCoroutinesApi
+
 class DefaultRemoteConfigSource @Inject constructor(private val config: FirebaseRemoteConfig,
                                                     @IoDispatcher private val ioDispatcher: CoroutineDispatcher): RemoteConfigSource {
 

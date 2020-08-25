@@ -7,13 +7,12 @@
 
 package com.secret.readit.core.remoteconfig
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 
 /**
  * Defines/fetches the data From Remote Config
  */
-@ExperimentalCoroutinesApi
+
 interface RemoteConfigSource {
 
     /**

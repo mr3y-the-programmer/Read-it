@@ -13,7 +13,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.secret.readit.model.ThemeType
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,7 +21,7 @@ import org.robolectric.annotation.Config
 /*
     Robolectric Test
  */
-@ExperimentalCoroutinesApi
+
 @RunWith(AndroidJUnit4::class)
 @Config(minSdk = Build.VERSION_CODES.LOLLIPOP, maxSdk = Build.VERSION_CODES.Q)
 class SharedPrefsTest {

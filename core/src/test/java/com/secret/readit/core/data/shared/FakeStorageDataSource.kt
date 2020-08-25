@@ -11,9 +11,8 @@ import android.graphics.Bitmap
 import android.net.Uri
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.result.Result
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
+
 open class FakeStorageDataSource : StorageDataSource {
 
     override suspend fun uploadBitmap(

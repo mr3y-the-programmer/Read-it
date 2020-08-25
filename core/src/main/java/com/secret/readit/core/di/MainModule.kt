@@ -57,7 +57,6 @@ import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton
 import com.secret.readit.core.paging.categories.RequestParams as categoryParams
 import com.secret.readit.core.paging.publisher.RequestParams as pubParams
@@ -121,7 +120,6 @@ class MainModule {
     }
 
     @Provides
-    @ExperimentalCoroutinesApi
     fun provideRemoteConfigDataSource(config: FirebaseRemoteConfig, @IoDispatcher ioDispatcher: CoroutineDispatcher): RemoteConfigSource {
         return DefaultRemoteConfigSource(config, ioDispatcher)
     }
@@ -163,7 +161,6 @@ class MainModule {
     }
 
     @Provides
-    @ExperimentalCoroutinesApi
     @Singleton
     fun provideSharedPreferences(applicationContext: Context): SharedPrefs {
         return DefaultSharedPrefs(applicationContext)
@@ -187,7 +184,6 @@ class MainModule {
     }
 
     @Provides
-    @ExperimentalCoroutinesApi
     @Singleton
     fun provideArticlesRepository(
         articlesSource: ArticlesDataSource,

@@ -8,7 +8,6 @@
 package com.secret.readit.core.prefs
 
 import com.secret.readit.model.ThemeType
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 
 /**
@@ -25,7 +24,7 @@ import kotlinx.coroutines.flow.StateFlow
  *
  * For more information on stateFlow, see: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-state-flow/
  */
-@ExperimentalCoroutinesApi
+
 interface SharedPrefs {
     /**
      * hold the user Auth state(logged or not)

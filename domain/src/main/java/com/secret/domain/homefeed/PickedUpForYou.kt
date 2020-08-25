@@ -15,7 +15,6 @@ import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.remoteconfig.RemoteConfigSource
 import com.secret.readit.core.uimodels.UiArticle
 import com.secret.readit.model.publisherId
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import java.util.*
 import javax.inject.Inject
@@ -25,7 +24,7 @@ import javax.inject.Inject
  * based on some factors like: most appreciated, most-followed publishers(composite index), (short articles & appreciated a lot)
  * **NOTE**: This should be cached in appropriate scope like viewModelScope
  */
-@ExperimentalCoroutinesApi
+
 class PickedUpForYou @Inject constructor(
     private val articlesRepo: ArticlesRepository,
     @MostFollowedPublishers private val mostFollowedPubs: UseCase<Pair<Int, Int>, List<publisherId>>,

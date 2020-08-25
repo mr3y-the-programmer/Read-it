@@ -16,7 +16,6 @@ import com.secret.readit.core.uimodels.UiPublisher
 import com.secret.readit.model.publisherId
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @Module
 class UseCaseModule {
@@ -26,7 +25,6 @@ class UseCaseModule {
     fun provideMostFollowedPublishers(publisherRepo: PublisherRepository): UseCase<Pair<Int, Int>, List<publisherId>> = MostFollowedPublishersArticles(publisherRepo)
 
     @Provides
-    @ExperimentalCoroutinesApi
     @CurrentUserProfile
     fun provideCurrentUserPage(pubRepo: PublisherRepository, prefs: SharedPrefs): UseCase<Unit, UiPublisher> = CurrentUserPage(pubRepo, prefs)
 }

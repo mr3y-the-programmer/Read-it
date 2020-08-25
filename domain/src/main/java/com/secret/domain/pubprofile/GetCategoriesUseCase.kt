@@ -17,7 +17,6 @@ import com.secret.readit.core.data.categories.CategoryRepository
 import com.secret.readit.core.remoteconfig.RemoteConfigSource
 import com.secret.readit.core.uimodels.UiPublisher
 import com.secret.readit.model.Category
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -26,7 +25,7 @@ import javax.inject.Inject
  * Similar to [GetFollowingUseCase] but for getting Categories,
  * **Note**: This should be cached in appropriate scope like: viewModelScope
  */
-@ExperimentalCoroutinesApi
+
 class GetCategoriesUseCase @Inject constructor(
     @CurrentUserProfile private val currentUser: UseCase<Unit, UiPublisher>,
     private val categoryRepo: CategoryRepository,

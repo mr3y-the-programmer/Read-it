@@ -11,7 +11,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.secret.readit.model.ThemeType
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -20,7 +19,7 @@ import javax.inject.Singleton
 /**
  * Default implementation of SharedPreferences, Any Consumers should interact with this
  */
-@ExperimentalCoroutinesApi
+
 @Singleton
 class DefaultSharedPrefs @Inject constructor(private val applicationContext: Context) : SharedPrefs {
 

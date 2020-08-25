@@ -8,10 +8,9 @@
 package com.secret.readit.core.prefs
 
 import com.secret.readit.model.ThemeType
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 
-@ExperimentalCoroutinesApi
+
 class FakeSharedPreferences : SharedPrefs {
 
     override val isUserLoggedIn: StateFlow<Boolean>

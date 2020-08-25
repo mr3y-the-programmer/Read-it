@@ -11,7 +11,6 @@ import com.secret.domain.UseCase
 import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.core.prefs.SharedPrefs
 import com.secret.readit.core.uimodels.UiPublisher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -20,7 +19,7 @@ import javax.inject.Inject
  *
  * Consumers of this UseCase should ensure User is signed-in or wrap this UseCase in try/catch
  */
-@ExperimentalCoroutinesApi
+
 class CurrentUserPage @Inject constructor(
     private val pubRepo: PublisherRepository,
     private val prefs: SharedPrefs

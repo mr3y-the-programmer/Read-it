@@ -10,7 +10,6 @@ package com.secret.domain.pubprofile
 import com.secret.domain.FlowUseCase
 import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.core.prefs.SharedPrefs
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -22,7 +21,7 @@ import javax.inject.Inject
  *   -the actual new value, it can be the new name or new Profile Img path...etc
  * return true(On success) or false
  */
-@ExperimentalCoroutinesApi
+
 class UpdateUserMainInfo @Inject constructor(
     private val pubRepo: PublisherRepository,
     private val prefs: SharedPrefs
