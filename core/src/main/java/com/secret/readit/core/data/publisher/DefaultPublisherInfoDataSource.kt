@@ -231,14 +231,11 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
             val pubDoc = firestore.collection(PUBLISHERS_COLLECTION).document(publisherID)
             val unFollowedPubDoc = firestore.collection(PUBLISHERS_COLLECTION).document(unFollowedPublisherID)
 
-            firestore.runTransaction { transaction ->
-                // All read operations must happen before writing
-                val numOfFollowersValue = transaction.get(unFollowedPubDoc).get(FOLLOWERS_NUMBER_FIELD)
-                val newFollowersValue = (numOfFollowersValue as? Int)?.minus(1)
-                // start writing
-                transaction.update(pubDoc, FOLLOWED_PUBLISHERS_FIELD, FieldValue.arrayRemove(unFollowedPublisherID))
-                transaction.update(unFollowedPubDoc, FOLLOWERS_NUMBER_FIELD, newFollowersValue)
-                transaction.update(unFollowedPubDoc, FOLLOWERS_FIELD, FieldValue.arrayRemove(publisherID))
+            //Similar to what we do in follow()
+            firestore.runBatch { batch ->
+                batch.update(pubDoc, FOLLOWED_PUBLISHERS_FIELD, FieldValue.arrayRemove(unFollowedPublisherID))
+                batch.update(unFollowedPubDoc, FOLLOWERS_NUMBER_FIELD, FieldValue.increment(-1)) /*trick to decrement as there's no decrement fun()*/
+                batch.update(unFollowedPubDoc, FOLLOWERS_FIELD, FieldValue.arrayRemove(publisherID))
             }.addOnSuccessListener {
                 if (continuation.isActive) {
                     Timber.d("Done unFollowing publisher with id: $unFollowedPublisherID")
