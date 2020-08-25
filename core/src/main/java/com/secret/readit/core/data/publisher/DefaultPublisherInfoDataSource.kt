@@ -203,11 +203,14 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
 
             // We used batchedWrites rather than transactions, cause we don't need any read operations
             firestore.runBatch { batch ->
-                // Do two things atomically, first add the id of followed publisher to array
+                // Do three things atomically, first add the id of followed publisher to array
                 batch.update(pubDoc, FOLLOWED_PUBLISHERS_FIELD, FieldValue.arrayUnion(followedPublisherID))
 
                 // Second, increment num of followers to publisher who is followed
                 batch.update(followedPubDoc, FOLLOWERS_NUMBER_FIELD, FieldValue.increment(1))
+
+                //Third, Update followersIds field
+                batch.update(followedPubDoc, FOLLOWERS_FIELD, FieldValue.arrayUnion(publisherID))
             }.addOnSuccessListener {
                 if (continuation.isActive) {
                     Timber.d("Done following publisher with id: $followedPublisherID")
@@ -235,6 +238,7 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
                 // start writing
                 transaction.update(pubDoc, FOLLOWED_PUBLISHERS_FIELD, FieldValue.arrayRemove(unFollowedPublisherID))
                 transaction.update(unFollowedPubDoc, FOLLOWERS_NUMBER_FIELD, newFollowersValue)
+                transaction.update(unFollowedPubDoc, FOLLOWERS_FIELD, FieldValue.arrayRemove(publisherID))
             }.addOnSuccessListener {
                 if (continuation.isActive) {
                     Timber.d("Done unFollowing publisher with id: $unFollowedPublisherID")
@@ -269,5 +273,6 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
         const val FOLLOWED_PUBLISHERS_FIELD = "followedPublishersIds"
         const val BOOKMARKED_ARTICLES_FIELD = "bookmarkedArticlesIds"
         const val FOLLOWERS_NUMBER_FIELD = "numOfFollowers"
+        const val FOLLOWERS_FIELD = "followersIds"
     }
 }
