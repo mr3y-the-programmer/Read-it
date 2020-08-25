@@ -29,7 +29,7 @@ class GetFollowingUseCase @Inject constructor(
 
     override suspend fun execute(parameters: Unit): Flow<PagingData<UiPublisher>> {
         val followingIds = currentUser(parameters).publisher.followedPublishersIds // If it throws NullPointerException it will be caught by catch in [FlowUseCase]
-        return pubRepo.getFollowingPubsList(followingIds).map {
+        return pubRepo.getPubs(followingIds).map {
             it.filter { pub ->
                 pub.publisher.id.isNotEmpty() && pub.publisher.memberSince > 0
             }

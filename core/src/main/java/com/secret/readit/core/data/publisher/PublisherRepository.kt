@@ -120,12 +120,12 @@ class PublisherRepository @Inject constructor(
     suspend fun unFollowPublisher(publisher: UiPublisher): Boolean = updateFollowers(publisher, positive = false)
 
     /** Exposed APIs For Consumers */
-    suspend fun getPubsWithNumOfFollowers(followersNumber: Int, limit: Int): Flow<PagingData<UiPublisher>> = getPublishersWithNumberOfFollowers(followersNumber = followersNumber, limit = limit)
+    suspend fun getPubsWithNumOfFollowers(followersNumber: Int, limit: Int): Flow<PagingData<UiPublisher>> = getPublishers(followersNumber = followersNumber, limit = limit)
 
-    suspend fun getFollowingPubsList(followingIds: List<publisherId>): Flow<PagingData<UiPublisher>> = getPublishersWithNumberOfFollowers(followingIds, isPubProfile = true)
+    suspend fun getPubs(ids: List<publisherId>): Flow<PagingData<UiPublisher>> = getPublishers(ids, isPubProfile = true)
 
     /**private fun handles the boilerplate and connecting to dataSource*/
-    private suspend fun getPublishersWithNumberOfFollowers(
+    private suspend fun getPublishers(
         ids: List<publisherId> = emptyList(),
         followersNumber: Int = 0,
         limit: Int = 100,

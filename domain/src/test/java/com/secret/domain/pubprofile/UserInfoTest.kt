@@ -46,7 +46,7 @@ class UserInfoTest(
         val mainCoroutineRule = MainCoroutineRule()
         private val mockedPubRepo = mock<PublisherRepository> {
             mainCoroutineRule.runBlockingTest {
-                on(it.getFollowingPubsList(TestData.publisher1.followedPublishersIds)).doReturn(
+                on(it.getPubs(TestData.publisher1.followedPublishersIds)).doReturn(
                     flowOf(PagingData.from(listOf(TestData.uiPublisher2)))
                 )
             }
