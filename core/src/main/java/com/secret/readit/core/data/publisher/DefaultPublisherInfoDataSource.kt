@@ -196,55 +196,40 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
     }
 
     override suspend fun follow(followedPublisherID: publisherId, publisherID: publisherId): Result<Boolean> {
-        return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
-
-            val pubDoc = firestore.collection(PUBLISHERS_COLLECTION).document(publisherID)
-            val followedPubDoc = firestore.collection(PUBLISHERS_COLLECTION).document(followedPublisherID)
-
-            // We used batchedWrites rather than transactions, cause we don't need any read operations
-            firestore.runBatch { batch ->
-                // Do three things atomically, first add the id of followed publisher to array
-                batch.update(pubDoc, FOLLOWED_PUBLISHERS_FIELD, FieldValue.arrayUnion(followedPublisherID))
-
-                // Second, increment num of followers to publisher who is followed
-                batch.update(followedPubDoc, FOLLOWERS_NUMBER_FIELD, FieldValue.increment(1))
-
-                //Third, Update followersIds field
-                batch.update(followedPubDoc, FOLLOWERS_FIELD, FieldValue.arrayUnion(publisherID))
-            }.addOnSuccessListener {
-                if (continuation.isActive) {
-                    Timber.d("Done following publisher with id: $followedPublisherID")
-                    continuation.resume(Result.Success(true))
-                } else {
-                    Timber.d("continuation is no longer active")
-                }
-            }.addOnFailureListener {
-                Timber.d("Failed to Follow publisher with id: $followedPublisherID, cause: ${it.cause}")
-                continuation.resumeWithException(it)
-            }
-        }
+        return updateFollow(followedPublisherID, publisherID)
     }
 
     override suspend fun unFollow(unFollowedPublisherID: publisherId, publisherID: publisherId): Result<Boolean> {
+        return updateFollow(unFollowedPublisherID, publisherID, false)
+    }
+
+    //userID here is the one who follow or unFollow
+    private suspend fun updateFollow(pubID: publisherId, userID: publisherId, positive: Boolean = true): Result<Boolean> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
+            val userDoc = firestore.collection(PUBLISHERS_COLLECTION).document(userID)
+            val pubDoc = firestore.collection(PUBLISHERS_COLLECTION).document(pubID)
+            val userOperation = if(positive) FieldValue.arrayUnion(pubID) else FieldValue.arrayRemove(pubID)
+            val pubOperation = if(positive) FieldValue.arrayUnion(userID) else FieldValue.arrayRemove(userID)
 
-            val pubDoc = firestore.collection(PUBLISHERS_COLLECTION).document(publisherID)
-            val unFollowedPubDoc = firestore.collection(PUBLISHERS_COLLECTION).document(unFollowedPublisherID)
-
-            //Similar to what we do in follow()
+            // We used batchedWrites rather than transactions, cause we don't need any read operations
             firestore.runBatch { batch ->
-                batch.update(pubDoc, FOLLOWED_PUBLISHERS_FIELD, FieldValue.arrayRemove(unFollowedPublisherID))
-                batch.update(unFollowedPubDoc, FOLLOWERS_NUMBER_FIELD, FieldValue.increment(-1)) /*trick to decrement as there's no decrement fun()*/
-                batch.update(unFollowedPubDoc, FOLLOWERS_FIELD, FieldValue.arrayRemove(publisherID))
+                // Do three things atomically, first modify followed publishers array
+                batch.update(userDoc, FOLLOWED_PUBLISHERS_FIELD, userOperation)
+
+                // Second, modify num of publisher's followers
+                batch.update(pubDoc, FOLLOWERS_NUMBER_FIELD, FieldValue.increment(if (positive) 1 else -1))
+
+                //Third, Update followersIds field
+                batch.update(pubDoc, FOLLOWERS_FIELD, pubOperation)
             }.addOnSuccessListener {
                 if (continuation.isActive) {
-                    Timber.d("Done unFollowing publisher with id: $unFollowedPublisherID")
+                    Timber.d("Done updating $pubID followers and $userID Following")
                     continuation.resume(Result.Success(true))
                 } else {
                     Timber.d("continuation is no longer active")
                 }
             }.addOnFailureListener {
-                Timber.d("Failed to unFollow publisher with id: $unFollowedPublisherID, cause: ${it.cause}")
+                Timber.d("Failed to update $pubID Followers and $userID Following, cause: ${it.cause}")
                 continuation.resumeWithException(it)
             }
         }
