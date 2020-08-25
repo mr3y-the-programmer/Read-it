@@ -59,10 +59,6 @@ class ArticlesRepository @Inject constructor(
 
     suspend fun getPubArticlesSince(pubId: publisherId, since: Long): Flow<PagingData<UiArticle>> = getNewArticles(limit = 0, specificPub = Pair(pubId, since))
 
-    suspend fun getSpecificPubArticles(pubId: publisherId, since: Long = 0): Flow<PagingData<UiArticle>> {
-        return getNewArticles(limit = 0, specificPub = Pair(pubId, since))
-    }
-
     suspend fun getArticlesWithIds(ids: List<articleId>): Flow<PagingData<UiArticle>> {
         return getNewArticles(limit = 0, withIds = ids)
     }

@@ -60,7 +60,7 @@ class UserInfoTest(
         }
         private val mockedArticlesRepo = mock<ArticlesRepository> {
             mainCoroutineRule.runBlockingTest {
-                on(it.getSpecificPubArticles(TestData.publisher1.id, TestData.articles4.map { it -> it.id })).doReturn(
+                on(it.getArticlesWithIds(TestData.uiArticles.map { it -> it.article.id })).doReturn(
                     flowOf(PagingData.from(TestData.uiArticles))
                 )
             }
