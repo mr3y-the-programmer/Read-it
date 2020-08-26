@@ -67,7 +67,6 @@ class PublisherRepository @Inject constructor(
         return if (result.succeeded) (result as Result.Success).data else false
     }
 
-    //TODO: add retry to update image when connection is available again
     suspend fun updateProfileImg(newImgPath: String): Boolean {
         val id = authRepo.getId() ?: return false // User isn't Signed-in
         val imgUri = storageRepo.uploadImg(id, newImgPath, Destination.PUBLISHER) ?: return false //Upload didn't succeed
