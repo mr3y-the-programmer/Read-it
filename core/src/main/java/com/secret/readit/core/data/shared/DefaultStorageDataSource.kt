@@ -9,9 +9,14 @@ package com.secret.readit.core.data.shared
 
 import android.graphics.Bitmap
 import android.net.Uri
+import androidx.core.net.toUri
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageMetadata
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
 import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
 import com.secret.readit.core.di.IoDispatcher
+import com.secret.readit.core.prefs.SharedPrefs
 import com.secret.readit.core.result.Result
 import dagger.Lazy
 import kotlinx.coroutines.CoroutineDispatcher
@@ -26,7 +31,8 @@ import kotlin.coroutines.resumeWithException
 internal class DefaultStorageDataSource @Inject constructor(
     private val storage: FirebaseStorage,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val converter: Lazy<Converter>
+    private val converter: Lazy<Converter>,
+    private val prefs: SharedPrefs
 ) : StorageDataSource {
 
     /**
@@ -43,10 +49,11 @@ internal class DefaultStorageDataSource @Inject constructor(
                 Destination.ARTICLES -> root.child(ARTICLES_DIR).child(id)
                 Destination.PUBLISHER -> root.child(PUBLISHERS_DIR).child(id)
             }
-
-            val pathInStream = converter.get().pathToInputStream(imgPath)
-            ref.putStream(pathInStream)
-                .continueWithTask {
+            val storageFile = uploadFile(imgPath, ref)
+            storageFile.addOnProgressListener {
+                it.uploadSessionUri.let { uri -> if (uri != null) prefs.updateUploadUri(uri.toString()) }
+            }
+            storageFile.continueWithTask {
                     if (it.isSuccessful) {
                         ref.downloadUrl
                     } else {
@@ -56,6 +63,7 @@ internal class DefaultStorageDataSource @Inject constructor(
                 }.addOnSuccessListener {
                     if (continuation.isActive) {
                         Timber.d("Uploading Image success")
+                        prefs.updateUploadUri("") //Don't forget to reset current Uri
                         continuation.resume(Result.Success(it))
                     } else {
                         Timber.d("Continuation is no longer active")
@@ -91,6 +99,12 @@ internal class DefaultStorageDataSource @Inject constructor(
                     continuation.resumeWithException(it)
                 }
         }
+    }
+
+    private fun uploadFile(filePath: String, ref: StorageReference): UploadTask{
+        val imgUri = converter.get().pathToUri(filePath)
+        val existingUri = prefs.currentUploadSessionUri.value
+        return if (existingUri.isNotEmpty()) ref.putFile(imgUri, StorageMetadata.Builder().build(), existingUri.toUri()) else ref.putFile(imgUri)
     }
 
     companion object {

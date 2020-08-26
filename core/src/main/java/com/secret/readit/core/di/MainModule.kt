@@ -133,9 +133,10 @@ class MainModule {
     fun provideStorageDataSource(
         storage: FirebaseStorage,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
-        converter: Lazy<Converter>
+        converter: Lazy<Converter>,
+        prefs: SharedPrefs
     ): StorageDataSource {
-        return DefaultStorageDataSource(storage, ioDispatcher, converter)
+        return DefaultStorageDataSource(storage, ioDispatcher, converter, prefs)
     }
 
     @Provides
