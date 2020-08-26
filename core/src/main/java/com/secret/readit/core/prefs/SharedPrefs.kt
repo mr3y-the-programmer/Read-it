@@ -41,6 +41,12 @@ interface SharedPrefs {
      */
     val currentUserName: StateFlow<String>
 
+    /**
+     * hold current upload uri in case of connection lose
+     * **NOTE**: This is intended for internal use only by dataSource, consumers don't need to use or call this in any case
+     */
+    val currentUploadSessionUri: StateFlow<String>
+
     // End of getting values
     // Start of updating values
 
@@ -58,4 +64,9 @@ interface SharedPrefs {
      * Update User name
      */
     fun updateUserName(newName: String)
+
+    /**
+     * Update upload session uri
+     */
+    fun updateUploadUri(newUri: String)
 }
