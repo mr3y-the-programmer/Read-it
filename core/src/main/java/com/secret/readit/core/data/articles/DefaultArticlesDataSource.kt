@@ -34,7 +34,7 @@ internal class DefaultArticlesDataSource @Inject constructor(
     private val normalizeHelper: NormalizeHelper = NormalizeHelper()
 ) : ArticlesDataSource {
 
-    //TODO: refactor boilerplate
+    // TODO: refactor boilerplate
 
     override suspend fun getArticles(
         limit: Int,

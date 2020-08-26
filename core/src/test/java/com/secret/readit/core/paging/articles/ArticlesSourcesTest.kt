@@ -124,8 +124,12 @@ class ArticlesSourcesTest(
         mockedArticlesSource = mock {
             on(
                 it.getArticles(
-                    reqParams.limit, reqParams.appreciateNum,
-                    reqParams.categoriesIds, reqParams.withMinutesRead, emptyList(), null
+                    reqParams.limit,
+                    reqParams.appreciateNum,
+                    reqParams.categoriesIds,
+                    reqParams.withMinutesRead,
+                    emptyList(),
+                    null
                 )
             ).doReturn(Result.Error(Exception()))
         }

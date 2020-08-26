@@ -11,7 +11,7 @@ import androidx.paging.PagingSource
 import com.google.firebase.firestore.DocumentSnapshot
 import com.secret.readit.core.data.articles.ArticlesDataSource
 import com.secret.readit.core.data.articles.content.ContentDataSource
-import com.secret.readit.core.paging.*
+import com.secret.readit.core.paging.BasePagingSource
 import javax.inject.Inject
 
 /**

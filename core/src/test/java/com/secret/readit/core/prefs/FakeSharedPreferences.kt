@@ -7,10 +7,8 @@
 
 package com.secret.readit.core.prefs
 
-import android.net.Uri
 import com.secret.readit.model.ThemeType
 import kotlinx.coroutines.flow.StateFlow
-
 
 class FakeSharedPreferences : SharedPrefs {
 

@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 /**
  * Just a dummy Remote Config to satisfy dependencies, maybe removed later
  */
-class DummyRemoteConfig: RemoteConfigSource {
+class DummyRemoteConfig : RemoteConfigSource {
     override val contentLimit: StateFlow<Long>
         get() = TODO("Not yet implemented")
     override val imgPlaceHolder: StateFlow<String>

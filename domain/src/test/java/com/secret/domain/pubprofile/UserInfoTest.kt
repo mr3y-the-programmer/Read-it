@@ -101,6 +101,6 @@ class UserInfoTest(
         assertThat(bookmarkedList).isNotEmpty()
         assertThat(followingList).isEqualTo(listOf(TestData.uiPublisher2))
         assertThat(categoriesList).isEqualTo(TestData.categories)
-        assertThat(bookmarkedList).isEqualTo(TestData.uiArticles.dropLast(1)) //Empty filtered
+        assertThat(bookmarkedList).isEqualTo(TestData.uiArticles.dropLast(1)) // Empty filtered
     }
 }

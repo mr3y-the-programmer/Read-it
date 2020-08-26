@@ -11,7 +11,7 @@ import androidx.paging.PagingSource
 import com.google.firebase.firestore.DocumentSnapshot
 import com.secret.readit.core.data.articles.ArticlesDataSource
 import com.secret.readit.core.data.articles.content.ContentDataSource
-import com.secret.readit.core.paging.*
+import com.secret.readit.core.paging.BasePagingSource
 import javax.inject.Inject
 
 /**
@@ -28,12 +28,16 @@ class ArticlesPagingSource @Inject constructor(
 ) : PagingSource<DocumentSnapshot, ArticleWithContent>(),
     BasePagingSource<RequestParams> {
 
-    override lateinit var reqParams: RequestParams  // filling Request is Consumer responsibility
+    override lateinit var reqParams: RequestParams // filling Request is Consumer responsibility
 
     override suspend fun load(params: LoadParams<DocumentSnapshot>): LoadResult<DocumentSnapshot, ArticleWithContent> {
         val result = articlesSource.getArticles(
-            reqParams.limit, reqParams.appreciateNum, reqParams.categoriesIds,
-            reqParams.withMinutesRead, reqParams.mostFollowedPubsId, params.key
+            reqParams.limit,
+            reqParams.appreciateNum,
+            reqParams.categoriesIds,
+            reqParams.withMinutesRead,
+            reqParams.mostFollowedPubsId,
+            params.key
         )
         return process(
             result,

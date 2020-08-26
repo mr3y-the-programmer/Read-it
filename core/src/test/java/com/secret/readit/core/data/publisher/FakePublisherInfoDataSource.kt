@@ -55,7 +55,7 @@ class FakePublisherInfoDataSource : PublisherInfoDataSource {
     }
 
     override suspend fun unBookmark(articleID: articleId, userID: publisherId): Result<Boolean> {
-        val bookmarkedListUpdated = TestData.publisher1.bookmarkedArticlesIds.dropWhile { it == articleID}
+        val bookmarkedListUpdated = TestData.publisher1.bookmarkedArticlesIds.dropWhile { it == articleID }
         TestData.publisher1 = TestData.publisher1.copy(bookmarkedArticlesIds = bookmarkedListUpdated)
         return Result.Success(true)
     }

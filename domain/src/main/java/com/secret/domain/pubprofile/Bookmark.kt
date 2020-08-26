@@ -20,7 +20,7 @@ import javax.inject.Inject
 class Bookmark @Inject constructor(private val pubRepo: PublisherRepository) : FlowUseCase<Pair<UiArticle, UpdateBookmark>, Boolean>() {
     override suspend fun execute(parameters: Pair<UiArticle, UpdateBookmark>): Flow<Boolean> {
         return flow {
-            when(parameters.second) {
+            when (parameters.second) {
                 UpdateBookmark.BOOKMARK -> emit(pubRepo.bookmark(parameters.first))
                 UpdateBookmark.UN_BOOKMARK -> emit(pubRepo.unBookmark(parameters.first))
             }
@@ -31,7 +31,7 @@ class Bookmark @Inject constructor(private val pubRepo: PublisherRepository) : F
 /**
  * Define whether to bookmark or unBookmark article
  */
-enum class UpdateBookmark{
+enum class UpdateBookmark {
     BOOKMARK,
     UN_BOOKMARK
 }

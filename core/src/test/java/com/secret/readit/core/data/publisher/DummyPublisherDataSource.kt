@@ -31,7 +31,7 @@ class DummyPublisherDataSource : PublisherInfoDataSource {
     override suspend fun updateProfilePicUrl(
         newUri: String,
         id: publisherId
-    ): Result<Boolean> = mock {  } // no-op
+    ): Result<Boolean> = mock { } // no-op
 
     override suspend fun addNewArticleId(articleID: articleId, publisherID: publisherId): Result<Boolean> = mock { } // no-op
 
@@ -45,7 +45,7 @@ class DummyPublisherDataSource : PublisherInfoDataSource {
 
     override suspend fun unFollow(unFollowedPublisherID: publisherId, publisherID: publisherId): Result<Boolean> = mock { } // no-op
 
-    override suspend fun bookmark(articleID: articleId, userID: publisherId): Result<Boolean> = mock {  } // no-op
+    override suspend fun bookmark(articleID: articleId, userID: publisherId): Result<Boolean> = mock { } // no-op
 
-    override suspend fun unBookmark(articleID: articleId, userID: publisherId): Result<Boolean> = mock {  } // no-op
+    override suspend fun unBookmark(articleID: articleId, userID: publisherId): Result<Boolean> = mock { } // no-op
 }

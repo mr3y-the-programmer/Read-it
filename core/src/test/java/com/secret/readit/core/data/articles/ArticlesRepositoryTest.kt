@@ -46,9 +46,13 @@ class ArticlesRepositoryTest {
         -Reliable and well tested, so it cannot fail easily*/
         val mockedBaseSource = mock<BasePagingSource<RequestParams>> { /*no-op for now*/ }
         articlesRepo = ArticlesRepository(
-            FakeArticlesDataSource(), FakeContentDataSource(),
-            FakeCommentsDataSource(), mockedBaseSource,
-            mockedBaseSource, formatter, mock {  }
+            FakeArticlesDataSource(),
+            FakeContentDataSource(),
+            FakeCommentsDataSource(),
+            mockedBaseSource,
+            mockedBaseSource,
+            formatter,
+            mock { }
         )
     }
 
@@ -169,6 +173,6 @@ class ArticlesRepositoryTest {
 
     private fun ArticlesRepository.copy(dataSource: FakeArticlesDataSource): ArticlesRepository {
         val mockedBaseSource = mock<BasePagingSource<RequestParams>> { /*no-op for now*/ }
-        return ArticlesRepository(dataSource, FakeContentDataSource(), FakeCommentsDataSource(), mockedBaseSource, mockedBaseSource, formatter, mock {  })
+        return ArticlesRepository(dataSource, FakeContentDataSource(), FakeCommentsDataSource(), mockedBaseSource, mockedBaseSource, formatter, mock { })
     }
 }

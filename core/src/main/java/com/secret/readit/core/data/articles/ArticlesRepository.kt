@@ -23,7 +23,10 @@ import com.secret.readit.core.result.Result
 import com.secret.readit.core.result.succeeded
 import com.secret.readit.core.uimodels.UiArticle
 import com.secret.readit.core.uimodels.UiComment
-import com.secret.readit.model.*
+import com.secret.readit.model.Content
+import com.secret.readit.model.Element
+import com.secret.readit.model.articleId
+import com.secret.readit.model.publisherId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

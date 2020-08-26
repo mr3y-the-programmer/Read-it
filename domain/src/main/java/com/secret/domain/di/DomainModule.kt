@@ -10,6 +10,4 @@ package com.secret.domain.di
 import dagger.Module
 
 @Module
-class DomainModule {
-
-}
+class DomainModule

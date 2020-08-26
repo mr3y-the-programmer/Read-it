@@ -23,7 +23,13 @@ import com.secret.readit.core.result.succeeded
 import com.secret.readit.core.uimodels.ImageUiElement
 import com.secret.readit.core.uimodels.UiArticle
 import com.secret.readit.core.uimodels.UiComment
-import com.secret.readit.model.*
+import com.secret.readit.model.Article
+import com.secret.readit.model.BaseElement
+import com.secret.readit.model.Category
+import com.secret.readit.model.Comment
+import com.secret.readit.model.Content
+import com.secret.readit.model.Element
+import com.secret.readit.model.articleId
 import timber.log.Timber
 import java.time.Instant
 import javax.inject.Inject

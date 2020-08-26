@@ -9,7 +9,12 @@ package com.secret.readit.search.main
 
 import com.algolia.search.client.ClientSearch
 import com.algolia.search.client.Index
-import com.algolia.search.dsl.*
+import com.algolia.search.dsl.attributesForFaceting
+import com.algolia.search.dsl.attributesToSnippet
+import com.algolia.search.dsl.query
+import com.algolia.search.dsl.ranking
+import com.algolia.search.dsl.searchableAttributes
+import com.algolia.search.dsl.settings
 import com.algolia.search.model.IndexName
 import com.secret.domain.FlowUseCase
 import com.secret.readit.search.main.Searchable.SearchablePublisher
@@ -48,7 +53,7 @@ class SearchPublisher @Inject constructor(private val searchClient: ClientSearch
                     +"emailAddress"
                 }
                 attributesForFaceting {
-                     +"memberSince"
+                    +"memberSince"
                 }
                 highlightPreTag = "<b>" // Bolden the highlighted found text
                 highlightPostTag = "</b>"

@@ -11,7 +11,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import com.nhaarman.mockitokotlin2.mock
 
-
 class DummyStorageRepository : StorageRepository(FakeStorageDataSource()) {
     override suspend fun downloadImg(imgUri: Uri?, defaultValue: String): Bitmap? {
         return mock {

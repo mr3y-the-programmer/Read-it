@@ -14,7 +14,8 @@ import com.secret.domain.UseCase
 import com.secret.domain.di.CurrentUserProfile
 import com.secret.readit.core.data.publisher.PublisherRepository
 import com.secret.readit.core.uimodels.UiPublisher
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 /**

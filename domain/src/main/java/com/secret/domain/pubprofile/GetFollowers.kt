@@ -21,7 +21,7 @@ import javax.inject.Inject
 /**
  * GetFollowers Usecase which load followers list
  */
-//Note: This is unTested because its siblings tested well, You can add to parametrized test later if you want
+// Note: This is unTested because its siblings tested well, You can add to parametrized test later if you want
 class GetFollowers @Inject constructor(
     @CurrentUserProfile private val currentUser: UseCase<Unit, UiPublisher>,
     private val pubRepo: PublisherRepository

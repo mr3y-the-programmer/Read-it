@@ -1,3 +1,4 @@
+// ktlint-disable filename
 /*
  *  Copyright (C) MR3Y - All Rights Reserved
  *   Unauthorized copying of this file, via any medium is strictly prohibited

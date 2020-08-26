@@ -27,7 +27,7 @@ class UpdateUserMainInfo @Inject constructor(
     private val prefs: SharedPrefs
 ) : FlowUseCase<Pair<UpdateMainType, String>, Boolean>() {
     override suspend fun execute(parameters: Pair<UpdateMainType, String>): Flow<Boolean> {
-        return when(parameters.first) {
+        return when (parameters.first) {
             UpdateMainType.NAME -> flow {
                 prefs.updateUserName(parameters.second) // Update Shared Prefs value
                 emit(pubRepo.updateName(parameters.second))
@@ -40,7 +40,7 @@ class UpdateUserMainInfo @Inject constructor(
 /**
  * Define the field to update
  */
-enum class UpdateMainType{
+enum class UpdateMainType {
     NAME,
     PROFILE_IMG
 }

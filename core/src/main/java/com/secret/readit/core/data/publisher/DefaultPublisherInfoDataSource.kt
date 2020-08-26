@@ -7,7 +7,10 @@
 
 package com.secret.readit.core.data.publisher
 
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.secret.readit.core.data.utils.after
 import com.secret.readit.core.data.utils.withIds
 import com.secret.readit.core.data.utils.wrapInCoroutineCancellable
@@ -129,7 +132,6 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
         return update(id, Pair(PROFILE_IMG_FIELD, newUri))
     }
 
-
     private suspend fun update(id: publisherId, fieldAndValue: Pair<String, String>): Result<Boolean> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
 
@@ -203,13 +205,13 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
         return updateFollow(unFollowedPublisherID, publisherID, false)
     }
 
-    //userID here is the one who follow or unFollow
+    // userID here is the one who follow or unFollow
     private suspend fun updateFollow(pubID: publisherId, userID: publisherId, positive: Boolean = true): Result<Boolean> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
             val userDoc = firestore.collection(PUBLISHERS_COLLECTION).document(userID)
             val pubDoc = firestore.collection(PUBLISHERS_COLLECTION).document(pubID)
-            val userOperation = if(positive) FieldValue.arrayUnion(pubID) else FieldValue.arrayRemove(pubID)
-            val pubOperation = if(positive) FieldValue.arrayUnion(userID) else FieldValue.arrayRemove(userID)
+            val userOperation = if (positive) FieldValue.arrayUnion(pubID) else FieldValue.arrayRemove(pubID)
+            val pubOperation = if (positive) FieldValue.arrayUnion(userID) else FieldValue.arrayRemove(userID)
 
             // We used batchedWrites rather than transactions, cause we don't need any read operations
             firestore.runBatch { batch ->
@@ -219,7 +221,7 @@ internal class DefaultPublisherInfoDataSource @Inject constructor(
                 // Second, modify num of publisher's followers
                 batch.update(pubDoc, FOLLOWERS_NUMBER_FIELD, FieldValue.increment(if (positive) 1 else -1))
 
-                //Third, Update followersIds field
+                // Third, Update followersIds field
                 batch.update(pubDoc, FOLLOWERS_FIELD, pubOperation)
             }.addOnSuccessListener {
                 if (continuation.isActive) {

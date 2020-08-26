@@ -13,7 +13,6 @@ import com.secret.readit.core.data.categories.CategoryRepository
 import com.secret.readit.core.data.publisher.PublisherRepository
 import kotlinx.coroutines.test.runBlockingTest
 
-
 class SharedMocks(private val rule: MainCoroutineRule) {
 
     val mockedPubRepo = mock<PublisherRepository> {

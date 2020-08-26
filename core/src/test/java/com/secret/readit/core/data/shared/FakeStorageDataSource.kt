@@ -12,7 +12,6 @@ import android.net.Uri
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.readit.core.result.Result
 
-
 open class FakeStorageDataSource : StorageDataSource {
 
     override suspend fun uploadBitmap(

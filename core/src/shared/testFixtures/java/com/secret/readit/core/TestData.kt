@@ -3,7 +3,14 @@ package com.secret.readit.core
 import com.secret.readit.core.uimodels.UiArticle
 import com.secret.readit.core.uimodels.UiComment
 import com.secret.readit.core.uimodels.UiPublisher
-import com.secret.readit.model.*
+import com.secret.readit.model.Article
+import com.secret.readit.model.Category
+import com.secret.readit.model.Comment
+import com.secret.readit.model.Content
+import com.secret.readit.model.Element
+import com.secret.readit.model.Markup
+import com.secret.readit.model.MarkupType
+import com.secret.readit.model.Publisher
 
 object TestData {
     val markupQuote = Markup(MarkupType.QUOTE, 0, 20)
@@ -49,11 +56,15 @@ object TestData {
 
     val publisher2 = Publisher(id = "2pub", name = "fake2", emailAddress = "fake2@gmail.com", memberSince = 45555555557785421)
     var publisher1 = Publisher(
-        "1pub", "fake1", "fake1@gamil.com", memberSince = 1280282737737,
+        "1pub",
+        "fake1",
+        "fake1@gamil.com",
+        memberSince = 1280282737737,
         followedCategoriesIds = listOf(category1.id, category2.id, category3.id),
         followedPublishersIds = listOf(
             publisher2.id
-        ), rank = "Amateur"
+        ),
+        rank = "Amateur"
     )
     val uiPublisher1 = UiPublisher(publisher1, null)
     val uiPublisher2 = UiPublisher(publisher2, null)
@@ -81,27 +92,49 @@ object TestData {
     val articleCategories = listOf(category1, category2)
 
     val article1 = Article(
-        "43259253-1pub-arti", "article1", publisher1.id, 2,
-        1214343259253, categoryIds = listOf(category1.id, category2.id), numOfAppreciate = 0, numOfDisagree = 0
+        "43259253-1pub-arti",
+        "article1",
+        publisher1.id,
+        2,
+        1214343259253,
+        categoryIds = listOf(category1.id, category2.id),
+        numOfAppreciate = 0,
+        numOfDisagree = 0
     )
 
     val article2 = Article(
-        "89479892-2pub-arti", "article2", publisher2.id, 1,
-        1529889479892, categoryIds = listOf(category3.id)
+        "89479892-2pub-arti",
+        "article2",
+        publisher2.id,
+        1,
+        1529889479892,
+        categoryIds = listOf(category3.id)
     )
 
     val emptyArticle = Article(
-        "", "", emptyPublisher.id, 0, 0, categoryIds = emptyList()
+        "",
+        "",
+        emptyPublisher.id,
+        0,
+        0,
+        categoryIds = emptyList()
     )
     val emptyUiArticle = UiArticle(emptyArticle, emptyUiPublisher, initialContent = Content(emptyList()), category = emptyList())
     var uiArticle1 = UiArticle(
-        article1, uiPublisher1, initialContent = content1, fullContent = content1,
+        article1,
+        uiPublisher1,
+        initialContent = content1,
+        fullContent = content1,
         category = listOf(
-            category1, category2
+            category1,
+            category2
         )
     )
     val uiArticle2 = UiArticle(
-        article2, uiPublisher2, initialContent = content1, fullContent = content1,
+        article2,
+        uiPublisher2,
+        initialContent = content1,
+        fullContent = content1,
         category = listOf(
             category3
         )
@@ -109,9 +142,13 @@ object TestData {
     val uiArticles = listOf(uiArticle1, uiArticle2, emptyUiArticle)
     val deFormatArticleTest = Article("", "article3", publisher2.id, 0, 0, 0, 0, emptyList())
     val uiArticleToBeDeFormatted = UiArticle(
-        deFormatArticleTest, uiPublisher2, content1, reverseFullArticleContent,
+        deFormatArticleTest,
+        uiPublisher2,
+        content1,
+        reverseFullArticleContent,
         listOf(
-            category1, category2
+            category1,
+            category2
         )
     )
 

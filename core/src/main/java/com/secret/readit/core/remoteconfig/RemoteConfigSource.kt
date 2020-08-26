@@ -38,7 +38,7 @@ interface RemoteConfigSource {
     /**
      * value of [PAGING_CONFIG_LIMIT_KEY]
      */
-     val pageConfigSizeLimit: StateFlow<Long>
+    val pageConfigSizeLimit: StateFlow<Long>
 
     /**
      * value of [SEARCH_APP_ID_KEY]
@@ -48,47 +48,47 @@ interface RemoteConfigSource {
     /**
      * value of [SEARCH_API_KEY]
      */
-     val searchApiKey: StateFlow<String>
+    val searchApiKey: StateFlow<String>
 
     /**
      * value of [SHIP_SEARCH_KEY]
      */
-     val isSearchReady: StateFlow<Boolean>
+    val isSearchReady: StateFlow<Boolean>
 
     /**
      * value of [WITH_NUM_OF_FOLLOWERS_KEY]
      */
-     val withNumOfFollowers: StateFlow<Long>
+    val withNumOfFollowers: StateFlow<Long>
 
     /**
      * value of [WITH_APPRECIATE_NUM]
      */
-     val withAppreciateNum: StateFlow<Long>
+    val withAppreciateNum: StateFlow<Long>
 
     /**
      * value of [WITH_MINUTES_READ]
      */
-     val withMinutesRead: StateFlow<Long>
+    val withMinutesRead: StateFlow<Long>
 
-     /**
-      * value of [SHORT_ARTICLES_WITH_APPRECIATE_NUM]
-      */
-      val shortArtWithAppreciateNum: StateFlow<Long>
+    /**
+     * value of [SHORT_ARTICLES_WITH_APPRECIATE_NUM]
+     */
+    val shortArtWithAppreciateNum: StateFlow<Long>
 
-      /**
-       * value of [MINIMUM_ARTICLES_LIMIT]
-       */
-       val minimumArticlesLimit: StateFlow<Long>
+    /**
+     * value of [MINIMUM_ARTICLES_LIMIT]
+     */
+    val minimumArticlesLimit: StateFlow<Long>
 
-       /**
-        * value of [MAXIMUM_ARTICLES_LIMIT]
-        */
-       val maximumArticlesLimit: StateFlow<Long>
+    /**
+     * value of [MAXIMUM_ARTICLES_LIMIT]
+     */
+    val maximumArticlesLimit: StateFlow<Long>
 
-        /**
-         * value of [CATEGORIES_LIMIT]
-         */
-       val categoriesLimit: StateFlow<Long>
+    /**
+     * value of [CATEGORIES_LIMIT]
+     */
+    val categoriesLimit: StateFlow<Long>
 
     companion object {
         const val CONTENT_LIMIT_KEY = "CONTENT_DISPLAYED_LIMIT"

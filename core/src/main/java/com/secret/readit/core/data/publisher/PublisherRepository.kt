@@ -69,7 +69,7 @@ class PublisherRepository @Inject constructor(
 
     suspend fun updateProfileImg(newImgPath: String): Boolean {
         val id = authRepo.getId() ?: return false // User isn't Signed-in
-        val imgUri = storageRepo.uploadImg(id, newImgPath, Destination.PUBLISHER) ?: return false //Upload didn't succeed
+        val imgUri = storageRepo.uploadImg(id, newImgPath, Destination.PUBLISHER) ?: return false // Upload didn't succeed
         val result = publisherDataSource.updateProfilePicUrl(imgUri.toString(), id)
         return if (result.succeeded) (result as Result.Success).data else false
     }
@@ -99,13 +99,13 @@ class PublisherRepository @Inject constructor(
     /**
      * Bookmark article
      */
-    //**NOTE**: This unTested because its siblings tested well, you can add tests later
+    // **NOTE**: This unTested because its siblings tested well, you can add tests later
     suspend fun bookmark(article: UiArticle): Boolean = update(type = UpdateType.BOOKMARK, article = article)
 
     /**
      * Remove article from bookmarks
      */
-    //**NOTE**: This unTested because its siblings tested well, you can add tests later
+    // **NOTE**: This unTested because its siblings tested well, you can add tests later
     suspend fun unBookmark(article: UiArticle): Boolean = update(type = UpdateType.BOOKMARK, article = article, positive = false)
 
     /**
@@ -167,7 +167,7 @@ class PublisherRepository @Inject constructor(
     private suspend fun update(type: UpdateType, article: UiArticle? = null, category: Category? = null, positive: Boolean = true): Boolean {
         val id = authRepo.getId() ?: return false
         val result = try {
-            when(type) {
+            when (type) {
                 UpdateType.PUBLISH_ARTICLE -> {
                     val articleID = idHandler.getID(article!!.article)
                     if (positive) publisherDataSource.addNewArticleId(articleID, id) else publisherDataSource.removeExistingArticleId(articleID, id)
@@ -217,7 +217,7 @@ class PublisherRepository @Inject constructor(
         return UiPublisher(publisher = pub, profileImg = null)
     }
 
-    private enum class UpdateType{
+    private enum class UpdateType {
         PUBLISH_ARTICLE,
         FOLLOW_CATEGORY,
         BOOKMARK
@@ -225,6 +225,6 @@ class PublisherRepository @Inject constructor(
 
     companion object {
         const val DEFAULT_PROFILE_IMG_URL = "https://firebasestorage.googleapis.com/v0/b/read-it-b9c8b.appspot.com/" +
-            "o/publishers%2Faccount_default.png?alt=media&token=1502d0e1-c30f-4d45-997d-e39ac5af62ba" //FIXME: Use one from RemoteConfig Source
+            "o/publishers%2Faccount_default.png?alt=media&token=1502d0e1-c30f-4d45-997d-e39ac5af62ba" // FIXME: Use one from RemoteConfig Source
     }
 }

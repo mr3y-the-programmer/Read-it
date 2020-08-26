@@ -66,7 +66,7 @@ open class FakeArticlesDataSource : ArticlesDataSource {
         ids: List<articleId>,
         prevSnapshot: DocumentSnapshot?
     ): Result<Pair<List<Article>, DocumentSnapshot>> {
-        return Result.Success(Pair(TestData.articles1, mock {  }))
+        return Result.Success(Pair(TestData.articles1, mock { }))
     }
 
     override suspend fun getArticle(id: articleId): Result<Article> {

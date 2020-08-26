@@ -7,7 +7,9 @@
 
 package com.secret.readit.core.uimodels
 
-import com.secret.readit.model.*
+import com.secret.readit.model.Article
+import com.secret.readit.model.Category
+import com.secret.readit.model.Content
 
 /**
  * Article model exposed to domain & presenter layer which hold the expected format for any article

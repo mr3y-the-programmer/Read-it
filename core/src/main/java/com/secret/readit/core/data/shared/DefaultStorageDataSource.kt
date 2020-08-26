@@ -45,7 +45,7 @@ internal class DefaultStorageDataSource @Inject constructor(
     ): Result<Uri> {
         return wrapInCoroutineCancellable(ioDispatcher) { continuation ->
             val root = storage.reference // root reference
-            val ref = when(des) {
+            val ref = when (des) {
                 Destination.ARTICLES -> root.child(ARTICLES_DIR).child(id)
                 Destination.PUBLISHER -> root.child(PUBLISHERS_DIR).child(id)
             }
@@ -54,24 +54,24 @@ internal class DefaultStorageDataSource @Inject constructor(
                 it.uploadSessionUri.let { uri -> if (uri != null) prefs.updateUploadUri(uri.toString()) }
             }
             storageFile.continueWithTask {
-                    if (it.isSuccessful) {
-                        ref.downloadUrl
-                    } else {
-                        Timber.e("task isn't successful, cause: ${it.exception?.message}")
-                        throw it.exception?.cause!!
-                    }
-                }.addOnSuccessListener {
-                    if (continuation.isActive) {
-                        Timber.d("Uploading Image success")
-                        prefs.updateUploadUri("") //Don't forget to reset current Uri
-                        continuation.resume(Result.Success(it))
-                    } else {
-                        Timber.d("Continuation is no longer active")
-                    }
-                }.addOnFailureListener {
-                    Timber.e("Failed to upload Image, cause: ${it.message}")
-                    continuation.resumeWithException(it)
+                if (it.isSuccessful) {
+                    ref.downloadUrl
+                } else {
+                    Timber.e("task isn't successful, cause: ${it.exception?.message}")
+                    throw it.exception?.cause!!
                 }
+            }.addOnSuccessListener {
+                if (continuation.isActive) {
+                    Timber.d("Uploading Image success")
+                    prefs.updateUploadUri("") // Don't forget to reset current Uri
+                    continuation.resume(Result.Success(it))
+                } else {
+                    Timber.d("Continuation is no longer active")
+                }
+            }.addOnFailureListener {
+                Timber.e("Failed to upload Image, cause: ${it.message}")
+                continuation.resumeWithException(it)
+            }
         }
     }
 
@@ -101,7 +101,7 @@ internal class DefaultStorageDataSource @Inject constructor(
         }
     }
 
-    private fun uploadFile(filePath: String, ref: StorageReference): UploadTask{
+    private fun uploadFile(filePath: String, ref: StorageReference): UploadTask {
         val imgUri = converter.get().pathToUri(filePath)
         val existingUri = prefs.currentUploadSessionUri.value
         return if (existingUri.isNotEmpty()) ref.putFile(imgUri, StorageMetadata.Builder().build(), existingUri.toUri()) else ref.putFile(imgUri)

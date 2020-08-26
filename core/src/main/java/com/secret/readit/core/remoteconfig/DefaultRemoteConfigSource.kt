@@ -10,15 +10,20 @@ package com.secret.readit.core.remoteconfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.secret.readit.BuildConfig
 import com.secret.readit.core.di.IoDispatcher
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
-
-class DefaultRemoteConfigSource @Inject constructor(private val config: FirebaseRemoteConfig,
-                                                    @IoDispatcher private val ioDispatcher: CoroutineDispatcher): RemoteConfigSource {
+class DefaultRemoteConfigSource @Inject constructor(
+    private val config: FirebaseRemoteConfig,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+) : RemoteConfigSource {
 
     private val _contentLimit = MutableStateFlow(config.getLong(RemoteConfigSource.CONTENT_LIMIT_KEY))
     override val contentLimit: StateFlow<Long>
@@ -80,7 +85,7 @@ class DefaultRemoteConfigSource @Inject constructor(private val config: Firebase
     override val categoriesLimit: StateFlow<Long>
         get() = _categoriesLimit
 
-    //TODO: Refactor this ugly boilerplate
+    // TODO: Refactor this ugly boilerplate
 
     init {
         fetchLatest()
@@ -121,6 +126,6 @@ class DefaultRemoteConfigSource @Inject constructor(private val config: Firebase
         _categoriesLimit.value = config.getLong(RemoteConfigSource.CATEGORIES_LIMIT)
     }
     companion object {
-        val FETCH_MINIMUM_INTERVAL = if (BuildConfig.DEBUG) 10L else 3600L //We need rapid feedback in Development
+        val FETCH_MINIMUM_INTERVAL = if (BuildConfig.DEBUG) 10L else 3600L // We need rapid feedback in Development
     }
 }

@@ -12,7 +12,7 @@ package com.secret.readit.search.main
  */
 sealed class Searchable {
 
-    data class SearchableArticle(val title: String, val content: String, val pubName: String, val since: Long): Searchable()
+    data class SearchableArticle(val title: String, val content: String, val pubName: String, val since: Long) : Searchable()
 
-    data class SearchablePublisher(val name: String, val email: String, val since: Long, val profileImgUrl: String): Searchable()
+    data class SearchablePublisher(val name: String, val email: String, val since: Long, val profileImgUrl: String) : Searchable()
 }
