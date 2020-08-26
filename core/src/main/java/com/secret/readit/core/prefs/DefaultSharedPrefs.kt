@@ -39,11 +39,17 @@ class DefaultSharedPrefs @Inject constructor(private val applicationContext: Con
     override val currentUserName: StateFlow<String>
         get() = _currentUserName
 
+    private val _currentUploadSessionUri = MutableStateFlow(CURRENT_UPLOAD_URI_DEFAULT_VALUE)
+    override val currentUploadSessionUri: StateFlow<String>
+        get() = _currentUploadSessionUri
+
     override fun updateUserAuthState(newState: Boolean) = update(USER_LOGGED_IN_KEY, newState, _isUserLoggedIn)
 
     override fun updateCurrentTheme(newTheme: ThemeType) = update(CURRENT_THEME_KEY, newTheme.label, _currentTheme)
 
     override fun updateUserName(newName: String) = update(CURRENT_USER_NAME_KEY, newName, _currentUserName)
+
+    override fun updateUploadUri(newUri: String) = update(CURRENT_UPLOAD_URI_KEY, newUri, _currentUploadSessionUri)
 
     private fun <T> update(prefsKey: String, value: T, updatedField: MutableStateFlow<T>) {
         prefs.value.edit {
@@ -61,5 +67,7 @@ class DefaultSharedPrefs @Inject constructor(private val applicationContext: Con
         val CURRENT_THEME_DEFAULT_VALUE = ThemeType.LIGHT.label
         const val CURRENT_USER_NAME_KEY = "current_user_name_key"
         const val CURRENT_USER_NAME_DEFAULT_VALUE = ""
+        const val CURRENT_UPLOAD_URI_KEY = "current_upload_session_uri_key"
+        const val CURRENT_UPLOAD_URI_DEFAULT_VALUE = ""
     }
 }
