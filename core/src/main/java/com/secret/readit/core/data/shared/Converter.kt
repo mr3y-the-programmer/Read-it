@@ -9,11 +9,14 @@ package com.secret.readit.core.data.shared
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import com.secret.readit.core.di.DefaultDispatcher
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
-import java.io.FileInputStream
 import java.io.InputStream
 import javax.inject.Inject
 
@@ -23,11 +26,10 @@ import javax.inject.Inject
 class Converter @Inject constructor(@DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher) {
 
     /**
-     * Provide FileInputStream From the given path
+     * Provide Uri From the given local-file system path
      */
-    fun pathToInputStream(path: String): InputStream {
-        val file = File(path)
-        return FileInputStream(file)
+    fun pathToUri(path: String): Uri {
+        return Uri.fromFile(File(path))
     }
 
     /**
