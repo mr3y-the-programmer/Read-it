@@ -5,8 +5,7 @@
  *   Written by MR3Y <abdonasr379@gmail.com>, 2020.
  */
 
-package com.secret.readit.model
-
+package com.secret.readit.core.uimodels
 
 enum class ThemeType(val label: String){
     LIGHT("light"),
