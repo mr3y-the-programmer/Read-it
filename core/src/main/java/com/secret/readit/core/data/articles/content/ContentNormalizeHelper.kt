@@ -47,6 +47,7 @@ internal class ContentNormalizeHelper {
         "CODE" -> MarkupType.CODE
         "QUOTE" -> MarkupType.QUOTE
         "BulletPoints" -> MarkupType.BulletPoints
+        "StrikeThrough" -> MarkupType.StrikeThrough
         else -> MarkupType.TEXT
     }
 
