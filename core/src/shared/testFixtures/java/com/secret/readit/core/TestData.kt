@@ -17,6 +17,7 @@ object TestData {
     val markupText = Markup(MarkupType.TEXT, 0, 43)
     val markupCode = Markup(MarkupType.CODE, 0, 90)
     val markupBulletPoint = Markup(MarkupType.BulletPoints, 0, 41)
+    val markupStrikeThrough = Markup(MarkupType.StrikeThrough, 0, 30)
 
     val oneLineQuoteElement = Element("> This is a Quote  >", markupQuote)
     val reverseOneLineQuoteElement = oneLineQuoteElement.copy(text = oneLineQuoteElement.text?.removeSurrounding(">"))
@@ -31,6 +32,8 @@ object TestData {
     val bulletPointElement = Element("~ This is One Bullet Point              ~", markupBulletPoint)
     val reverseBulletPointElement = bulletPointElement.copy(text = bulletPointElement.text?.removeSurrounding("~"))
     val multipleBulletPointElement = bulletPointElement.copy(text = "~                               THis is Multiple                  Bullet                   Point        ~")
+
+    val strikeThroughElement = Element("- This is Strike Through -    -", markupStrikeThrough)
 
     val plaintTextElement = Element(text = "This is just a simple text, No more than it", markup = markupText)
 

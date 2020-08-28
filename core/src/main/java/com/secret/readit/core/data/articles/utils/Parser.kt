@@ -31,11 +31,14 @@ object Parser {
             val endOfMatch = matcher.end()
             val quotePattern = Pattern.compile(COMPLETE_QUOTE_REGEX)
             val bulletPointPattern = Pattern.compile(COMPLETE_BULLET_POINT_REGEX)
+            val strikeThroughPattern = Pattern.compile(COMPLETE_STRIKE_THROUGH_REGEX)
 
             markup = if (quotePattern.matcher(string).matches()) {
                 markup.copy(MarkupType.QUOTE)
             } else if (bulletPointPattern.matcher(string).matches()) {
                 markup.copy(MarkupType.BulletPoints)
+            } else if (strikeThroughPattern.matcher(string).matches()) {
+                markup.copy(MarkupType.StrikeThrough)
             } else {
                 markup.copy(MarkupType.CODE)
             }
@@ -53,6 +56,7 @@ object Parser {
             0 -> "`${element.text}`" // Code block
             1 -> ">${element.text}>" // Quote
             2 -> "~${element.text}~" // bullet points
+            3 -> "-${element.text}-" // StrikeThrough
             else -> element.text!! // plain text
         }
     }

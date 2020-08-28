@@ -14,6 +14,8 @@ import org.junit.Test
 
 class ParserTest {
 
+    // TODO: refactor
+
     @Test
     fun oneLineQuote_ReturnTextWithoutQuotes() {
         // GIVEN one line quote
@@ -96,6 +98,21 @@ class ParserTest {
     }
 
     @Test
+    fun strikeThrough_ReturnTheTextParsedCorrectly() {
+        // GIVEN strike through element
+        val strikeThrough = TestData.strikeThroughElement.text!!
+
+        // When parsing this strikeThrough
+        val element = Parser.parse(strikeThrough)
+
+        // Assert it matches our expectations
+        assertThat(element.text).isEqualTo(" This is Strike Through -    ")
+        assertThat(element.markup?.type).isEqualTo(MarkupType.StrikeThrough)
+        assertThat(element.markup?.start).isEqualTo(0)
+        assertThat(element.markup?.end).isEqualTo(TestData.strikeThroughElement.text!!.length)
+    }
+
+    @Test
     fun plainText_ReturnItWithoutChange() {
         // GIVEN text plain element
         val plainText = TestData.plaintTextElement.text!!
@@ -147,6 +164,18 @@ class ParserTest {
 
         // Assert it matches our expectations
         assertThat(string).isEqualTo(TestData.multipleBulletPointElement.text!!)
+    }
+
+    @Test
+    fun strikeThroughMarkup_ReturnTheTextWithoutMarkup() {
+        // GIVEN strike through element
+        val strikeThrough = Parser.parse(TestData.strikeThroughElement.text!!)
+
+        // When trying to reverse parsing it
+        val string = Parser.reverseParse(strikeThrough)
+
+        // Assert it matches our expectations
+        assertThat(string).isEqualTo(TestData.strikeThroughElement.text!!)
     }
 
     @Test
