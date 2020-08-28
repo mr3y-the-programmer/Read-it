@@ -46,5 +46,6 @@ enum class MarkupType{
     CODE,
     QUOTE,
     BulletPoints,
+    StrikeThrough,
     TEXT
 }
