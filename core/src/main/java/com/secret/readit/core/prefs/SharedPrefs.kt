@@ -7,7 +7,7 @@
 
 package com.secret.readit.core.prefs
 
-import com.secret.readit.model.ThemeType
+import com.secret.readit.core.uimodels.ThemeType
 import kotlinx.coroutines.flow.StateFlow
 
 /**

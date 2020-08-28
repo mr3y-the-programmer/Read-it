@@ -10,7 +10,7 @@ package com.secret.readit.core.prefs
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.secret.readit.model.ThemeType
+import com.secret.readit.core.uimodels.ThemeType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
