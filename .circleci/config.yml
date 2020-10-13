@@ -23,3 +23,15 @@ jobs:
       - run:
           name: Apply lintFix
           command: ./gradlew lintFix
+  build:
+    executor: docker-api29
+    steps: # there is some investigation to be done here
+      - checkout
+      - run:
+          name: Build the whole project and provide stacktrace
+          command: ./gradlew assemble --stacktrace
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build
+            - ./**/build
