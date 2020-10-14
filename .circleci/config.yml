@@ -1,6 +1,7 @@
 version: 2.1
 # TODO: validate gradle wrapper to guard against malicious jar files
 # TODO: investigate into some optimization
+# TODO: add lint checks, see: https://stackoverflow.com/questions/50662772/circleci-build-fails-because-google-services-json-is-not-present
 executors:
   docker-api29:
     docker:
@@ -18,9 +19,6 @@ jobs:
       - run:
           name: Format files if applicable
           command: ./gradlew formatKotlin
-      - run:
-          name: Run androidLint             # second, Run android lint
-          command: ./gradlew lintDebug
   build:
     executor: docker-api29
     steps: # there is some investigation to be done here
