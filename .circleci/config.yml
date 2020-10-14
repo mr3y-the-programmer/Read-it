@@ -17,7 +17,7 @@ jobs:
           command: ./gradlew lintKotlin
       - run:
           name: Format files if applicable
-          command: ./gradlew ktlintFormat
+          command: ./gradlew formatKotlin
       - run:
           name: Run androidLint             # second, Run android lint
           command: ./gradlew lintDebug
