@@ -3,8 +3,9 @@ version: 2.1
 # TODO: investigate into some optimization
 executors:
   docker-api29:
-    - image: circleci/android:api-29 # no auth needed here, because this is a public image
-  working_directory: ~/Readit
+    docker:
+      - image: circleci/android:api-29 # no auth needed here, because this is a public image
+    working_directory: ~/Readit
 
 jobs:
   static-analysis:
