@@ -21,9 +21,6 @@ jobs:
       - run:
           name: Run androidLint             # second, Run android lint
           command: ./gradlew lintDebug
-      - run:
-          name: Apply lintFix
-          command: ./gradlew lintFix
   build:
     executor: docker-api29
     steps: # there is some investigation to be done here
