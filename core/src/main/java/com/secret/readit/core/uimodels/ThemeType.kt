@@ -7,7 +7,7 @@
 
 package com.secret.readit.core.uimodels
 
-enum class ThemeType(val label: String){
+enum class ThemeType(val label: String) {
     LIGHT("light"),
     DARK("dark"),
     SYSTEM("system"),
