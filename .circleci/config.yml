@@ -24,6 +24,12 @@ jobs:
     steps: # there is some investigation to be done here
       - checkout
       - run:
+          name: Export Json file to CI environment # as this file is needed by build command
+          command: echo 'export FIREBASE_SERVICES_JSON="$FIREBASE_SERVICES_JSON"' >> $BASH_ENV
+      - run:
+          name: Decode the exported file
+          command: echo $FIREBASE_SERVICES_JSON | base64 -di > core/google-services.json
+      - run:
           name: Build the whole project and provide stacktrace
           command: ./gradlew assemble --stacktrace
       - persist_to_workspace:
