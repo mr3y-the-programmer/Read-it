@@ -1,0 +1,61 @@
+version: 2.1
+# TODO: validate gradle wrapper to guard against malicious jar files
+# TODO: investigate into some optimization
+# TODO: add lint checks, see: https://stackoverflow.com/questions/50662772/circleci-build-fails-because-google-services-json-is-not-present
+executors:
+  docker-api29:
+    docker:
+      - image: circleci/android:api-29 # no auth needed here, because this is a public image
+    working_directory: ~/Readit
+
+jobs:
+  static-analysis:
+    executor: docker-api29
+    steps:
+      - checkout
+      - run:
+          name: Run ktlint check            # first, Run ktlint check
+          command: ./gradlew lintKotlin
+      - run:
+          name: Format files if applicable
+          command: ./gradlew formatKotlin
+  build:
+    executor: docker-api29
+    steps: # there is some investigation to be done here
+      - checkout
+      - run:
+          name: Export Json file to CI environment # as this file is needed by build command
+          command: echo 'export FIREBASE_SERVICES_JSON="$FIREBASE_SERVICES_JSON"' >> $BASH_ENV
+      - run:
+          name: Decode the exported file
+          command: echo $FIREBASE_SERVICES_JSON | base64 -di > core/google-services.json
+      - run:
+          name: Build the whole project and provide stacktrace
+          command: ./gradlew assemble --stacktrace
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build
+            - ./**/build
+  test:
+    executor: docker-api29
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./**/build
+      - run:
+          name: Run Unit tests
+          command: ./gradlew testDebugUnitTest
+      - store_test_results:
+          path: test-results
+
+workflows:
+  regression-workflow: # check everything is OK
+    jobs:
+      - static-analysis
+      - build:
+          requires:
+            - static-analysis
+      - test:
+          requires:
+            - build
