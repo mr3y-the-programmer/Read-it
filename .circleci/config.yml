@@ -46,3 +46,14 @@ jobs:
           command: ./gradlew testDebugUnitTest
       - store_test_results:
           path: test-results
+
+workflows:
+  regression-workflow: # check everything is OK
+    jobs:
+      - static-analysis
+      - build:
+          requires:
+            - static-analysis
+      - test:
+          requires:
+            - build
