@@ -42,6 +42,4 @@ Application is still in early stages of development and isn't ready for producti
     2. Robolectric: For tests that need android resources
     3. Truth framework: For assertions 
     
-  Also the app uses [ktlint](https://ktlint.github.io/) to enforce certain styles  
-    
-   **NOTE**: Since i'm the only contributer to this project it is planned to Integrate [CircleCI](https://circleci.com/) later
+  Also the app uses [ktlint](https://ktlint.github.io/) to enforce certain styles.
