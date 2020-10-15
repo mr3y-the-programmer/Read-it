@@ -7,6 +7,8 @@ executors:
     docker:
       - image: circleci/android:api-29 # no auth needed here, because this is a public image
     working_directory: ~/Readit
+    environment:
+      JAVA_OPTS: "-Xmx3072m" # allocate 3 GB for this executor, total GBs available: 4
 
 jobs:
   static-analysis:
