@@ -65,7 +65,7 @@ jobs:
 workflows:
   regression-workflow: # check everything is OK
     jobs:
-      - build:
+      - build
       - test:
           requires:
             - build
