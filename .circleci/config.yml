@@ -51,8 +51,12 @@ jobs:
             - ./**/build
   test:
     executor: docker-api29
+#    parallelism: 3        # Uncomment test splitting optimization Once you upgrade your plan
     steps:
       - checkout
+#      - run:
+#          name: Split tests
+#          command: .circleci/scripts/split_tests.sh # circleci tests glob "/**/test/**/*.kt" | circleci tests split --split-by=timings
       - attach_workspace:
           at: ./**/build
       - run:
