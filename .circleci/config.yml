@@ -1,6 +1,5 @@
 version: 2.1
 # TODO: validate gradle wrapper to guard against malicious jar files
-# TODO: investigate into some optimization
 # TODO: add lint checks, see: https://stackoverflow.com/questions/50662772/circleci-build-fails-because-google-services-json-is-not-present
 executors:
   docker-api29:
