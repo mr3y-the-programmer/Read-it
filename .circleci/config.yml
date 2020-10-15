@@ -10,19 +10,6 @@ executors:
       GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Dorg.gradle.parallel=true"
 
 jobs:
-  static-analysis:
-    executor: docker-api29
-    steps:
-      - checkout
-      - run:
-          name: Run ktlint check            # first, Run ktlint check
-          command: ./gradlew lintKotlin
-      - run:
-          name: Format files if applicable
-          command: ./gradlew formatKotlin
-      - run:
-          name: Run android lint
-          command: ./gradlew lintDebug
   build:
     executor: docker-api29
     steps: # there is some investigation to be done here
@@ -45,6 +32,15 @@ jobs:
       - run:
           name: Build the whole project and provide stacktrace
           command: ./gradlew assemble --stacktrace
+      - run:
+          name: Run ktlint check            # first, Run ktlint check
+          command: ./gradlew lintKotlin
+      - run:
+          name: Format files if applicable
+          command: ./gradlew formatKotlin
+      - run:
+          name: Run android lint           # second, Run android lint check
+          command: ./gradlew lintDebug
       - persist_to_workspace:
           root: .
           paths:
@@ -69,10 +65,7 @@ jobs:
 workflows:
   regression-workflow: # check everything is OK
     jobs:
-      - static-analysis
       - build:
-          requires:
-            - static-analysis
       - test:
           requires:
             - build
