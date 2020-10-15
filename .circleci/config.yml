@@ -9,6 +9,7 @@ executors:
     working_directory: ~/Readit
     environment:
       JAVA_OPTS: "-Xmx3072m" # allocate 3 GB for this executor, total GBs available: 4
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Dorg.gradle.parallel=true"
 
 jobs:
   static-analysis:
