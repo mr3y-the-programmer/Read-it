@@ -3,6 +3,10 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.8">
       <module name="model" target="1.7" />
+      <module name="Read_it.app" target="13" />
+      <module name="Read_it.core" target="13" />
+      <module name="Read_it.domain" target="13" />
+      <module name="Read_it.search" target="13" />
     </bytecodeTargetLevel>
   </component>
 </project>
