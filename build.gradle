@@ -101,6 +101,10 @@ plugins {
     id "com.osacky.doctor" version "0.6.2"
 }
 
+doctor {
+    warnWhenJetifierEnabled = false
+}
+
 allprojects {
     repositories {
         google()
