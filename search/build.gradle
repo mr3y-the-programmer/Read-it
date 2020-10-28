@@ -26,6 +26,12 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // To fix this issue: https://stackoverflow.com/questions/63439609/multiple-apks-packaging-the-same-library-can-cause-runtime-errors-with-only-one
+    // also for digging into your module dependencies, check: build\intermediates\packaged_dependencies\debug\deps.txt
+    packagingOptions {
+//        pickFirst 'androidx.recyclerview:recyclerview:*'
+//        exclude 'META-INF/DEPENDENCIES'
+    }
 }
 
 dependencies {
