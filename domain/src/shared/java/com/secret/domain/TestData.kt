@@ -12,7 +12,7 @@ import com.secret.readit.model.Markup
 import com.secret.readit.model.MarkupType
 import com.secret.readit.model.Publisher
 
-//This is temporary it will be removed soon
+// This is temporary it will be removed soon
 object TestData {
     val markupQuote = Markup(MarkupType.QUOTE, 0, 20)
     val markupText = Markup(MarkupType.TEXT, 0, 43)

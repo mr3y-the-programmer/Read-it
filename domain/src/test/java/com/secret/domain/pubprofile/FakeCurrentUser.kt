@@ -7,8 +7,8 @@
 
 package com.secret.domain.pubprofile
 
-import com.secret.domain.UseCase
 import com.secret.domain.TestData
+import com.secret.domain.UseCase
 import com.secret.readit.core.uimodels.UiPublisher
 
 class FakeCurrentUser : UseCase<Unit, UiPublisher>() {
