@@ -22,7 +22,7 @@ jobs:
           command: echo $FIREBASE_SERVICES_JSON | base64 -di > core/google-services.json
       - run:
           name: Generate cache key
-          command: ./.circleci/scripts/checksum.sh /tmp/checksum.txt
+          command: sudo chmod +x ./.circleci/scripts/checksum.sh /tmp/checksum.txt
       - restore_cache: # each time dependencies updated or changes, increment "v1"
           key: deps-v1-{{ checksum "/tmp/checksum.txt" }}
       - run:
