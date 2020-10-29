@@ -9,17 +9,22 @@ executors:
       JAVA_OPTS: "-Xmx3072m" # allocate 3 GB for this executor, total GBs available: 4
       GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Dorg.gradle.parallel=true"
 
+commands:
+  provide_json_file:
+    steps:
+      - run:
+          name: Export Json file to CI environment
+          command: echo 'export FIREBASE_SERVICES_JSON="$FIREBASE_SERVICES_JSON"' >> $BASH_ENV
+      - run:
+          name: Decode the exported file
+          command: echo $FIREBASE_SERVICES_JSON | base64 -di > core/google-services.json
+
 jobs:
   build:
     executor: docker-api29
     steps: # there is some investigation to be done here
       - checkout
-      - run:
-          name: Export Json file to CI environment # as this file is needed by build command
-          command: echo 'export FIREBASE_SERVICES_JSON="$FIREBASE_SERVICES_JSON"' >> $BASH_ENV
-      - run:
-          name: Decode the exported file
-          command: echo $FIREBASE_SERVICES_JSON | base64 -di > core/google-services.json
+      - provide_json_file
       - run:
           name: Generate cache key
           command: sudo chmod +x ./.circleci/scripts/checksum.sh ./tmp/checksum.txt
@@ -57,6 +62,7 @@ jobs:
 #      - run:
 #          name: Split tests
 #          command: .circleci/scripts/split_tests.sh # circleci tests glob "/**/test/**/*.kt" | circleci tests split --split-by=timings
+      - provide_json_file
       - attach_workspace:
           at: ./**/build
       - run:
