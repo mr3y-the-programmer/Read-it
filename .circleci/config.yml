@@ -39,7 +39,7 @@ jobs:
           key: deps-v1-{{ checksum "./tmp/checksum.txt" }}
       - run:
           name: Build the whole project and provide stacktrace
-          command: ./gradlew assemble --stacktrace
+          command: ./gradlew assembleDebug --stacktrace
       - run:
           name: Run ktlint check            # first, Run ktlint check
           command: ./gradlew lintKotlin
