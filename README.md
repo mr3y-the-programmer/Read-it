@@ -1,4 +1,7 @@
 # Read it 👷  [Work In-Progress] 👷
+
+[![mr3y-the-programmer](https://circleci.com/gh/mr3y-the-programmer/Read-it.svg?style=svg&circle-token=7f43838ebd42698f4247a19d80e6cc2ab03e85cb)](https://app.circleci.com/pipelines/github/mr3y-the-programmer/Read-it)
+
 📢 Have you tried the new Reading experience?
 
 -it is here now with Read it 🙌.
