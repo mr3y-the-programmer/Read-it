@@ -103,6 +103,7 @@ plugins {
 
 doctor {
     warnWhenJetifierEnabled = false
+    failOnEmptyDirectories = false // We'll fix cache misses later
 }
 
 allprojects {
