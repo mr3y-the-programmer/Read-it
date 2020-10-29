@@ -41,6 +41,15 @@ android {
         coreLibraryDesugaringEnabled true
     }
 
+    /*This temporary it will be removed Once it is supported in AGP and kotlin, see:
+    * 1- https://issuetracker.google.com/issues/139438142
+    * 2- https://youtrack.jetbrains.com/issue/KT-34901
+    */
+    sourceSets {
+        test {
+            java.srcDirs += 'src/shared/java'
+        }
+    }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
         freeCompilerArgs += ["-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi"] //as annotation needed in many places

@@ -42,4 +42,6 @@ class DummyRemoteConfig : RemoteConfigSource {
         get() = TODO("Not yet implemented")
     override val categoriesLimit: StateFlow<Long>
         get() = TODO("Not yet implemented")
+    override val pageConfigSizeLimit: StateFlow<Long>
+        get() = TODO("Not yet implemented")
 }

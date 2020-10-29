@@ -13,8 +13,8 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.secret.domain.FlowUseCase
-import com.secret.readit.core.MainCoroutineRule
-import com.secret.readit.core.TestData
+import com.secret.domain.MainCoroutineRule
+import com.secret.domain.TestData
 import com.secret.readit.core.data.articles.ArticlesRepository
 import com.secret.readit.core.data.categories.CategoryRepository
 import com.secret.readit.core.data.publisher.PublisherRepository
