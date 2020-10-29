@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Copied from: https://medium.com/@chrisbanes/circleci-cache-key-over-many-files-c9e07f4d471a, thanks to chris banes for this helpful tip
 RESULT_FILE=$1
 
