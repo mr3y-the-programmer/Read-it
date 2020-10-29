@@ -20,15 +20,18 @@ jobs:
       - run:
           name: Decode the exported file
           command: echo $FIREBASE_SERVICES_JSON | base64 -di > core/google-services.json
+      - run:
+          name: Generate cache key
+          command: ./.circleci/scripts/checksum.sh /tmp/checksum.txt
       - restore_cache: # each time dependencies updated or changes, increment "v1"
-          key: deps-v1-{{ checksum "build.gradle" }}-{{ checksum "**/build.gradle" }}
+          key: deps-v1-{{ checksum "/tmp/checksum.txt" }}
       - run:
           name: Download dependencies to save time
           command: ./gradlew androidDependencies
       - save_cache: # then save cache after downloading
           paths:
             - ~/.gradle  # also, don't forget to save gradle cache to save more time next run
-          key: deps-v1-{{ checksum "build.gradle" }}-{{ checksum "**/build.gradle" }}
+          key: deps-v1-{{ checksum "/tmp/checksum.txt" }}
       - run:
           name: Build the whole project and provide stacktrace
           command: ./gradlew assemble --stacktrace
