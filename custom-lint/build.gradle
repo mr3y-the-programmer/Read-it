@@ -1,0 +1,28 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+sourceSets {
+    test {
+        java.srcDir "src/test/java"
+    }
+}
+
+dependencies {
+    def lintVersion = '27.0.1' //As a rule of thumb, lint version is: AGP version + 23
+
+    compileOnly depenedcies.file_tree
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    // For lint
+    compileOnly "com.android.tools.lint:lint-api:$lintVersion"
+    compileOnly "com.android.tools.lint:lint-checks:$lintVersion"
+    compileOnly project(":model")
+
+    // Lint testing
+    testImplementation "com.android.tools.lint:lint:$lintVersion"
+    testImplementation "com.android.tools.lint:lint-tests:$lintVersion"
+    testImplementation depenedcies.junit
+}
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
