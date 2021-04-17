@@ -2,47 +2,47 @@
 
 [![mr3y-the-programmer](https://circleci.com/gh/mr3y-the-programmer/Read-it.svg?style=svg&circle-token=7f43838ebd42698f4247a19d80e6cc2ab03e85cb)](https://app.circleci.com/pipelines/github/mr3y-the-programmer/Read-it)
 
-📢 Have you tried the new Reading experience?
-
--it is here now with Read it 🙌.
-
-> The simple, intuitive and easy way of reading, share your experience with others by publishing Your thoughts and many more!!
-
-Application Primarily consist of "Articles", You can Follow some "categories" or "Publishers" you trust
-and see your home feed filled with many articles related to your interestes with a lot of customization options ✨
+Android app to read, write & publish articles similar to [Medium.com](https://medium.com/) or [dev.to](https://dev.to/) with using Firebase as a backend for the app,
+it is mostly a challange to see how firebase can be used in real large-scale apps like Medium.com
 
 ## Some Features:
    * Follow categories to get published articles related to those categories
    * Follow specific publishers
-   * Publish/write your first articles in simple UI that has a lot features like: extensive list of markups
+   * write/publish articles
    * Drafts mode [Uncompleted]
-   * Interact with article by doing things like: Appreciate, protest, comment
-   * Search
-    
-Application is still in early stages of development and isn't ready for production yet. if no delay occurs in our schedule, App maybe ready within 1-2 months.
+   * Interact with article by: Appreciating, disagreeing or commenting
+   * Search [Early development] (Implemented using [Algolia](https://www.algolia.com/) client)
+ 
+## TODO: 
+   * Implement the UI
+   * Complete Drafts mode
+   * Benchmark the hotpaths Using [AndroidX Jetpack Benchmark](https://developer.android.com/studio/profile/benchmark)
 
-## Implementation:
-  * App is written entirely in kotlin except for gradle scripts which is groovy. 
-  
-  * Application Primarily consist of 4 layers (data, domain, presenter and view). Currently we partially finished data layer: contain most of our business logic like dataSources and Repositories
-  * architecture: App is highly inspired by [iosched](https://github.com/google/iosched), it has data and domain layer in separate module and data models also in another separate module
-  so architecture in both apps maybe similar However, implementation details aren't the same
-  
-  * App make use of many of firebase products like: 
-     
-     1. [Firestore](https://firebase.google.com/docs/firestore): For storing main data, it is the primary storage in app other storage options for storing data that doesn't fit in firestore like: images
-     
-     2. [Storage](https://firebase.google.com/docs/storage): For storing images (and other binary data in the future)
-     
-     3. [Authentication](https://firebase.google.com/docs/auth): Firebase-UI particularly For authenticating users 
-     
-     4. [Analytics](https://firebase.google.com/docs/analytics): For understanding users needs
-     
-  * Each object From user's perspective represented as model, For example we have a model for Article, Publisher, Category, Comment...etc
-  
-  * testing: data layer has extensive set of unit tests to ensure every thing is working properly, We use: 
-    1. Mockito: For mocking and faking
-    2. Robolectric: For tests that need android resources
-    3. Truth framework: For assertions 
-    
-  Also the app uses [ktlint](https://ktlint.github.io/) to enforce certain styles.
+## Tech Stack:
+Some of technologies used in this app
+
+| Tool        | For           |
+| ------------- |:-------------:|
+| Firestore, Authentication, Cloud Storage     | backend |
+| Firebase Remote config, Firebase Analytics | controlling, testing & Analyzing User flow |
+| Kotlin coroutines & Flow    | Concurrency & building Reactive Usecases   |
+| JUnit 4, mockito-kotlin, Truth | testing |
+| Paging 3 | split the data into chunks (pages) |
+| CircleCi | CI/CD |
+
+## License:
+   ```
+   Copyright [2020] [MR3Y]
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+   ```
